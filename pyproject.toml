@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "csmarket-research"
+version = "0.1.0"
+description = "A reproducible study of CS2 case expected value and market pricing"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["requests>=2.31,<3"]
+
+[project.scripts]
+csmarket = "csmarket.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

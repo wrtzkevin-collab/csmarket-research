@@ -1,0 +1,23 @@
+{
+  "case_name": "Synthetic demonstration case",
+  "currency": "USD",
+  "source": "synthetic test values",
+  "price_type": "illustrative only",
+  "observed_at": null,
+  "case_price": 0.5,
+  "key_price": 2.49,
+  "opening_fee": 0,
+  "assumptions": [
+    "This file demonstrates the calculation contract and is not a real CS2 case valuation.",
+    "One synthetic outcome represents each official rarity tier.",
+    "A 12% hypothetical selling fee is applied uniformly."
+  ],
+  "outcomes": [
+    {"name": "Synthetic Mil-Spec", "probability": 0.79923, "gross_value": 0.5, "sell_fee_rate": 0.12},
+    {"name": "Synthetic Restricted", "probability": 0.15985, "gross_value": 2.0, "sell_fee_rate": 0.12},
+    {"name": "Synthetic Classified", "probability": 0.03197, "gross_value": 10.0, "sell_fee_rate": 0.12},
+    {"name": "Synthetic Covert", "probability": 0.00639, "gross_value": 50.0, "sell_fee_rate": 0.12},
+    {"name": "Synthetic Rare Special", "probability": 0.00256, "gross_value": 500.0, "sell_fee_rate": 0.12}
+  ]
+}
+
