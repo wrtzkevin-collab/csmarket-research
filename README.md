@@ -1,5 +1,9 @@
 # CSMarket Research v3
 
+[![Tests](https://github.com/wrtzkevin-collab/csmarket-research/actions/workflows/tests.yml/badge.svg)](https://github.com/wrtzkevin-collab/csmarket-research/actions/workflows/tests.yml)
+
+[View the research preview](https://wrtzkevin-collab.github.io/csmarket-research/)
+
 CSMarket Research estimates the expected value of opening a CS2 case while making every source, fee, missing price, and assumption visible. It is an educational research project, not an investment recommendation or a promise of profit.
 
 This version replaces the legacy ranking prototype's fixed rare-item price, global StatTrak multiplier, synthetic history, and misleading use of “ROI.” The old prototype remains outside this directory as a record of how the project developed.

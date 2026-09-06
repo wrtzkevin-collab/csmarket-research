@@ -10,9 +10,13 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["requests>=2.31,<3"]
 
+[project.urls]
+Homepage = "https://wrtzkevin-collab.github.io/csmarket-research/"
+Repository = "https://github.com/wrtzkevin-collab/csmarket-research"
+Methodology = "https://github.com/wrtzkevin-collab/csmarket-research/blob/main/docs/METHODOLOGY.md"
+
 [project.scripts]
 csmarket = "csmarket.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
