@@ -4,11 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "csmarket-research"
-version = "0.2.0"
+version = "0.3.0"
 description = "A reproducible study of CS2 case expected value and market pricing"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["requests>=2.31,<3"]
+# Skinport requires Brotli-encoded responses, and requests only negotiates
+# `br` when a Brotli backend is installed, so this is a hard dependency
+# rather than an optional extra.
+dependencies = ["requests>=2.31,<3", "brotli>=1.1"]
 
 [project.urls]
 Homepage = "https://wrtzkevin-collab.github.io/csmarket-research/"

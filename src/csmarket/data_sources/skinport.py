@@ -27,6 +27,19 @@ class SkinportDataError(RuntimeError):
     """Raised when Skinport cannot provide a usable response."""
 
 
+def _brotli_available() -> bool:
+    """Report whether urllib3 can transparently decode a ``br`` response."""
+
+    try:
+        import brotli  # noqa: F401
+    except ImportError:
+        try:
+            import brotlicffi  # noqa: F401
+        except ImportError:
+            return False
+    return True
+
+
 class SkinportClient:
     """Small, testable client for Skinport's unauthenticated market endpoints.
 
@@ -171,7 +184,21 @@ class SkinportClient:
             try:
                 return response.json()
             except ValueError as exc:
-                raise SkinportDataError("Skinport returned invalid JSON") from exc
+                # The request advertises Brotli, so a body that will not parse is
+                # usually still compressed: requests only decodes ``br`` when a
+                # Brotli backend is installed.  Saying "invalid JSON" there sends
+                # the reader looking for a parsing bug that does not exist.
+                encoding = (response.headers.get("Content-Encoding") or "").lower()
+                if "br" in encoding and not _brotli_available():
+                    raise SkinportDataError(
+                        "Skinport returned a Brotli-compressed body but no Brotli "
+                        "decoder is installed; install the 'brotli' package"
+                    ) from exc
+                raise SkinportDataError(
+                    "Skinport returned a body that is not JSON "
+                    f"(HTTP {response.status_code}, Content-Encoding "
+                    f"{encoding or 'none'})"
+                ) from exc
 
         raise AssertionError("retry loop exhausted unexpectedly")
 
