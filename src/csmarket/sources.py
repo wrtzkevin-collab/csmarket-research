@@ -10,7 +10,7 @@ so the CLI fetches each as its own snapshot and reports them side by side.
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Iterable, Sequence
 
 from .cache import PriceCache
@@ -22,6 +22,10 @@ SOURCE_SKINPORT = "skinport"
 SOURCE_IDS: tuple[str, ...] = (SOURCE_STEAM, SOURCE_SKINPORT)
 
 SKINPORT_SOURCE_NAME = "skinport"
+
+# Reserved cache key recording when the last whole-market pull happened.
+# It is never a real market name, so it can never reach a snapshot.
+_BULK_MARKER_NAME = "__skinport_bulk_pull__"
 
 # Steam is crawled one name at a time, so an interrupted run would otherwise
 # throw away every request made so far.
@@ -136,21 +140,25 @@ def _fetch_skinport_rows(
     statistic: str,
 ) -> list[dict[str, Any]]:
     wanted = set(names)
-    cached: dict[str, dict[str, Any]] = {}
-    if cache is not None and not refresh:
-        for name in names:
-            row = cache.get(SKINPORT_SOURCE_NAME, currency, name)
-            if row is not None:
-                cached[name] = row
 
-    # Skinport answers with the whole market in one response, so a partial cache
-    # hit saves nothing.  Re-fetch unless every requested name is already held.
-    if len(cached) == len(wanted):
-        rows = [cached[name] for name in names]
-        if progress is not None:
-            for index, name in enumerate(names, start=1):
-                progress(index, len(names), name)
-        return rows
+    # Skinport answers with the whole market in one response, and items with no
+    # recent sale are simply absent from it.  Deciding freshness by "are all
+    # requested names cached" would therefore never be satisfied -- the missing
+    # tail is exactly what cannot be cached -- and every run would re-fetch.
+    # A marker row records when the bulk pull happened instead, so a fresh pull
+    # serves whatever it contained and absent names stay correctly absent.
+    if cache is not None and not refresh:
+        marker = cache.get(SKINPORT_SOURCE_NAME, currency, _BULK_MARKER_NAME)
+        if marker is not None:
+            rows = []
+            for name in names:
+                row = cache.get(SKINPORT_SOURCE_NAME, currency, name)
+                if row is not None:
+                    rows.append(row)
+            if progress is not None:
+                for index, name in enumerate(names, start=1):
+                    progress(index, len(names), name)
+            return rows
 
     client = SkinportClient(timeout=timeout, max_retries=retries)
     fetched = client.fetch_sales_history(
@@ -159,11 +167,33 @@ def _fetch_skinport_rows(
     rows = [row for row in fetched if row.get("market_hash_name") in wanted]
     if cache is not None:
         cache.put_many(rows)
+        cache.put(
+            {
+                "market_hash_name": _BULK_MARKER_NAME,
+                "price": None,
+                "source": SKINPORT_SOURCE_NAME,
+                "currency": currency.upper(),
+                "price_type": "bulk-pull marker",
+                "observed_at": _bulk_marker_time(rows),
+            }
+        )
         cache.save()
     if progress is not None:
         for index, name in enumerate(names, start=1):
             progress(index, len(names), name)
     return rows
+
+
+def _bulk_marker_time(rows: Sequence[dict[str, Any]]) -> str:
+    """Timestamp the marker from the pull itself, never from the local clock."""
+
+    for row in rows:
+        observed_at = row.get("observed_at")
+        if isinstance(observed_at, str) and observed_at.strip():
+            return observed_at
+    return (
+        datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    )
 
 
 def build_cache(
