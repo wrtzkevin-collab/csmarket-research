@@ -266,5 +266,58 @@ class ThrottledLookupTests(unittest.TestCase):
         self.assertEqual([row["market_hash_name"] for row in rows], ["B", "D"])
 
 
+
+class BlockedBulkPageTests(unittest.TestCase):
+    """A refused bulk page must not discard a warm cache or earlier pages."""
+
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._dir.cleanup)
+        self.path = Path(self._dir.name) / "cache.json"
+
+    def cache(self):
+        return PriceCache(self.path, max_age=timedelta(hours=24), clock=lambda: NOW)
+
+    def test_a_blocked_search_keeps_the_cached_rows(self):
+        from csmarket.data_sources.steam import SteamDataError
+
+        cache = self.cache()
+        cache.put(steam_row("A"))
+        search = Mock()
+        search.fetch_item_set.side_effect = SteamDataError("HTTP 429")
+        client = Mock()
+        client.fetch_price.side_effect = SteamDataError("HTTP 429")
+
+        with patch("csmarket.sources.SteamSearchClient", return_value=search):
+            with patch("csmarket.sources.SteamMarketClient", return_value=client):
+                rows = fetch_rows(
+                    SOURCE_STEAM,
+                    ["A", "B"],
+                    cache=cache,
+                    collection_tags=["tag_set_community_33"],
+                )
+
+        self.assertEqual([row["market_hash_name"] for row in rows], ["A"])
+
+    def test_pages_that_arrived_before_the_block_are_kept(self):
+        from csmarket.data_sources.steam import SteamDataError
+
+        search = Mock()
+        search.fetch_item_set.return_value = [steam_row("A")]
+        search.search.side_effect = SteamDataError("HTTP 429")
+        client = Mock()
+        client.fetch_price.side_effect = SteamDataError("HTTP 429")
+
+        with patch("csmarket.sources.SteamSearchClient", return_value=search):
+            with patch("csmarket.sources.SteamMarketClient", return_value=client):
+                rows = fetch_rows(
+                    SOURCE_STEAM,
+                    ["A", "B"],
+                    cache=None,
+                    collection_tags=["tag_set_community_33"],
+                    search_queries=["Kukri Knife"],
+                )
+
+        self.assertEqual([row["market_hash_name"] for row in rows], ["A"])
 if __name__ == "__main__":
     unittest.main()

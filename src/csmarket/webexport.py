@@ -17,7 +17,11 @@ from typing import Any, Iterable, Sequence
 from .catalog import CATALOG_COMMIT, CATALOG_LICENSE, CATALOG_REPOSITORY
 from .pipeline import CaseValuation
 from .probabilities import PROBABILITY_DISCLOSURE_URL
-from .wear import BASIS_OBSERVED_VOLUME, BASIS_UNIFORM_FALLBACK
+from .wear import (
+    BASIS_OBSERVED_LISTINGS,
+    BASIS_OBSERVED_VOLUME,
+    BASIS_UNIFORM_FALLBACK,
+)
 
 
 WEB_SCHEMA_VERSION = "2.0"
@@ -52,9 +56,20 @@ def _utc_now() -> str:
 
 
 def _basis_percentages(valuation: CaseValuation) -> dict[str, float]:
+    """Split probability mass by the evidence its wear weighting rested on.
+
+    Both observed bases are reported separately and also summed, so a reader
+    sees at a glance how much of the estimate was measured at all without
+    having to know which count the crawl happened to obtain.
+    """
+
     coverage = valuation.wear_basis_coverage
+    listings = coverage.get(BASIS_OBSERVED_LISTINGS, 0.0)
+    volume = coverage.get(BASIS_OBSERVED_VOLUME, 0.0)
     return {
-        "observed_volume": coverage.get(BASIS_OBSERVED_VOLUME, 0.0),
+        "observed_listings": listings,
+        "observed_volume": volume,
+        "observed_total": listings + volume,
         "uniform_fallback": coverage.get(BASIS_UNIFORM_FALLBACK, 0.0),
     }
 

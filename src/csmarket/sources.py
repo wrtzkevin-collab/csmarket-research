@@ -66,8 +66,16 @@ def fetch_rows(
     statistic: str = "median",
     collection_tags: Sequence[str] = (),
     search_queries: Sequence[str] = (),
+    offline: bool = False,
 ) -> list[dict[str, Any]]:
-    """Return normalized rows for ``market_hash_names`` from one provider."""
+    """Return normalized rows for ``market_hash_names`` from one provider.
+
+    With ``offline`` set, only observations already in the cache are returned
+    and no provider is contacted.  Names the cache does not hold come back
+    missing, which flows through to the coverage figure exactly as an
+    unpriced item does -- a report built this way is still made only of real
+    measurements, just fewer of them.
+    """
 
     names: Sequence[str] = tuple(dict.fromkeys(market_hash_names))
     if not names:
@@ -85,6 +93,7 @@ def fetch_rows(
             request_interval=request_interval,
             collection_tags=collection_tags,
             search_queries=search_queries,
+            offline=offline,
         )
     if source_id == SOURCE_SKINPORT:
         return _fetch_skinport_rows(
@@ -97,6 +106,7 @@ def fetch_rows(
             retries=retries,
             period=period,
             statistic=statistic,
+            offline=offline,
         )
     raise ValueError(f"unknown source {source_id!r}; expected one of {SOURCE_IDS}")
 
@@ -113,6 +123,7 @@ def _fetch_steam_rows(
     request_interval: float,
     collection_tags: Sequence[str] = (),
     search_queries: Sequence[str] = (),
+    offline: bool = False,
 ) -> list[dict[str, Any]]:
     wanted = set(names)
     found: dict[str, dict[str, Any]] = {}
@@ -123,6 +134,9 @@ def _fetch_steam_rows(
             if row is not None:
                 found[name] = row
 
+    if offline:
+        return [found[name] for name in names if name in found]
+
     # Bulk pages first: ten priced rows per request against an endpoint that
     # does not throttle the way priceoverview does.  Only what the pages miss
     # falls through to the one-request-per-item path.
@@ -131,16 +145,24 @@ def _fetch_steam_rows(
             timeout=timeout, max_retries=retries, request_interval=2.0
         )
         harvested: list[dict[str, Any]] = []
-        for tag in collection_tags:
-            harvested.extend(
-                search.fetch_item_set(tag, currency=currency, progress=progress)
-            )
-        for query in search_queries:
-            if wanted <= set(found) | {row["market_hash_name"] for row in harvested}:
-                break
-            harvested.extend(
-                search.search(query, currency=currency, progress=progress)
-            )
+        # A refused bulk page is not a reason to discard a warm cache or the
+        # pages that did come back.  Whatever was harvested is kept, the
+        # per-item path picks up the remainder, and the coverage figure shows
+        # honestly how much of the case went unmeasured.
+        try:
+            for tag in collection_tags:
+                harvested.extend(
+                    search.fetch_item_set(tag, currency=currency, progress=progress)
+                )
+            for query in search_queries:
+                covered = set(found) | {row["market_hash_name"] for row in harvested}
+                if wanted <= covered:
+                    break
+                harvested.extend(
+                    search.search(query, currency=currency, progress=progress)
+                )
+        except SteamDataError:
+            pass
         useful = [row for row in harvested if row["market_hash_name"] in wanted]
         if cache is not None and useful:
             cache.put_many(useful)
@@ -200,8 +222,20 @@ def _fetch_skinport_rows(
     retries: int,
     period: str,
     statistic: str,
+    offline: bool = False,
 ) -> list[dict[str, Any]]:
     wanted = set(names)
+
+    if offline:
+        if cache is None:
+            return []
+        return [
+            row
+            for row in (
+                cache.get(SKINPORT_SOURCE_NAME, currency, name) for name in names
+            )
+            if row is not None
+        ]
 
     # Skinport answers with the whole market in one response, and items with no
     # recent sale are simply absent from it.  Deciding freshness by "are all

@@ -32,6 +32,20 @@ function pct(value, { sign = false, digits = 1 } = {}) {
   return sign && value > 0 ? `+${formatted}%` : `${formatted}%`;
 }
 
+/**
+ * Coverage below 1 must never round up to "100%": the whole point of the
+ * figure is to say whether anything was missing, and a 100% next to a footnote
+ * saying some outcomes were unpriced reads as a bug rather than as a caveat.
+ */
+function coveragePct(value) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+  if (value >= 1) return "100%";
+  const digits = 1;
+  const factor = 10 ** (digits + 2);
+  const floored = Math.floor(value * factor) / factor;
+  return `${Math.min(floored * 100, 99.9).toFixed(digits)}%`;
+}
+
 function when(iso) {
   if (!iso) return "unknown";
   const parsed = new Date(iso);
@@ -66,7 +80,7 @@ function row(entry, caseName, position) {
       <td>${money(entry.net_expected_value, entry.currency)}</td>
       <td class="big${roi < 0 ? " loss" : ""}">${pct(roi, { sign: true })}</td>
       <td class="${partial}">${pct(entry.loss_probability)}</td>
-      <td>${pct(entry.coverage, { digits: entry.coverage === 1 ? 0 : 1 })}</td>
+      <td>${coveragePct(entry.coverage)}</td>
     </tr>`;
 }
 
@@ -91,12 +105,27 @@ function renderRows(data) {
     .join("");
   document.querySelector("#rows").innerHTML = html;
 
-  const anyPartial = data.cases.some((item) =>
-    item.sources.some((entry) => entry.coverage < 1),
+  const notes = [];
+  if (data.cases.some((item) => item.sources.some((e) => e.coverage < 1))) {
+    notes.push(
+      "* Some outcomes had no price on that venue, so the real chance of losing is at least this high.",
+    );
+  }
+
+  // Only worth the reader's attention when a material share of the estimate
+  // rests on the assumption rather than on a measurement.
+  const assumed = Math.max(
+    0,
+    ...data.cases.flatMap((item) =>
+      item.sources.map((e) => e.wear_basis?.uniform_fallback ?? 0),
+    ),
   );
-  document.querySelector("#table-note").textContent = anyPartial
-    ? "* Some outcomes had no price on that venue, so the real chance of losing is at least this high."
-    : "";
+  if (assumed > 0.01) {
+    notes.push(
+      `Up to ${pct(assumed)} of probability had too few listings to measure a wear split, and used an even spread instead.`,
+    );
+  }
+  document.querySelector("#table-note").textContent = notes.join(" ");
 }
 
 function sourceRow(name, detail, tag) {

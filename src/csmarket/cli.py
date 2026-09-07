@@ -172,6 +172,7 @@ def _value_one_case(
             statistic=args.statistic,
             collection_tags=_collection_tags(case),
             search_queries=case.rare_weapon_names,
+            offline=args.offline,
             progress=_progress_reporter(source_id, args.progress),
         )
         snapshots[source_id] = snapshot_from_rows(rows, required_names=names)
@@ -366,6 +367,11 @@ def build_parser() -> argparse.ArgumentParser:
         )
         network_parser.add_argument(
             "--refresh", action="store_true", help="re-fetch even when cached"
+        )
+        network_parser.add_argument(
+            "--offline",
+            action="store_true",
+            help="use only cached observations; contact no provider",
         )
         network_parser.add_argument(
             "--max-age-hours",
