@@ -4,19 +4,25 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Sequence
 
-from .data_sources import SkinportClient
+from .cache import DEFAULT_CACHE_PATH
 from .catalog import CaseCatalogClient
 from .model import Outcome, calculate_ev
 from .pipeline import (
+    CaseValuation,
+    candidate_market_names,
     expand_case_variants,
-    snapshot_from_skinport_rows,
+    snapshot_from_rows,
     value_case,
+    wear_weights_for_case,
 )
-from .wear import WEAR_MODELS
+from .sources import SOURCE_IDS, SOURCE_SKINPORT, SOURCE_STEAM, build_cache, fetch_rows
+from .wear import DEFAULT_MIN_TOTAL_VOLUME
+from .webexport import DEFAULT_OUTPUT_PATH, build_web_document, write_web_document
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -67,7 +73,7 @@ def calculate_file(path: Path) -> dict[str, Any]:
     data["loss_probability_is_lower_bound"] = result.probability_coverage < 1
 
     return {
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "case_name": payload.get("case_name"),
         "currency": payload.get("currency"),
         "source": payload.get("source"),
@@ -82,83 +88,128 @@ def _print_json(payload: Any) -> None:
     print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
 
 
+def _progress_reporter(source_id: str, enabled: bool):
+    if not enabled:
+        return None
+
+    def report(index: int, total: int, name: str) -> None:
+        end = "\n" if index == total else "\r"
+        print(
+            f"  [{source_id}] {index}/{total} {name[:52]:<52}",
+            file=sys.stderr,
+            end=end,
+            flush=True,
+        )
+
+    return report
+
+
 def _run_calculate(args: argparse.Namespace) -> int:
     _print_json(calculate_file(Path(args.input)))
     return 0
 
 
-def _run_skinport_price(args: argparse.Namespace) -> int:
-    client = SkinportClient(timeout=args.timeout, max_retries=args.retries)
-    if args.kind == "listing":
-        wanted = set(args.names)
-        rows = [
-            row
-            for row in client.fetch_items(currency=args.currency)
-            if row["market_hash_name"] in wanted
-        ]
-    else:
-        rows = client.fetch_sales_history(
-            args.names,
-            currency=args.currency,
-            period=args.period,
-            statistic=args.statistic,
-        )
+def _run_price(args: argparse.Namespace) -> int:
+    cache = build_cache(
+        None if args.no_cache else args.cache, max_age_hours=args.max_age_hours
+    )
+    rows = fetch_rows(
+        args.source,
+        args.names,
+        currency=args.currency,
+        cache=cache,
+        refresh=args.refresh,
+        timeout=args.timeout,
+        retries=args.retries,
+        request_interval=args.request_interval,
+        period=args.period,
+        statistic=args.statistic,
+        progress=_progress_reporter(args.source, args.progress),
+    )
     _print_json(rows)
     return 0
 
 
-def _run_analyze_case(args: argparse.Namespace) -> int:
-    catalog = CaseCatalogClient(timeout=args.timeout, max_retries=args.retries)
-    case = catalog.fetch_case(args.case_name)
-    model_ids = tuple(WEAR_MODELS) if args.wear_model == "both" else (args.wear_model,)
-    variants_by_model = {
-        model_id: expand_case_variants(case, wear_model_id=model_id)
-        for model_id in model_ids
-    }
+def _value_one_case(
+    case_name: str,
+    args: argparse.Namespace,
+    sources: Sequence[str],
+    catalog: CaseCatalogClient,
+    cache,
+) -> list[CaseValuation]:
+    # The catalogue client caches its three downloads in memory, so it is shared
+    # across cases rather than re-fetched several megabytes at a time per case.
+    case = catalog.fetch_case(case_name)
+    names = candidate_market_names(case)
 
-    # Fetch one provider snapshot so case cost and reward values cannot drift
-    # across calls or silently mix listing and completed-sale price types.
-    client = SkinportClient(timeout=args.timeout, max_retries=args.retries)
-    rows = client.fetch_sales_history(
-        currency=args.currency,
-        period=args.period,
-        statistic=args.statistic,
+    snapshots = {}
+    for source_id in sources:
+        rows = fetch_rows(
+            source_id,
+            names,
+            currency=args.currency,
+            cache=cache,
+            refresh=args.refresh,
+            timeout=args.timeout,
+            retries=args.retries,
+            request_interval=args.request_interval,
+            period=args.period,
+            statistic=args.statistic,
+            progress=_progress_reporter(source_id, args.progress),
+        )
+        snapshots[source_id] = snapshot_from_rows(rows, required_names=names)
+
+    # Wear weights are measured once, from the venue with the deepest order
+    # book, and reused for every valuation.  Deriving them per venue would make
+    # the cross-venue comparison confound price differences with weighting
+    # differences instead of isolating price.
+    reference_id = SOURCE_STEAM if SOURCE_STEAM in snapshots else sources[0]
+    weights = wear_weights_for_case(
+        case, snapshots[reference_id], min_total_volume=args.min_wear_volume
     )
-    names = tuple(
-        sorted(
+    variants = expand_case_variants(case, wear_weights=weights)
+
+    valuations: list[CaseValuation] = []
+    for source_id in sources:
+        valuations.append(
+            value_case(
+                case,
+                variants,
+                snapshots[source_id],
+                key_price=args.key_price,
+                key_price_source=args.key_price_source,
+                sell_fee_rate=args.sell_fee_rate,
+            )
+        )
+    return valuations
+
+
+def _run_analyze_case(args: argparse.Namespace) -> int:
+    sources = list(SOURCE_IDS) if args.source == "both" else [args.source]
+    catalog = CaseCatalogClient(timeout=args.timeout, max_retries=args.retries)
+    cache = build_cache(
+        None if args.no_cache else args.cache, max_age_hours=args.max_age_hours
+    )
+    valuations: list[CaseValuation] = []
+    for case_name in args.case_names:
+        valuations.extend(_value_one_case(case_name, args, sources, catalog, cache))
+
+    if args.export_web:
+        target = write_web_document(
+            build_web_document(valuations, label=args.label), args.export_web
+        )
+        print(f"wrote {target}", file=sys.stderr)
+
+    if len(valuations) == 1:
+        _print_json(valuations[0].to_dict())
+    else:
+        _print_json(
             {
-                case.name,
-                *(
-                    variant.market_hash_name
-                    for variants in variants_by_model.values()
-                    for variant in variants
-                ),
+                "schema_version": "2.0",
+                "comparison": "one valuation per case per venue",
+                "results": [valuation.to_dict() for valuation in valuations],
             }
         )
-    )
-    snapshot = snapshot_from_skinport_rows(rows, required_names=names)
-    valuations = [
-        value_case(
-            case,
-            variants_by_model[model_id],
-            snapshot,
-            key_price=args.key_price,
-            key_price_source=args.key_price_source,
-            sell_fee_rate=args.sell_fee_rate,
-            wear_model_id=model_id,
-        )
-        for model_id in model_ids
-    ]
-    if len(valuations) == 1:
-        payload: Any = valuations[0].to_dict()
-    else:
-        payload = {
-            "schema_version": "1.0",
-            "comparison": "wear-model sensitivity on one price snapshot",
-            "case_name": case.name,
-            "results": [valuation.to_dict() for valuation in valuations],
-        }
-    _print_json(payload)
     return 0
 
 
@@ -176,31 +227,27 @@ def build_parser() -> argparse.ArgumentParser:
     calculate_parser.set_defaults(handler=_run_calculate)
 
     price_parser = subparsers.add_parser(
-        "skinport-price", help="query documented Skinport price observations"
+        "price", help="query documented price observations from one venue"
     )
     price_parser.add_argument("names", nargs="+", help="exact market hash name(s)")
-    price_parser.add_argument("--currency", default="USD")
     price_parser.add_argument(
-        "--kind", choices=("sales", "listing"), default="sales"
+        "--source", choices=SOURCE_IDS, default=SOURCE_STEAM
     )
-    price_parser.add_argument(
-        "--period",
-        choices=("last_24_hours", "last_7_days", "last_30_days", "last_90_days"),
-        default="last_30_days",
-    )
-    price_parser.add_argument(
-        "--statistic", choices=("min", "max", "avg", "median"), default="median"
-    )
-    price_parser.add_argument("--timeout", type=float, default=15.0)
-    price_parser.add_argument("--retries", type=int, default=2)
-    price_parser.set_defaults(handler=_run_skinport_price)
+    price_parser.set_defaults(handler=_run_price)
 
     analysis_parser = subparsers.add_parser(
         "analyze-case",
-        help="calculate one live case valuation from pinned catalogue and Skinport data",
+        help="value one or more cases from the pinned catalogue and live prices",
     )
-    analysis_parser.add_argument("case_name", help="exact case market name")
-    analysis_parser.add_argument("--currency", default="USD")
+    analysis_parser.add_argument(
+        "case_names", nargs="+", help="exact case market name(s)"
+    )
+    analysis_parser.add_argument(
+        "--source",
+        choices=(*SOURCE_IDS, "both"),
+        default="both",
+        help="venue to value against; 'both' reports each separately",
+    )
     analysis_parser.add_argument("--key-price", type=float, default=2.49)
     analysis_parser.add_argument(
         "--key-price-source",
@@ -208,21 +255,69 @@ def build_parser() -> argparse.ArgumentParser:
     )
     analysis_parser.add_argument("--sell-fee-rate", type=float, default=0.12)
     analysis_parser.add_argument(
-        "--wear-model",
-        choices=("both", *tuple(WEAR_MODELS)),
-        default="both",
+        "--min-wear-volume",
+        type=int,
+        default=DEFAULT_MIN_TOTAL_VOLUME,
+        help="observed sales needed before wear grades are volume-weighted",
     )
     analysis_parser.add_argument(
-        "--period",
-        choices=("last_24_hours", "last_7_days", "last_30_days", "last_90_days"),
-        default="last_30_days",
+        "--export-web",
+        nargs="?",
+        const=str(DEFAULT_OUTPUT_PATH),
+        default=None,
+        metavar="PATH",
+        help=f"also write the published page's data file (default {DEFAULT_OUTPUT_PATH})",
     )
     analysis_parser.add_argument(
-        "--statistic", choices=("min", "max", "avg", "median"), default="median"
+        "--label", default="Live snapshot", help="dataset label shown on the page"
     )
-    analysis_parser.add_argument("--timeout", type=float, default=45.0)
-    analysis_parser.add_argument("--retries", type=int, default=2)
     analysis_parser.set_defaults(handler=_run_analyze_case)
+
+    for network_parser in (price_parser, analysis_parser):
+        network_parser.add_argument("--currency", default="USD")
+        network_parser.add_argument(
+            "--cache",
+            default=str(DEFAULT_CACHE_PATH),
+            help="path to the on-disk observation cache",
+        )
+        network_parser.add_argument(
+            "--no-cache", action="store_true", help="ignore and do not write the cache"
+        )
+        network_parser.add_argument(
+            "--refresh", action="store_true", help="re-fetch even when cached"
+        )
+        network_parser.add_argument(
+            "--max-age-hours",
+            type=float,
+            default=24.0,
+            help="treat cached observations older than this as missing",
+        )
+        network_parser.add_argument(
+            "--request-interval",
+            type=float,
+            default=5.0,
+            help="minimum seconds between Steam requests; Steam throttles sustained crawling",
+        )
+        network_parser.add_argument(
+            "--period",
+            choices=("last_24_hours", "last_7_days", "last_30_days", "last_90_days"),
+            default="last_30_days",
+            help="Skinport sales window",
+        )
+        network_parser.add_argument(
+            "--statistic",
+            choices=("min", "max", "avg", "median"),
+            default="median",
+            help="Skinport sales statistic",
+        )
+        network_parser.add_argument("--timeout", type=float, default=20.0)
+        network_parser.add_argument("--retries", type=int, default=3)
+        network_parser.add_argument(
+            "--progress",
+            action="store_true",
+            help="report crawl progress on stderr",
+        )
+
     return parser
 
 
