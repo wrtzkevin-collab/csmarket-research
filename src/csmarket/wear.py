@@ -32,7 +32,10 @@ from math import fsum, isclose, isfinite
 VALVE_WEAR_RANGE_SOURCE_URL = "https://www.counter-strike.net/workshop/workshopfinishes"
 
 BASIS_OBSERVED_VOLUME = "observed_volume"
+BASIS_OBSERVED_LISTINGS = "observed_listings"
 BASIS_UNIFORM_FALLBACK = "uniform_fallback"
+
+OBSERVED_BASES = frozenset({BASIS_OBSERVED_VOLUME, BASIS_OBSERVED_LISTINGS})
 
 # The market's own wear boundaries on the final float value.
 WEAR_INTERVALS: tuple[tuple[str, float, float], ...] = (
@@ -113,6 +116,7 @@ def calculate_wear_weights(
     volumes: Mapping[str, int | None] | None = None,
     min_total_volume: int = DEFAULT_MIN_TOTAL_VOLUME,
     volume_source_url: str = "",
+    basis: str = BASIS_OBSERVED_VOLUME,
 ) -> WearWeights:
     """Weight an item's wear grades by observed volume where the data allows.
 
@@ -124,6 +128,10 @@ def calculate_wear_weights(
 
     if min_total_volume < 1:
         raise ValueError("min_total_volume must be at least 1")
+    if basis not in OBSERVED_BASES:
+        raise ValueError(
+            f"unknown observed basis {basis!r}; expected one of {sorted(OBSERVED_BASES)}"
+        )
 
     uniform = uniform_wear_weights(min_float, max_float)
     reachable = {label for label, weight in uniform.items() if weight > 0}
@@ -144,7 +152,7 @@ def calculate_wear_weights(
     }
     return WearWeights(
         weights=weights,
-        basis=BASIS_OBSERVED_VOLUME,
+        basis=basis,
         observed_volume=total,
         source_url=volume_source_url,
     )

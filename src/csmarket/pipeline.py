@@ -16,6 +16,7 @@ from .probabilities import (
 )
 from .variants import MarketVariant
 from .wear import (
+    BASIS_OBSERVED_LISTINGS,
     BASIS_OBSERVED_VOLUME,
     BASIS_UNIFORM_FALLBACK,
     DEFAULT_MIN_TOTAL_VOLUME,
@@ -43,6 +44,7 @@ class PriceObservation:
     observed_at: str
     volume: int | None = None
     median_price: float | None = None
+    listings: int | None = None
 
     def __post_init__(self) -> None:
         for field_name in (
@@ -66,12 +68,12 @@ class PriceObservation:
                 raise ValueError(
                     f"{field_name} must be a finite non-negative number or null"
                 )
-        if self.volume is not None and (
-            isinstance(self.volume, bool)
-            or not isinstance(self.volume, int)
-            or self.volume < 0
-        ):
-            raise ValueError("volume must be a non-negative integer or null")
+        for field_name in ("volume", "listings"):
+            value = getattr(self, field_name)
+            if value is not None and (
+                isinstance(value, bool) or not isinstance(value, int) or value < 0
+            ):
+                raise ValueError(f"{field_name} must be a non-negative integer or null")
 
 
 @dataclass(frozen=True, slots=True)
@@ -142,10 +144,11 @@ class CaseValuation:
             "model": {
                 "sell_fee_rate": self.sell_fee_rate,
                 "wear_weighting": {
-                    "method": "observed sales volume per wear grade, "
-                    "uniform float density where volume is too thin",
-                    "min_total_volume": DEFAULT_MIN_TOTAL_VOLUME,
-                    "volume_source": self.wear_volume_source,
+                    "method": "observed resting listings per wear grade, "
+                    "falling back to 24-hour sales and then to a uniform float "
+                    "density when the market is too thin to measure",
+                    "min_observed_total": DEFAULT_MIN_TOTAL_VOLUME,
+                    "count_source": self.wear_volume_source,
                     "probability_mass_by_basis": self.wear_basis_coverage,
                 },
             },
@@ -217,6 +220,7 @@ def snapshot_from_rows(
             observed_at=row.get("observed_at"),
             volume=row.get("volume"),
             median_price=None if median_price is None else float(median_price),
+            listings=row.get("listings"),
         )
         current = (observation.source, observation.currency, observation.price_type)
         if identity is None:
@@ -278,34 +282,57 @@ def wear_weights_for_case(
     *,
     min_total_volume: int = DEFAULT_MIN_TOTAL_VOLUME,
 ) -> dict[str, WearWeights]:
-    """Derive each item's wear weights from the snapshot's observed volumes.
+    """Derive each item's wear weights from the snapshot's observed counts.
 
-    Volumes are summed over the normal and StatTrak listings of the same grade:
+    Counts are summed over the normal and StatTrak listings of the same grade:
     both are the same drop with the same float, so splitting them would halve
     the evidence for no reason.
+
+    Resting listings are preferred over 24-hour sales when the snapshot carries
+    them.  Listings describe accumulated supply rather than one day's turnover,
+    and they exist for items that did not trade today -- which is the whole rare
+    tail, precisely where a sales-based split degrades to the uniform fallback.
     """
+
+    counts_by_item: dict[str, tuple[dict[str, int | None], str]] = {}
+    for item in case.items:
+        if item.min_float is None or item.max_float is None:
+            continue
+        listings: dict[str, int | None] = {}
+        volumes: dict[str, int | None] = {}
+        for wear in _item_wears(item):
+            if wear is None:
+                continue
+            listing_total: int | None = None
+            volume_total: int | None = None
+            for stattrak in (False, True) if item.stattrak_eligible else (False,):
+                name = _exact_market_name(item, wear=wear, stattrak=stattrak)
+                observation = snapshot.observations.get(name)
+                if observation is None:
+                    continue
+                if observation.listings is not None:
+                    listing_total = (listing_total or 0) + observation.listings
+                if observation.volume is not None:
+                    volume_total = (volume_total or 0) + observation.volume
+            listings[wear] = listing_total
+            volumes[wear] = volume_total
+        if any(value for value in listings.values()):
+            counts_by_item[item.id] = (listings, BASIS_OBSERVED_LISTINGS)
+        else:
+            counts_by_item[item.id] = (volumes, BASIS_OBSERVED_VOLUME)
 
     weights: dict[str, WearWeights] = {}
     for item in case.items:
         if item.min_float is None or item.max_float is None:
             continue
-        volumes: dict[str, int | None] = {}
-        for wear in _item_wears(item):
-            if wear is None:
-                continue
-            total: int | None = None
-            for stattrak in (False, True) if item.stattrak_eligible else (False,):
-                name = _exact_market_name(item, wear=wear, stattrak=stattrak)
-                observation = snapshot.observations.get(name)
-                if observation is not None and observation.volume is not None:
-                    total = (total or 0) + observation.volume
-            volumes[wear] = total
+        counts, basis = counts_by_item[item.id]
         weights[item.id] = calculate_wear_weights(
             item.min_float,
             item.max_float,
-            volumes=volumes,
+            volumes=counts,
             min_total_volume=min_total_volume,
             volume_source_url=snapshot.source,
+            basis=basis,
         )
     return weights
 

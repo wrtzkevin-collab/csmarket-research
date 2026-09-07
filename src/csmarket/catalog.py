@@ -42,6 +42,8 @@ class CatalogItem:
     id: str
     name: str
     rarity: str
+    weapon_name: str | None
+    collection_id: str | None
     min_float: float | None
     max_float: float | None
     stattrak_eligible: bool
@@ -55,6 +57,32 @@ class CaseDefinition:
     id: str
     name: str
     items: tuple[CatalogItem, ...]
+
+    @property
+    def collection_ids(self) -> tuple[str, ...]:
+        """Collection ids covering this case's ordinary skins.
+
+        Rare specials carry no collection, so they are priced by a separate
+        search rather than by this facet.
+        """
+
+        return tuple(
+            sorted(
+                {
+                    item.collection_id
+                    for item in self.items
+                    if not item.is_special and item.collection_id
+                }
+            )
+        )
+
+    @property
+    def rare_weapon_names(self) -> tuple[str, ...]:
+        """Weapon names of the rare specials, used to search for their prices."""
+
+        return tuple(
+            sorted({item.weapon_name for item in self.items if item.is_special and item.weapon_name})
+        )
     catalog_commit: str = CATALOG_COMMIT
     catalog_repository: str = CATALOG_REPOSITORY
     catalog_license: str = CATALOG_LICENSE
@@ -133,6 +161,22 @@ class CaseCatalogClient:
         if not items or not any(item.is_special for item in items):
             raise CatalogDataError("case must contain normal and rare-special items")
         return CaseDefinition(id=case_id, name=wanted, items=tuple(items))
+
+    def case_names(self) -> tuple[str, ...]:
+        """Every case name the pinned catalogue knows, for ranking and lookup."""
+
+        self._load()
+        assert self._cases is not None
+        return tuple(
+            sorted(
+                row["name"]
+                for row in self._cases
+                if isinstance(row.get("name"), str)
+                and row.get("type") == "Case"
+                and isinstance(row.get("contains_rare"), list)
+                and row["contains_rare"]
+            )
+        )
 
     def _load(self) -> None:
         if (
@@ -252,10 +296,29 @@ def _parse_skin(
             )
         )
 
+    weapon = row.get("weapon")
+    weapon_name = (
+        weapon.get("name")
+        if isinstance(weapon, dict) and isinstance(weapon.get("name"), str)
+        else None
+    )
+
+    # Steam's market exposes a case's ordinary skins as one "item set" facet.
+    # The catalogue's collection id maps onto that facet name, which is what
+    # lets prices be pulled a page at a time instead of one item per request.
+    collections = row.get("collections")
+    collection_id = None
+    if isinstance(collections, list) and collections:
+        first = collections[0]
+        if isinstance(first, dict) and isinstance(first.get("id"), str):
+            collection_id = first["id"]
+
     return CatalogItem(
         id=item_id,
         name=name,
         rarity="Rare Special Item" if is_special else rarity["name"],
+        weapon_name=weapon_name,
+        collection_id=collection_id,
         min_float=min_float,
         max_float=max_float,
         stattrak_eligible=row.get("stattrak") is True,

@@ -16,6 +16,7 @@ from typing import Any, Callable, Iterable, Sequence
 from .cache import PriceCache
 from .data_sources import SkinportClient, SteamMarketClient
 from .data_sources.steam import SOURCE_NAME as STEAM_SOURCE_NAME
+from .data_sources.steam import SteamSearchClient
 
 SOURCE_STEAM = "steam"
 SOURCE_SKINPORT = "skinport"
@@ -57,6 +58,8 @@ def fetch_rows(
     request_interval: float = 5.0,
     period: str = "last_30_days",
     statistic: str = "median",
+    collection_tags: Sequence[str] = (),
+    search_queries: Sequence[str] = (),
 ) -> list[dict[str, Any]]:
     """Return normalized rows for ``market_hash_names`` from one provider."""
 
@@ -74,6 +77,8 @@ def fetch_rows(
             timeout=timeout,
             retries=retries,
             request_interval=request_interval,
+            collection_tags=collection_tags,
+            search_queries=search_queries,
         )
     if source_id == SOURCE_SKINPORT:
         return _fetch_skinport_rows(
@@ -100,31 +105,64 @@ def _fetch_steam_rows(
     timeout: float,
     retries: int,
     request_interval: float,
+    collection_tags: Sequence[str] = (),
+    search_queries: Sequence[str] = (),
 ) -> list[dict[str, Any]]:
-    client = SteamMarketClient(
-        timeout=timeout, max_retries=retries, request_interval=request_interval
-    )
-    rows: list[dict[str, Any]] = []
-    fetched_since_flush = 0
-    total = len(names)
-    for index, name in enumerate(names, start=1):
-        row = None
-        if cache is not None and not refresh:
+    wanted = set(names)
+    found: dict[str, dict[str, Any]] = {}
+
+    if cache is not None and not refresh:
+        for name in names:
             row = cache.get(STEAM_SOURCE_NAME, currency, name)
-        if row is None:
+            if row is not None:
+                found[name] = row
+
+    # Bulk pages first: ten priced rows per request against an endpoint that
+    # does not throttle the way priceoverview does.  Only what the pages miss
+    # falls through to the one-request-per-item path.
+    if (collection_tags or search_queries) and len(found) < len(wanted):
+        search = SteamSearchClient(
+            timeout=timeout, max_retries=retries, request_interval=2.0
+        )
+        harvested: list[dict[str, Any]] = []
+        for tag in collection_tags:
+            harvested.extend(
+                search.fetch_item_set(tag, currency=currency, progress=progress)
+            )
+        for query in search_queries:
+            if wanted <= set(found) | {row["market_hash_name"] for row in harvested}:
+                break
+            harvested.extend(
+                search.search(query, currency=currency, progress=progress)
+            )
+        useful = [row for row in harvested if row["market_hash_name"] in wanted]
+        if cache is not None and useful:
+            cache.put_many(useful)
+            cache.save()
+        for row in useful:
+            found.setdefault(row["market_hash_name"], row)
+
+    missing = [name for name in names if name not in found]
+    if missing:
+        client = SteamMarketClient(
+            timeout=timeout, max_retries=retries, request_interval=request_interval
+        )
+        fetched_since_flush = 0
+        for index, name in enumerate(missing, start=1):
             row = client.fetch_price(name, currency=currency)
+            found[name] = row
             if cache is not None:
                 cache.put(row)
                 fetched_since_flush += 1
                 if fetched_since_flush >= _CACHE_FLUSH_INTERVAL:
                     cache.save()
                     fetched_since_flush = 0
-        rows.append(row)
-        if progress is not None:
-            progress(index, total, name)
-    if cache is not None and fetched_since_flush:
-        cache.save()
-    return rows
+            if progress is not None:
+                progress(index, len(missing), f"fallback {name}")
+        if cache is not None and fetched_since_flush:
+            cache.save()
+
+    return [found[name] for name in names if name in found]
 
 
 def _fetch_skinport_rows(

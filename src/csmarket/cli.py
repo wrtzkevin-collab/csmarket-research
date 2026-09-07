@@ -20,6 +20,7 @@ from .pipeline import (
     value_case,
     wear_weights_for_case,
 )
+from .ranking import rank_cases, top_case_names
 from .sources import SOURCE_IDS, SOURCE_SKINPORT, SOURCE_STEAM, build_cache, fetch_rows
 from .wear import DEFAULT_MIN_TOTAL_VOLUME
 from .webexport import DEFAULT_OUTPUT_PATH, build_web_document, write_web_document
@@ -104,6 +105,20 @@ def _progress_reporter(source_id: str, enabled: bool):
     return report
 
 
+def _collection_tags(case) -> tuple[str, ...]:
+    """Translate catalogue collection ids into Steam market item-set facets.
+
+    "collection-set-community-33" is the same set Steam exposes as
+    "tag_set_community_33", which is what allows a case's ordinary skins to be
+    priced ten per request instead of one per request.
+    """
+
+    return tuple(
+        "tag_" + identifier.removeprefix("collection-").replace("-", "_")
+        for identifier in case.collection_ids
+    )
+
+
 def _run_calculate(args: argparse.Namespace) -> int:
     _print_json(calculate_file(Path(args.input)))
     return 0
@@ -155,6 +170,8 @@ def _value_one_case(
             request_interval=args.request_interval,
             period=args.period,
             statistic=args.statistic,
+            collection_tags=_collection_tags(case),
+            search_queries=case.rare_weapon_names,
             progress=_progress_reporter(source_id, args.progress),
         )
         snapshots[source_id] = snapshot_from_rows(rows, required_names=names)
@@ -184,6 +201,45 @@ def _value_one_case(
     return valuations
 
 
+def _run_rank_cases(args: argparse.Namespace) -> int:
+    catalog = CaseCatalogClient(timeout=args.timeout, max_retries=args.retries)
+    cache = build_cache(
+        None if args.no_cache else args.cache, max_age_hours=args.max_age_hours
+    )
+    ranked = rank_cases(
+        catalog,
+        currency=args.currency,
+        cache=cache,
+        refresh=args.refresh,
+        timeout=args.timeout,
+        retries=args.retries,
+        request_interval=args.request_interval,
+        progress=_progress_reporter("rank", args.progress),
+    )
+    _print_json(ranked[: args.limit] if args.limit else ranked)
+    return 0
+
+
+def _resolve_case_names(args: argparse.Namespace, catalog: CaseCatalogClient, cache):
+    """Decide which cases to value: the busiest N, or the ones named."""
+
+    if args.top:
+        ranked = rank_cases(
+            catalog,
+            currency=args.currency,
+            cache=cache,
+            refresh=args.refresh,
+            timeout=args.timeout,
+            retries=args.retries,
+            request_interval=args.request_interval,
+            progress=_progress_reporter("rank", args.progress),
+        )
+        return top_case_names(ranked, args.top)
+    if not args.case_names:
+        raise ValueError("name at least one case, or pass --top N")
+    return tuple(args.case_names)
+
+
 def _run_analyze_case(args: argparse.Namespace) -> int:
     sources = list(SOURCE_IDS) if args.source == "both" else [args.source]
     catalog = CaseCatalogClient(timeout=args.timeout, max_retries=args.retries)
@@ -191,7 +247,7 @@ def _run_analyze_case(args: argparse.Namespace) -> int:
         None if args.no_cache else args.cache, max_age_hours=args.max_age_hours
     )
     valuations: list[CaseValuation] = []
-    for case_name in args.case_names:
+    for case_name in _resolve_case_names(args, catalog, cache):
         valuations.extend(_value_one_case(case_name, args, sources, catalog, cache))
 
     if args.export_web:
@@ -240,7 +296,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="value one or more cases from the pinned catalogue and live prices",
     )
     analysis_parser.add_argument(
-        "case_names", nargs="+", help="exact case market name(s)"
+        "case_names", nargs="*", help="exact case market name(s)"
+    )
+    analysis_parser.add_argument(
+        "--top",
+        type=int,
+        default=None,
+        metavar="N",
+        help="value the N busiest cases by 24-hour volume instead of naming them",
     )
     analysis_parser.add_argument(
         "--source",
@@ -273,7 +336,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     analysis_parser.set_defaults(handler=_run_analyze_case)
 
-    for network_parser in (price_parser, analysis_parser):
+    rank_parser = subparsers.add_parser(
+        "rank-cases",
+        help="order every case by observed 24-hour trading volume",
+    )
+    rank_parser.add_argument(
+        "--limit", type=int, default=None, help="report only the busiest N"
+    )
+    rank_parser.set_defaults(handler=_run_rank_cases)
+
+    for network_parser in (price_parser, analysis_parser, rank_parser):
         network_parser.add_argument("--currency", default="USD")
         network_parser.add_argument(
             "--cache",

@@ -241,3 +241,51 @@ class SteamMarketClientTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BackoffCeilingTests(unittest.TestCase):
+    def test_rate_limit_backoff_is_capped(self):
+        # Unbounded doubling reaches a quarter of an hour by the fifth attempt,
+        # which is indistinguishable from a hung process.
+        session = Mock()
+        session.get.return_value = response(status=429)
+        slept = []
+
+        steam = SteamMarketClient(
+            session=session,
+            sleep=slept.append,
+            clock=lambda: FIXED_TIME,
+            request_interval=0,
+            max_retries=5,
+            rate_limit_backoff=30.0,
+            max_backoff=180.0,
+        )
+        with self.assertRaises(SteamDataError):
+            steam.fetch_price("Kilowatt Case")
+
+        self.assertEqual(slept, [30.0, 60.0, 120.0, 180.0, 180.0])
+        self.assertTrue(all(delay <= 180.0 for delay in slept))
+
+    def test_retry_after_is_also_capped(self):
+        session = Mock()
+        throttled = response(status=429)
+        throttled.headers = {"Retry-After": "86400"}
+        session.get.side_effect = [
+            throttled,
+            response({"success": True, "lowest_price": "$1.00"}),
+        ]
+        slept = []
+
+        SteamMarketClient(
+            session=session,
+            sleep=slept.append,
+            clock=lambda: FIXED_TIME,
+            request_interval=0,
+            max_backoff=180.0,
+        ).fetch_price("Kilowatt Case")
+
+        self.assertEqual(slept, [180.0])
+
+    def test_max_backoff_must_be_positive(self):
+        with self.assertRaises(ValueError):
+            SteamMarketClient(session=Mock(), max_backoff=0)

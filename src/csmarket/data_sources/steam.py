@@ -147,7 +147,8 @@ class SteamMarketClient:
         timeout: float = 15.0,
         max_retries: int = 5,
         backoff_factor: float = 2.0,
-        rate_limit_backoff: float = 60.0,
+        rate_limit_backoff: float = 30.0,
+        max_backoff: float = 180.0,
         request_interval: float = 5.0,
         base_url: str = STEAM_BASE_URL,
         app_id: int = CS2_APP_ID,
@@ -163,6 +164,8 @@ class SteamMarketClient:
             raise ValueError("backoff_factor cannot be negative")
         if rate_limit_backoff < 0:
             raise ValueError("rate_limit_backoff cannot be negative")
+        if max_backoff <= 0:
+            raise ValueError("max_backoff must be positive")
         if request_interval < 0:
             raise ValueError("request_interval cannot be negative")
 
@@ -171,6 +174,7 @@ class SteamMarketClient:
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor
         self.rate_limit_backoff = rate_limit_backoff
+        self.max_backoff = max_backoff
         self.request_interval = request_interval
         self.base_url = base_url.rstrip("/")
         self.app_id = app_id
@@ -295,10 +299,12 @@ class SteamMarketClient:
         except (TypeError, ValueError, AttributeError):
             retry_after = None
         if retry_after is not None and retry_after >= 0:
-            return retry_after
+            return min(retry_after, self.max_backoff)
+        # Doubling without a ceiling reaches a quarter of an hour by the fifth
+        # attempt, which looks indistinguishable from a hang.
         if status_code == 429:
-            return self.rate_limit_backoff * (2**attempt)
-        return self.backoff_factor * (2**attempt)
+            return min(self.rate_limit_backoff * (2**attempt), self.max_backoff)
+        return min(self.backoff_factor * (2**attempt), self.max_backoff)
 
     def _throttle(self) -> None:
         if self.request_interval <= 0:
@@ -351,3 +357,176 @@ class SteamMarketClient:
                 ) from exc
 
         raise AssertionError("retry loop exhausted unexpectedly")
+
+
+SEARCH_PAGE_SIZE = 10
+SEARCH_SOURCE_NAME = SOURCE_NAME
+
+
+class SteamSearchClient:
+    """Paginated reader for Steam's market search endpoint.
+
+    ``priceoverview`` answers one item per request and throttles hard: measured
+    behaviour is roughly twenty requests per minute, so a case of a few hundred
+    market names takes about half an hour.  The search endpoint returns ten
+    priced rows per request and, measured against the same account and address,
+    does not throttle at anything like the same rate.  Pricing a case through it
+    costs tens of requests instead of hundreds.
+
+    The trade is what each endpoint reports.  Search returns ``sell_listings``,
+    the number of offers currently resting on the market, and no completed-sale
+    statistics at all.  Listings describe accumulated supply rather than recent
+    turnover, and unlike 24-hour volume they exist for the illiquid tail, which
+    is why they can weight the grades of a knife that has not traded today.
+    """
+
+    def __init__(
+        self,
+        *,
+        session: requests.Session | None = None,
+        timeout: float = 20.0,
+        max_retries: int = 4,
+        backoff_factor: float = 2.0,
+        rate_limit_backoff: float = 30.0,
+        max_backoff: float = 180.0,
+        request_interval: float = 2.0,
+        base_url: str = STEAM_BASE_URL,
+        app_id: int = CS2_APP_ID,
+        sleep: Callable[[float], None] = time.sleep,
+        monotonic: Callable[[], float] = time.monotonic,
+        clock: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
+    ) -> None:
+        self._transport = SteamMarketClient(
+            session=session,
+            timeout=timeout,
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            rate_limit_backoff=rate_limit_backoff,
+            max_backoff=max_backoff,
+            request_interval=request_interval,
+            base_url=base_url,
+            app_id=app_id,
+            sleep=sleep,
+            monotonic=monotonic,
+            clock=clock,
+        )
+        self.app_id = app_id
+
+    def fetch_item_set(
+        self,
+        collection_tag: str,
+        *,
+        currency: str = "USD",
+        progress: Callable[[int, int, str], None] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Return every priced row in one market item-set facet."""
+
+        return self._paginate(
+            {f"category_{self.app_id}_ItemSet[]": collection_tag},
+            currency=currency,
+            label=collection_tag,
+            progress=progress,
+        )
+
+    def search(
+        self,
+        query: str,
+        *,
+        currency: str = "USD",
+        max_pages: int | None = None,
+        progress: Callable[[int, int, str], None] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Return priced rows matching a free-text market search."""
+
+        return self._paginate(
+            {"query": query},
+            currency=currency,
+            label=query,
+            max_pages=max_pages,
+            progress=progress,
+        )
+
+    def _paginate(
+        self,
+        params: dict[str, Any],
+        *,
+        currency: str,
+        label: str,
+        max_pages: int | None = None,
+        progress: Callable[[int, int, str], None] | None = None,
+    ) -> list[dict[str, Any]]:
+        currency_code = self._transport._currency_code(currency)
+        rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        start = 0
+        total: int | None = None
+        pages = 0
+
+        while True:
+            payload = self._transport._request_json(
+                "/market/search/render/",
+                params={
+                    **params,
+                    "appid": self.app_id,
+                    "currency": currency_code,
+                    "norender": 1,
+                    "count": SEARCH_PAGE_SIZE,
+                    "start": start,
+                },
+            )
+            if not isinstance(payload, dict) or payload.get("success") is not True:
+                raise SteamDataError(f"market search failed for {label!r}")
+
+            results = payload.get("results")
+            if not isinstance(results, list):
+                raise SteamDataError("market search results must be a list")
+            if total is None:
+                reported = payload.get("total_count")
+                total = reported if isinstance(reported, int) else 0
+
+            observed_at = self._transport._observed_at()
+            for entry in results:
+                if not isinstance(entry, dict):
+                    continue
+                name = entry.get("hash_name")
+                if not isinstance(name, str) or not name or name in seen:
+                    continue
+                seen.add(name)
+                rows.append(self._row(entry, name, currency, observed_at))
+
+            pages += 1
+            start += SEARCH_PAGE_SIZE
+            if progress is not None:
+                progress(min(start, total), total, label)
+            if not results or start >= total:
+                break
+            if max_pages is not None and pages >= max_pages:
+                break
+
+        return rows
+
+    def _row(
+        self, entry: dict[str, Any], name: str, currency: str, observed_at: str
+    ) -> dict[str, Any]:
+        # The formatted text carries the venue's own locale, so it is the
+        # authority; the integer is a minor-unit fallback for odd currencies.
+        price = parse_money(entry.get("sell_price_text"))
+        if price is None:
+            minor = entry.get("sell_price")
+            price = minor / 100 if isinstance(minor, int) and minor >= 0 else None
+
+        listings = entry.get("sell_listings")
+        if isinstance(listings, bool) or not isinstance(listings, int) or listings < 0:
+            listings = None
+
+        return {
+            "market_hash_name": name,
+            "price": price,
+            "median_price": None,
+            "volume": None,
+            "listings": listings,
+            "source": SEARCH_SOURCE_NAME,
+            "currency": currency.strip().upper(),
+            "price_type": PRICE_TYPE,
+            "observed_at": observed_at,
+        }

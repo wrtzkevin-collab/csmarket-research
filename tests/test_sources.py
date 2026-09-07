@@ -90,7 +90,9 @@ class CachedFetchTests(unittest.TestCase):
 
         client.fetch_price.assert_called_once()
 
-    def test_steam_progress_is_reported_for_cached_and_fetched_alike(self):
+    def test_progress_counts_only_the_work_actually_done(self):
+        # Cached names cost nothing, so counting them would show a crawl racing
+        # through items it never fetched and then stalling on the real work.
         cache = self.cache()
         cache.put(steam_row("A"))
         seen = []
@@ -105,7 +107,18 @@ class CachedFetchTests(unittest.TestCase):
                 progress=lambda i, total, name: seen.append((i, total)),
             )
 
-        self.assertEqual(seen, [(1, 2), (2, 2)])
+        self.assertEqual(seen, [(1, 1)])
+
+    def test_rows_come_back_in_the_requested_order(self):
+        cache = self.cache()
+        cache.put(steam_row("B"))
+
+        client = Mock()
+        client.fetch_price.side_effect = lambda name, currency="USD": steam_row(name)
+        with patch("csmarket.sources.SteamMarketClient", return_value=client):
+            rows = fetch_rows(SOURCE_STEAM, ["A", "B", "C"], cache=cache)
+
+        self.assertEqual([row["market_hash_name"] for row in rows], ["A", "B", "C"])
 
     def test_skinport_bulk_pull_is_cached_despite_an_uncacheable_tail(self):
         # Items with no recent sale are absent from Skinport's response, so a
