@@ -214,6 +214,7 @@ def _run_rank_cases(args: argparse.Namespace) -> int:
         timeout=args.timeout,
         retries=args.retries,
         request_interval=args.request_interval,
+        volume_probe=args.volume_probe,
         progress=_progress_reporter("rank", args.progress),
     )
     _print_json(ranked[: args.limit] if args.limit else ranked)
@@ -232,6 +233,7 @@ def _resolve_case_names(args: argparse.Namespace, catalog: CaseCatalogClient, ca
             timeout=args.timeout,
             retries=args.retries,
             request_interval=args.request_interval,
+            volume_probe=0,
             progress=_progress_reporter("rank", args.progress),
         )
         return top_case_names(ranked, args.top)
@@ -342,6 +344,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     rank_parser.add_argument(
         "--limit", type=int, default=None, help="report only the busiest N"
+    )
+    rank_parser.add_argument(
+        "--volume-probe",
+        type=int,
+        default=0,
+        metavar="N",
+        help="also fetch 24-hour sales volume for the top N (one slow request each)",
     )
     rank_parser.set_defaults(handler=_run_rank_cases)
 

@@ -428,6 +428,35 @@ class SteamSearchClient:
             progress=progress,
         )
 
+    def fetch_type(
+        self,
+        type_tag: str,
+        *,
+        currency: str = "USD",
+        sort_column: str = "quantity",
+        sort_dir: str = "desc",
+        max_pages: int | None = None,
+        progress: Callable[[int, int, str], None] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Return priced rows for one market item-type facet.
+
+        Sorting server-side matters: the caller usually wants the busiest few
+        of a large category, and a sorted feed reaches them in the first pages
+        instead of paging through the whole tail to find them.
+        """
+
+        return self._paginate(
+            {
+                f"category_{self.app_id}_Type[]": type_tag,
+                "sort_column": sort_column,
+                "sort_dir": sort_dir,
+            },
+            currency=currency,
+            label=type_tag,
+            max_pages=max_pages,
+            progress=progress,
+        )
+
     def search(
         self,
         query: str,
