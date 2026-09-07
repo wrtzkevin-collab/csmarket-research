@@ -16,4 +16,3 @@ class MarketVariant:
     is_special: bool
     stattrak: bool
     wear: str | None
-

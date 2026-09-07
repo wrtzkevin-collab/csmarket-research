@@ -360,4 +360,3 @@ def _exact_market_name(
             f"stattrak={stattrak}; found {len(matches)}"
         )
     return matches[0]
-
