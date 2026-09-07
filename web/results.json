@@ -1,0 +1,83 @@
+{
+  "assumptions": [
+    "Opening cost is the case price plus one key. Deposit, withdrawal and currency-conversion costs are excluded.",
+    "Net expected value applies one stated seller fee to every outcome. Real fees vary by venue and account.",
+    "Items inside a rarity tier are treated as equally likely, as the official disclosure states.",
+    "Wear grades are weighted by observed sales volume where the market is liquid enough to measure, and by a uniform float density otherwise. Each case reports how much probability mass rests on each basis.",
+    "Sales volume measures turnover, not drop frequency. Grades that holders keep rather than sell are under-represented.",
+    "Outcomes with no price are excluded and reported through coverage. They are never treated as zero or redistributed.",
+    "The key price is a configured constant, not a market observation.",
+    "This is an analysis of opening a case. It says nothing about the future price of an unopened case."
+  ],
+  "cases": [
+    {
+      "name": "Kilowatt Case",
+      "sources": [
+        {
+          "case_price": 0.2,
+          "coverage": 0.9999989781691422,
+          "coverage_by_rarity": {
+            "Classified": 1.0,
+            "Covert": 1.0,
+            "Mil-Spec": 1.0,
+            "Rare Special Item": 0.9996008473211453,
+            "Restricted": 1.0
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6165551008587546,
+          "gross_expected_value": 1.1721213394203978,
+          "gross_return_ratio": 0.4357328399332333,
+          "key_price": 2.49,
+          "loss_probability": 0.9536425849141706,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 3,
+          "net_expected_value": 1.03146677868995,
+          "observation_span_seconds": 2267.064496,
+          "observed_at": "2026-09-07T16:02:33.709249Z",
+          "opening_cost": 2.6900000000000004,
+          "price_type": "lowest_listing",
+          "priced_outcomes": 279,
+          "publication_ready": false,
+          "source": "steam_community_market",
+          "source_label": "Steam Community Market",
+          "total_outcomes": 282,
+          "wear_basis": {
+            "observed_listings": 0.9998030769230785,
+            "observed_total": 1.0000000000000016,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.0
+          }
+        }
+      ]
+    }
+  ],
+  "catalog_source": {
+    "basis": "Community maintained, not a Valve API. Ordinary skins are parsed from the game manifest; the rare-special pools are curated by hand and need per-case checking.",
+    "commit": "2dc37f61119820135bd4a3bd145d3fff8da8927a",
+    "license": "MIT",
+    "name": "ByMykel/CSGO-API",
+    "url": "https://github.com/ByMykel/CSGO-API"
+  },
+  "dataset": {
+    "case_count": 1,
+    "currency": "USD",
+    "generated_at": "2026-09-07T16:28:19.177864Z",
+    "label": "Kilowatt Case, Steam only",
+    "mode": "live",
+    "observed_at": "2026-09-07T16:02:33.709249Z"
+  },
+  "probability_source": {
+    "basis": "Published rarity probabilities and the conditional StatTrak probability. Issued for the Chinese release in 2017; its applicability to the current global build is an assumption this project has not independently verified.",
+    "name": "Counter-Strike official rarity disclosure",
+    "url": "https://www.csgo.com.cn/news/gamebroad/20170911/206155.html"
+  },
+  "schema_version": "2.0",
+  "sources": [
+    {
+      "basis": "Lowest current ask on Valve's own market. It lists every tradable variant, so coverage is high, but Steam balance cannot be withdrawn as cash and an ask is not a completed sale.",
+      "id": "steam_community_market",
+      "name": "Steam Community Market",
+      "url": "https://steamcommunity.com/market/"
+    }
+  ]
+}
