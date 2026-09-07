@@ -6,7 +6,15 @@ from collections.abc import Mapping, Sequence
 
 
 # Standard key-opened weapon cases from the official China disclosure.
-# Source: https://www.csgo.com.cn/news/gamebroad/20170911/206155.html
+#
+# The disclosure was published for the 2017 Chinese release.  Treating it as
+# current for the global build is this project's largest single assumption: if
+# these rates have changed, every downstream number changes with them.
+PROBABILITY_DISCLOSURE_URL = (
+    "https://www.csgo.com.cn/news/gamebroad/20170911/206155.html"
+)
+PROBABILITY_DISCLOSURE_PUBLISHED = "2017-09-11"
+
 STANDARD_CASE_RARITY_PROBABILITIES: dict[str, float] = {
     "Mil-Spec": 0.79923,
     "Restricted": 0.15985,
