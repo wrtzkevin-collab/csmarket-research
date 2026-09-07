@@ -193,5 +193,78 @@ class BuildCacheTests(unittest.TestCase):
         self.assertIsNone(cache.max_age)
 
 
+
+class ThrottledLookupTests(unittest.TestCase):
+    """A block is not an observation, and must not be recorded as one."""
+
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._dir.cleanup)
+        self.path = Path(self._dir.name) / "cache.json"
+
+    def cache(self):
+        return PriceCache(self.path, max_age=timedelta(hours=24), clock=lambda: NOW)
+
+    def test_a_blocked_lookup_is_left_unmeasured_not_recorded_as_absent(self):
+        from csmarket.data_sources.steam import SteamDataError
+
+        cache = self.cache()
+        client = Mock()
+        client.fetch_price.side_effect = [
+            SteamDataError("HTTP 429"),
+            steam_row("B"),
+        ]
+        with patch("csmarket.sources.SteamMarketClient", return_value=client):
+            rows = fetch_rows(SOURCE_STEAM, ["A", "B"], cache=cache)
+
+        # "A" is absent from the result entirely; it is not a row saying the
+        # market has no price, because we never got to ask the market.
+        self.assertEqual([row["market_hash_name"] for row in rows], ["B"])
+        self.assertIsNone(cache.get("steam_community_market", "USD", "A"))
+
+    def test_a_blocked_lookup_is_retried_by_the_next_run(self):
+        from csmarket.data_sources.steam import SteamDataError
+
+        cache = self.cache()
+        client = Mock()
+        client.fetch_price.side_effect = [SteamDataError("HTTP 429"), steam_row("A")]
+        with patch("csmarket.sources.SteamMarketClient", return_value=client):
+            first = fetch_rows(SOURCE_STEAM, ["A"], cache=cache)
+            second = fetch_rows(SOURCE_STEAM, ["A"], cache=cache)
+
+        self.assertEqual(first, [])
+        self.assertEqual([row["market_hash_name"] for row in second], ["A"])
+
+    def test_an_unbroken_wall_of_blocks_stops_the_run(self):
+        # Tolerating blocks forever would publish a snapshot that describes our
+        # access to Steam rather than the market.
+        from csmarket.data_sources.steam import SteamDataError
+
+        client = Mock()
+        client.fetch_price.side_effect = SteamDataError("HTTP 429")
+        names = [f"Item {index}" for index in range(20)]
+
+        with patch("csmarket.sources.SteamMarketClient", return_value=client):
+            with self.assertRaisesRegex(SteamDataError, "in a row were refused"):
+                fetch_rows(SOURCE_STEAM, names, cache=None)
+
+        self.assertEqual(client.fetch_price.call_count, 8)
+
+    def test_intermittent_blocks_do_not_trip_the_wall_check(self):
+        from csmarket.data_sources.steam import SteamDataError
+
+        client = Mock()
+        client.fetch_price.side_effect = [
+            SteamDataError("HTTP 429"),
+            steam_row("B"),
+            SteamDataError("HTTP 429"),
+            steam_row("D"),
+        ]
+        with patch("csmarket.sources.SteamMarketClient", return_value=client):
+            rows = fetch_rows(SOURCE_STEAM, ["A", "B", "C", "D"], cache=None)
+
+        self.assertEqual([row["market_hash_name"] for row in rows], ["B", "D"])
+
+
 if __name__ == "__main__":
     unittest.main()

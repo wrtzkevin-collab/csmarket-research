@@ -15,6 +15,7 @@ from typing import Any, Callable, Iterable, Sequence
 
 from .cache import PriceCache
 from .data_sources import SkinportClient, SteamMarketClient
+from .data_sources.steam import SteamDataError
 from .data_sources.steam import SOURCE_NAME as STEAM_SOURCE_NAME
 from .data_sources.steam import SteamSearchClient
 
@@ -31,6 +32,11 @@ _BULK_MARKER_NAME = "__skinport_bulk_pull__"
 # Steam is crawled one name at a time, so an interrupted run would otherwise
 # throw away every request made so far.
 _CACHE_FLUSH_INTERVAL = 25
+
+# One blocked lookup is tolerable and shows up as missing coverage.  A run
+# where they never stop is not a thin market, it is a wall, and continuing
+# would publish a snapshot describing our access rather than the market.
+_MAX_CONSECUTIVE_BLOCKS = 8
 
 ProgressCallback = Callable[[int, int, str], None]
 
@@ -148,8 +154,26 @@ def _fetch_steam_rows(
             timeout=timeout, max_retries=retries, request_interval=request_interval
         )
         fetched_since_flush = 0
+        blocked_run = 0
         for index, name in enumerate(missing, start=1):
-            row = client.fetch_price(name, currency=currency)
+            try:
+                row = client.fetch_price(name, currency=currency)
+            except SteamDataError as error:
+                # Being throttled is not the same as the market having no price,
+                # so the item is left unmeasured rather than recorded as absent,
+                # and deliberately not cached: a later run must retry it instead
+                # of inheriting a block frozen in as an observation.
+                blocked_run += 1
+                if progress is not None:
+                    progress(index, len(missing), f"blocked {name}")
+                if blocked_run >= _MAX_CONSECUTIVE_BLOCKS:
+                    raise SteamDataError(
+                        f"{blocked_run} lookups in a row were refused by Steam "
+                        f"({error}); stopping rather than reporting a snapshot "
+                        "made mostly of blocked lookups"
+                    ) from error
+                continue
+            blocked_run = 0
             found[name] = row
             if cache is not None:
                 cache.put(row)
