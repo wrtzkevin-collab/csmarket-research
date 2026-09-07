@@ -31,6 +31,10 @@
       illustrative figures that no code produced.
 - [x] Declare Brotli as a hard dependency and stop reporting a compression
       failure as a JSON parsing error.
+- [x] Price cases in bulk so a run costs tens of requests rather than hundreds.
+- [x] Rank cases by observed trading volume and value the busiest first, so a
+      partial run is a choice rather than an arbitrary truncation.
+- [x] Cut the page to a results table, the formulas, and the sources.
 - [ ] Manually audit every ordinary and rare-special outcome for the first 3-5
       cases, starting with the hand-curated rare-special pools.
 - [ ] Re-verify the 2017 probability disclosure against the current build, or

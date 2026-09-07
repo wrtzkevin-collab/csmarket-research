@@ -50,21 +50,26 @@ cost a substantial amount of unfalsifiable modelling for a difference that did
 not change any conclusion, so it was removed.
 
 Version 0.3 measures the split instead of assuming it. Each wear grade of a skin
-is a distinct market listing carrying its own sales volume, so the volume split
-across an item's grades is a directly observed quantity with a timestamp and a
-provider. Grades outside a skin's float range are excluded first, so an
-observation on an unreachable listing cannot leak probability into it.
+is a distinct market listing carrying its own counts, so the split across an
+item's grades is a directly observed quantity with a timestamp and a provider.
+Grades outside a skin's float range are excluded first, so an observation on an
+unreachable listing cannot leak probability into it.
 
-Two limitations are recorded rather than argued away:
+The preferred count is **resting listings**: how many of that grade are
+currently offered. It is preferred over 24-hour sales for a specific reason —
+sales exist only for items that traded today, which excludes almost the entire
+rare tail, and the rare tail is where the money is. Sales volume is used when
+listings are unavailable, and a uniform density when neither is measurable.
 
-- **Volume is turnover, not drop frequency.** Holders sell grades at different
-  rates, so grades that are kept — typically the pristine, expensive ones — are
-  under-represented relative to how often they actually drop. This is a proxy.
-- **Thin markets cannot be measured.** Below a configurable total (20 observed
-  sales by default) the split is noise, and the uniform density over the skin's
-  allowed float range is used instead. This affects the illiquid knives, which
-  are also the highest-value outcomes. Every valuation reports how much
-  probability mass used each basis, so a result that leans on the fallback
+Three limitations are recorded rather than argued away:
+
+- **Neither count is drop frequency.** Listings measure accumulated supply and
+  sales measure turnover. Holders keep some grades and dump others, so both are
+  biased relative to how often a grade actually drops. They are proxies, chosen
+  because they are observations rather than assumptions.
+- **Thin markets cannot be measured.** Below a configurable total (20 by
+  default) the split is noise and the uniform density is used instead.
+- **Every valuation reports the split.** A result that leans on the fallback
   cannot be mistaken for a fully observed one.
 
 ## Value definitions

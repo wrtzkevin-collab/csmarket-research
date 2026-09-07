@@ -44,10 +44,10 @@ a lower-bound partial estimate, not a complete case value.
 |---|---|---|
 | Rarity and StatTrak probabilities | [Official CS:GO China probability disclosure](https://www.csgo.com.cn/news/gamebroad/20170911/206155.html) | Official, but published in 2017 for the Chinese release. Treating it as current for CS2 is this project's single largest assumption. |
 | Case contents and exact market names | [ByMykel/CSGO-API](https://github.com/ByMykel/CSGO-API), commit-pinned | Community maintained, MIT. Ordinary skins are bot-parsed from the game manifest; **rare-special pools are curated by hand** and need per-case checking. |
-| Prices, Steam | [Steam Community Market](https://steamcommunity.com/market/) `priceoverview` | Lowest current ask. Lists every tradable variant, so coverage is complete, but Steam balance cannot be withdrawn as cash and an ask is not a sale. |
+| Prices, Steam | [Steam Community Market](https://steamcommunity.com/market/) | Lowest current ask. Lists every tradable variant, so coverage is complete, but Steam balance cannot be withdrawn as cash and an ask is not a sale. |
 | Prices, cash | [Skinport public API](https://docs.skinport.com/) | Median completed sale. Withdrawable as real money, but the illiquid tail has no recent sale. |
 | Key price | A configured constant | **Not observed.** It dominates opening cost, so verify it before relying on a result. |
-| Wear-grade weights | Observed sales volume per grade, uniform float density as fallback | See below. |
+| Wear-grade weights | Resting listings per grade, then 24-hour sales, then a uniform float density | See below. |
 
 The two price venues answer different questions, so `analyze-case` values a case
 against each separately and reports them side by side rather than blending them.
@@ -59,15 +59,15 @@ never published the distribution. Earlier versions compared two theoretical
 densities; on a real case they differed by under two percentage points of
 expected ROI, which did not justify the assumptions.
 
-Weights are now measured from the market: each wear grade is its own listing
-with its own sales volume, so the observed split across an item's grades is used
-directly. Where the market is too thin to measure — typically the knives, which
-also matter most — the uniform density is used and the result records how much
+Weights are now measured from the market. Each wear grade is its own listing, so
+the split across an item's grades is read off how many of each are resting on
+the market, falling back to 24-hour sales and then, where neither is
+measurable, to a uniform float density. Every valuation records how much
 probability mass rests on each basis.
 
-Volume measures turnover, not drop frequency: grades that holders keep rather
-than sell are under-represented. It is a proxy with a timestamp and a source,
-which an assumed density is not.
+Both counts are proxies for drop frequency, not the thing itself: holders keep
+some grades and dump others. They are observations with a timestamp and a
+source, which an assumed density is not.
 
 ## Install
 
@@ -88,32 +88,42 @@ python3.12 -m venv .venv && .venv/bin/pip install -e .
 ```
 
 ```bash
-.venv/bin/python -m csmarket price "Kilowatt Case" --source steam
+.venv/bin/python -m csmarket rank-cases --limit 10 --progress
 ```
 
 ```bash
-.venv/bin/python -m csmarket analyze-case "Kilowatt Case" --progress --export-web
+.venv/bin/python -m csmarket analyze-case --top 5 --progress --export-web
 ```
 
 `calculate` runs offline against an explicit, deliberately synthetic outcome set
 and demonstrates the calculation contract. `price` is a single live source
-check. `analyze-case` runs the full pipeline: pinned catalogue, live prices from
-each venue, observed wear weights, and a coverage-annotated valuation.
+check. `rank-cases` orders every case by observed 24-hour volume.
+`analyze-case` runs the full pipeline — pinned catalogue, live prices from each
+venue, observed wear weights, coverage-annotated valuation — for cases you name
+or, with `--top N`, for the busiest N.
 
-Steam is crawled one name at a time and answers `429` above roughly twenty
-requests per minute, so a case takes about fifteen minutes on a cold cache.
-Observations are cached in `data/raw/price-cache.json` and reused for 24 hours;
-`--refresh` forces a re-fetch and `--no-cache` disables it.
+Prices are pulled ten at a time from the market search endpoint, so a case costs
+tens of requests rather than hundreds; anything the bulk pages miss falls back
+to the slower per-item endpoint. Steam still throttles sustained crawling and
+answers `429`, which is retried with a capped backoff — raise
+`--request-interval` if you hit it repeatedly. Observations are cached in
+`data/raw/price-cache.json` and reused for 24 hours; `--refresh` forces a
+re-fetch and `--no-cache` disables it.
 
 ## The published page
 
-`web/` is a dependency-free static page deployed to GitHub Pages on push. It
-renders `web/results.json` and nothing else: there are no illustrative numbers
-built into it, and with no data file it says so rather than showing invented
-figures. Regenerate and publish with:
+`web/` is a dependency-free static page deployed to GitHub Pages on push: one
+table of results, the formulas behind each column, and where every input came
+from. It renders `web/results.json` and nothing else — there are no numbers
+built into the page, and with no data file it says so rather than showing
+invented figures.
 
 ```bash
-.venv/bin/python -m csmarket analyze-case "Kilowatt Case" --export-web && python3 -m http.server 8000 -d web
+.venv/bin/python -m csmarket analyze-case --top 5 --export-web
+```
+
+```bash
+python3 -m http.server 8000 -d web
 ```
 
 ## Current scope
