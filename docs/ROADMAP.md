@@ -7,13 +7,15 @@
 - Fixed-input unit tests and a static research-result page.
 - Public methodology, limitations, and AI contribution statement.
 
-## v0.2 — first validated cases
+## v0.2 — live case pipeline
 
-- Add a version-pinned community case catalogue and label its provenance.
-- Select 3–5 cases and manually audit every ordinary and rare-special outcome.
-- Define documented wear and StatTrak treatment, or publish scenario bounds where the distribution remains uncertain.
-- Add a pipeline that joins catalogue outcomes to one market's matching listings and refuses mixed currencies or stale data.
-- Save timestamped snapshots locally and publish only data allowed by provider terms.
+- [x] Add a version-pinned community case catalogue and label its provenance.
+- [x] Join exact market names from the catalogue and filter Souvenir variants.
+- [x] Split StatTrak per eligible item and compare empirical/uniform wear scenarios.
+- [x] Refuse mixed source, currency, price type, or observation time.
+- [x] Report overall and per-rarity missing-price coverage.
+- [ ] Manually audit every ordinary and rare-special outcome for the first 3–5 cases.
+- [ ] Save timestamped snapshots locally and publish only data allowed by provider terms.
 
 ## v0.3 — empirical study
 

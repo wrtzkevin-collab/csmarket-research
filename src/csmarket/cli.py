@@ -9,7 +9,14 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .data_sources import SkinportClient
+from .catalog import CaseCatalogClient
 from .model import Outcome, calculate_ev
+from .pipeline import (
+    expand_case_variants,
+    snapshot_from_skinport_rows,
+    value_case,
+)
+from .wear import WEAR_MODELS
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -100,6 +107,61 @@ def _run_skinport_price(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_analyze_case(args: argparse.Namespace) -> int:
+    catalog = CaseCatalogClient(timeout=args.timeout, max_retries=args.retries)
+    case = catalog.fetch_case(args.case_name)
+    model_ids = tuple(WEAR_MODELS) if args.wear_model == "both" else (args.wear_model,)
+    variants_by_model = {
+        model_id: expand_case_variants(case, wear_model_id=model_id)
+        for model_id in model_ids
+    }
+
+    # Fetch one provider snapshot so case cost and reward values cannot drift
+    # across calls or silently mix listing and completed-sale price types.
+    client = SkinportClient(timeout=args.timeout, max_retries=args.retries)
+    rows = client.fetch_sales_history(
+        currency=args.currency,
+        period=args.period,
+        statistic=args.statistic,
+    )
+    names = tuple(
+        sorted(
+            {
+                case.name,
+                *(
+                    variant.market_hash_name
+                    for variants in variants_by_model.values()
+                    for variant in variants
+                ),
+            }
+        )
+    )
+    snapshot = snapshot_from_skinport_rows(rows, required_names=names)
+    valuations = [
+        value_case(
+            case,
+            variants_by_model[model_id],
+            snapshot,
+            key_price=args.key_price,
+            key_price_source=args.key_price_source,
+            sell_fee_rate=args.sell_fee_rate,
+            wear_model_id=model_id,
+        )
+        for model_id in model_ids
+    ]
+    if len(valuations) == 1:
+        payload: Any = valuations[0].to_dict()
+    else:
+        payload = {
+            "schema_version": "1.0",
+            "comparison": "wear-model sensitivity on one price snapshot",
+            "case_name": case.name,
+            "results": [valuation.to_dict() for valuation in valuations],
+        }
+    _print_json(payload)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="csmarket",
@@ -132,6 +194,35 @@ def build_parser() -> argparse.ArgumentParser:
     price_parser.add_argument("--timeout", type=float, default=15.0)
     price_parser.add_argument("--retries", type=int, default=2)
     price_parser.set_defaults(handler=_run_skinport_price)
+
+    analysis_parser = subparsers.add_parser(
+        "analyze-case",
+        help="calculate one live case valuation from pinned catalogue and Skinport data",
+    )
+    analysis_parser.add_argument("case_name", help="exact case market name")
+    analysis_parser.add_argument("--currency", default="USD")
+    analysis_parser.add_argument("--key-price", type=float, default=2.49)
+    analysis_parser.add_argument(
+        "--key-price-source",
+        default="configured USD in-game key price; verify before use",
+    )
+    analysis_parser.add_argument("--sell-fee-rate", type=float, default=0.12)
+    analysis_parser.add_argument(
+        "--wear-model",
+        choices=("both", *tuple(WEAR_MODELS)),
+        default="both",
+    )
+    analysis_parser.add_argument(
+        "--period",
+        choices=("last_24_hours", "last_7_days", "last_30_days", "last_90_days"),
+        default="last_30_days",
+    )
+    analysis_parser.add_argument(
+        "--statistic", choices=("min", "max", "avg", "median"), default="median"
+    )
+    analysis_parser.add_argument("--timeout", type=float, default=45.0)
+    analysis_parser.add_argument("--retries", type=int, default=2)
+    analysis_parser.set_defaults(handler=_run_analyze_case)
     return parser
 
 
@@ -147,4 +238,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

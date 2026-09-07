@@ -39,6 +39,7 @@ python -m pip install -e .
 python -m unittest discover -s tests -v
 python -m csmarket calculate examples/synthetic_case.json
 python -m csmarket skinport-price "Kilowatt Case"
+python -m csmarket analyze-case "Kilowatt Case"
 ```
 
 The static demonstration can be served without a framework:
@@ -49,11 +50,11 @@ python -m http.server 8000 -d web
 
 Then open `http://localhost:8000`.
 
-The calculation example is deliberately synthetic. The Skinport command performs a live source check and labels the observation as a completed-sale aggregate or current listing. It does not produce a case EV until a complete, audited outcome catalogue is supplied.
+The calculation example is deliberately synthetic. `skinport-price` performs a live source check. `analyze-case` joins a version-pinned community catalogue to one Skinport completed-sale snapshot and compares an empirical wear model with a transparent uniform sensitivity model. The report includes overall and per-rarity coverage; incomplete results are marked as partial lower bounds.
 
 ## Current scope
 
-Version 0.1 establishes the calculation contract, the first documented price-source adapter, tests, and an honest result view. It does not yet claim to forecast future case prices, validate a trading strategy, or backtest the legacy 16.6% live result. Those claims require timestamped historical observations, a baseline, transaction costs, and chronological out-of-sample evaluation.
+Version 0.2 provides an end-to-end live valuation for supported standard weapon cases. Rare-special mappings still come from a community-maintained catalogue, some market variants can lack recent completed sales, and the key price is an explicitly configured cost rather than a Skinport observation. The project does not yet claim to forecast future case prices, validate a trading strategy, or backtest the legacy 16.6% live result. Those claims require timestamped historical observations, a baseline, transaction costs, and chronological out-of-sample evaluation.
 
 ## Authorship
 
