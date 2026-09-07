@@ -258,3 +258,56 @@ footer { display: flex; justify-content: space-between; padding: 26px 0 40px; bo
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* Cross-venue comparison: one panel per market inside a case card. */
+.source-panels {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-top: 18px;
+}
+
+.source-panel {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 14px;
+  padding: 16px 18px 18px;
+  background: rgba(15, 23, 42, 0.18);
+}
+
+.source-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.source-panel-head h4 {
+  margin: 0;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+}
+
+.source-panel-head p {
+  margin: 4px 0 0;
+  font-size: 0.76rem;
+  opacity: 0.68;
+}
+
+.source-panel .result-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.wear-note {
+  margin: 14px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  opacity: 0.72;
+}
+
+.case-card code {
+  font-size: 0.82em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(148, 163, 184, 0.16);
+}
