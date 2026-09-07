@@ -1,116 +1,100 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A reproducible research view of CS2 case expected values, data coverage and modelling assumptions." />
-    <title>CSMarket Research</title>
-    <link rel="icon" href="data:," />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CS2 case opening — expected value</title>
+    <meta
+      name="description"
+      content="Expected value of opening CS2 cases, calculated from published drop probabilities and dated market prices."
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="CSMarket Research home">
-        <span class="brand-mark" aria-hidden="true">CM</span>
-        <span>CSMarket <em>Research</em></span>
-      </a>
-      <nav aria-label="Page navigation">
-        <a href="#results">Results</a>
-        <a href="#method">Method</a>
-        <a href="#sources">Sources</a>
-        <a href="https://github.com/wrtzkevin-collab/csmarket-research" target="_blank" rel="noreferrer">GitHub ↗</a>
-      </nav>
-    </header>
+    <main>
+      <header>
+        <h1>What you get back for opening a CS2 case</h1>
+        <p class="sub">
+          Published drop probabilities times market prices, minus what it costs
+          to open. Every figure is computed by
+          <a href="https://github.com/wrtzkevin-collab/csmarket-research">this code</a>
+          from a dated snapshot. It measures opening a case, not holding one.
+        </p>
+        <p class="meta" id="meta"></p>
+      </header>
 
-    <main id="top">
-      <section class="hero">
-        <div class="eyebrow"><span></span> Reproducible case-value study</div>
-        <h1>What does opening a CS2 case return <i>in expectation?</i></h1>
-        <p class="lede">A probability-weighted view of case outcomes, market prices and model uncertainty. Every result carries its source, observation time and data coverage.</p>
-        <div class="notice" role="note">
-          <strong>Research preview</strong>
-          <span>Every figure below is calculated by this repository's pipeline from a dated market snapshot. It measures <em>opening</em> a case; it says nothing about the future price of an unopened one. Not financial or trading advice.</span>
-        </div>
+      <section id="results-section">
+        <table id="results">
+          <thead>
+            <tr>
+              <th class="l">Case</th>
+              <th class="l">Priced on</th>
+              <th>Cost to open</th>
+              <th>Expected back</th>
+              <th>Return</th>
+              <th>Chance of losing</th>
+              <th>Priced</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr>
+              <td colspan="7" class="note">Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="note" id="table-note"></p>
       </section>
 
-      <section class="definition-grid" aria-label="Metric definitions">
-        <article>
-          <span class="metric-index">01</span>
-          <h2>Gross return ratio</h2>
-          <code>gross EV ÷ opening cost</code>
-          <p>The expected item value before seller fees. A ratio of 65% means $0.65 of expected item value per $1.00 spent.</p>
-        </article>
-        <article>
-          <span class="metric-index">02</span>
-          <h2>Expected net ROI</h2>
-          <code>(net EV − cost) ÷ cost</code>
-          <p>The expected percentage gain or loss after the modelled seller fee. Negative values indicate expected loss.</p>
-        </article>
-        <article>
-          <span class="metric-index">03</span>
-          <h2>Observed loss probability</h2>
-          <code>Σ p(outcome below cost)</code>
-          <p>The priced probability mass returning less than cost after the modelled fee. With missing prices it is a lower bound, shown beside coverage.</p>
-        </article>
+      <section>
+        <h2>How it is calculated</h2>
+        <dl class="defs">
+          <dt>Cost to open</dt>
+          <dd>case price + key price</dd>
+
+          <dt>Expected back</dt>
+          <dd>
+            &Sigma; (probability of outcome &times; its market price), after the
+            seller fee
+          </dd>
+
+          <dt>Return</dt>
+          <dd>expected back &divide; cost to open, minus 1</dd>
+
+          <dt>Chance of losing</dt>
+          <dd>total probability of outcomes worth less than the cost to open</dd>
+
+          <dt>Priced</dt>
+          <dd>
+            share of probability that had a usable price. Outcomes with no price
+            are left out, never counted as zero and never redistributed, so
+            anything under 100% makes the return an upper bound and the chance of
+            losing a lower bound.
+          </dd>
+        </dl>
+        <p class="note">
+          Drop probability = rarity tier probability &times; 10% if StatTrak
+          &times; the wear grade's share. Items in a tier are equally likely.
+          Wear shares come from how many of each grade are actually listed;
+          where too few are listed to measure, an even spread across the
+          possible grades is assumed instead.
+        </p>
       </section>
 
-      <section class="results-section" id="results">
-        <div class="section-heading">
-          <div>
-            <span class="kicker">Live snapshot</span>
-            <h2>Case comparison</h2>
-          </div>
-          <label class="sort-control">
-            <span>Sort by</span>
-            <select id="sort-select">
-              <option value="gross_return_ratio">Gross return ratio</option>
-              <option value="expected_net_roi">Expected net ROI</option>
-              <option value="loss_probability">Loss probability</option>
-              <option value="coverage">Coverage</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="snapshot-strip" id="snapshot-strip" aria-live="polite"></div>
-        <div class="case-list" id="case-list" aria-live="polite">
-          <p class="loading">Loading research snapshot…</p>
-        </div>
+      <section>
+        <h2>Where the numbers come from</h2>
+        <table class="sources">
+          <tbody id="sources"></tbody>
+        </table>
       </section>
 
-      <section class="method-section" id="method">
-        <div class="section-heading">
-          <div>
-            <span class="kicker">Transparent by design</span>
-            <h2>Method & assumptions</h2>
-          </div>
-        </div>
-        <div class="formula-panel">
-          <div>
-            <span>Gross expected value</span>
-            <strong>EV = Σ p<sub>i</sub> · v<sub>i</sub></strong>
-          </div>
-          <p>Each possible outcome value is multiplied by its probability. Net EV then applies the stated seller fee. Coverage reports how much of the outcome set had a usable price; it does not make missing values disappear.</p>
-        </div>
-        <ol class="assumption-list" id="assumption-list"></ol>
-      </section>
-
-      <section class="source-section" id="sources">
-        <div>
-          <span class="kicker">Provenance</span>
-          <h2>Sources attached to the result</h2>
-        </div>
-        <div class="source-list" id="source-list"></div>
-      </section>
+      <footer>
+        <p>
+          Educational research. Not financial advice, not a prediction, and not a
+          claim about what an unopened case will be worth later.
+        </p>
+        <p id="version"></p>
+      </footer>
     </main>
-
-    <footer>
-      <span><a href="https://github.com/wrtzkevin-collab/csmarket-research">CSMarket Research</a> · Method before recommendation</span>
-      <span id="schema-version"></span>
-    </footer>
-
-    <script src="app.js" defer></script>
+    <script src="app.js"></script>
   </body>
 </html>
