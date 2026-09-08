@@ -20,6 +20,13 @@ from typing import Any, Iterable
 DEFAULT_CACHE_PATH = Path("data/raw/price-cache.json")
 CACHE_SCHEMA_VERSION = "1.0"
 
+# Deliberately equal to the pipeline's maximum snapshot span.  A cached
+# observation older than the widest spread a snapshot may contain cannot take
+# part in a coherent one, so keeping it longer only guarantees that some later
+# run assembles prices too far apart and is rejected.  The two limits are one
+# decision and must move together.
+DEFAULT_MAX_AGE_HOURS = 6
+
 
 def parse_iso8601(text: str) -> datetime:
     """Parse an ISO-8601 timestamp, accepting a trailing ``Z``."""
@@ -42,7 +49,7 @@ class PriceCache:
         self,
         path: Path | str = DEFAULT_CACHE_PATH,
         *,
-        max_age: timedelta | None = timedelta(hours=24),
+        max_age: timedelta | None = timedelta(hours=DEFAULT_MAX_AGE_HOURS),
         clock=lambda: datetime.now(timezone.utc),
     ) -> None:
         self.path = Path(path)

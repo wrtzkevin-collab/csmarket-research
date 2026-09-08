@@ -9,7 +9,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Sequence
 
-from .cache import DEFAULT_CACHE_PATH
+from .cache import DEFAULT_CACHE_PATH, DEFAULT_MAX_AGE_HOURS
 from .catalog import CaseCatalogClient
 from .model import Outcome, calculate_ev
 from .pipeline import (
@@ -376,8 +376,12 @@ def build_parser() -> argparse.ArgumentParser:
         network_parser.add_argument(
             "--max-age-hours",
             type=float,
-            default=24.0,
-            help="treat cached observations older than this as missing",
+            default=float(DEFAULT_MAX_AGE_HOURS),
+            help=(
+                "treat cached observations older than this as missing; above "
+                "the snapshot span limit a reused cache can be rejected as "
+                "internally inconsistent"
+            ),
         )
         network_parser.add_argument(
             "--request-interval",

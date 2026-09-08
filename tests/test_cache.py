@@ -128,5 +128,18 @@ class PriceCacheTests(unittest.TestCase):
         self.assertEqual(leftovers, [])
 
 
+
+class RetentionMatchesSnapshotSpanTests(unittest.TestCase):
+    def test_default_retention_equals_the_maximum_snapshot_span(self):
+        # Retaining observations longer than a snapshot may span guarantees
+        # that some later run assembles prices too far apart and is refused.
+        from csmarket.cache import DEFAULT_MAX_AGE_HOURS
+        from csmarket.pipeline import DEFAULT_MAX_OBSERVATION_DRIFT_SECONDS
+
+        self.assertEqual(
+            DEFAULT_MAX_AGE_HOURS * 3600, DEFAULT_MAX_OBSERVATION_DRIFT_SECONDS
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

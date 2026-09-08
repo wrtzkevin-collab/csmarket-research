@@ -29,7 +29,7 @@ class CliTests(unittest.TestCase):
         default = build_parser().parse_args(["analyze-case", "Kilowatt Case"])
         self.assertFalse(default.no_cache)
         self.assertFalse(default.refresh)
-        self.assertEqual(default.max_age_hours, 24.0)
+        self.assertEqual(default.max_age_hours, 6.0)
 
         disabled = build_parser().parse_args(
             ["analyze-case", "Kilowatt Case", "--no-cache"]

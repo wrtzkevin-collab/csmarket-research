@@ -31,6 +31,9 @@ _PROBABILITY_TOLERANCE = 1e-10
 
 # A throttled provider pass takes minutes, so rows inside one snapshot cannot
 # share a timestamp.  Drift beyond this is treated as mixing separate snapshots.
+# The cache's default retention is deliberately the same figure: keeping an
+# observation longer than the widest spread a snapshot may contain only
+# guarantees that some later run assembles one too wide and is rejected.
 DEFAULT_MAX_OBSERVATION_DRIFT_SECONDS = 6 * 60 * 60
 
 
