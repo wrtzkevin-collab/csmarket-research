@@ -249,9 +249,25 @@ def _run_analyze_case(args: argparse.Namespace) -> int:
     cache = build_cache(
         None if args.no_cache else args.cache, max_age_hours=args.max_age_hours
     )
+    # One unreachable case must not discard the cases that were priced. Each
+    # is valued independently and a failure is reported rather than swallowed,
+    # so a partial run publishes what it measured and says what it could not.
     valuations: list[CaseValuation] = []
+    failures: list[tuple[str, str]] = []
     for case_name in _resolve_case_names(args, catalog, cache):
-        valuations.extend(_value_one_case(case_name, args, sources, catalog, cache))
+        try:
+            valuations.extend(
+                _value_one_case(case_name, args, sources, catalog, cache)
+            )
+        except (ValueError, RuntimeError) as error:
+            failures.append((case_name, str(error)))
+            print(f"skipped {case_name}: {error}", file=sys.stderr)
+
+    if not valuations:
+        raise ValueError(
+            "no case could be valued: "
+            + "; ".join(f"{name} ({reason})" for name, reason in failures)
+        )
 
     if args.export_web:
         target = write_web_document(
