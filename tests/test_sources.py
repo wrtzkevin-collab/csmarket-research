@@ -354,3 +354,42 @@ class SkinportBulkScopeTests(unittest.TestCase):
         self.assertEqual([r["market_hash_name"] for r in second], ["Case Two Item"])
 if __name__ == "__main__":
     unittest.main()
+
+
+class RefreshScopeTests(unittest.TestCase):
+    """--refresh means one fresh pull per run, not one per case."""
+
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._dir.cleanup)
+        self.path = Path(self._dir.name) / "cache.json"
+        import csmarket.sources as sources
+
+        sources._REFRESHED_THIS_PROCESS.clear()
+        self.addCleanup(sources._REFRESHED_THIS_PROCESS.clear)
+
+    def cache(self):
+        return PriceCache(self.path, max_age=timedelta(hours=6), clock=lambda: NOW)
+
+    def test_refresh_pulls_once_and_serves_later_cases_from_it(self):
+        # Valuing forty cases with --refresh re-downloaded the whole market
+        # forty times and got the address rate-limited by the provider.
+        cache = self.cache()
+        client = Mock()
+        client.fetch_sales_history.return_value = [
+            skinport_row("Case One Item"),
+            skinport_row("Case Two Item"),
+        ]
+
+        with patch("csmarket.sources.SkinportClient", return_value=client):
+            fetch_rows(
+                SOURCE_SKINPORT, ["Case One Item"], cache=cache, refresh=True
+            )
+            second = fetch_rows(
+                SOURCE_SKINPORT, ["Case Two Item"], cache=cache, refresh=True
+            )
+
+        client.fetch_sales_history.assert_called_once()
+        self.assertEqual([r["market_hash_name"] for r in second], ["Case Two Item"])
+if __name__ == "__main__":
+    unittest.main()

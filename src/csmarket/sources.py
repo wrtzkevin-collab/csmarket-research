@@ -49,6 +49,13 @@ _CACHE_FLUSH_INTERVAL = 25
 # would publish a snapshot describing our access rather than the market.
 _MAX_CONSECUTIVE_BLOCKS = 8
 
+# Bulk endpoints return the whole market, so one pull serves every case in a
+# run.  --refresh means "do not trust yesterday's snapshot", not "re-pull per
+# case": valuing forty cases used to re-download the market forty times and
+# got the address rate-limited.  A pull already made by this process is fresh
+# by definition.
+_REFRESHED_THIS_PROCESS: set[tuple[str, str]] = set()
+
 ProgressCallback = Callable[[int, int, str], None]
 
 
@@ -258,7 +265,8 @@ def _fetch_skinport_rows(
     # tail is exactly what cannot be cached -- and every run would re-fetch.
     # A marker row records when the bulk pull happened instead, so a fresh pull
     # serves whatever it contained and absent names stay correctly absent.
-    if cache is not None and not refresh:
+    already_pulled = (provider, currency.upper()) in _REFRESHED_THIS_PROCESS
+    if cache is not None and (not refresh or already_pulled):
         marker = cache.get(provider, currency, marker_name)
         if marker is not None:
             rows = []
@@ -279,6 +287,7 @@ def _fetch_skinport_rows(
             currency=currency, period=period, statistic=statistic
         )
     )
+    _REFRESHED_THIS_PROCESS.add((provider, currency.upper()))
     rows = [row for row in fetched if row.get("market_hash_name") in wanted]
     if cache is not None:
         # The whole market arrives in one response and the marker below claims
