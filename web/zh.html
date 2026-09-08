@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>开 CS2 武器箱能回本吗</title>
+    <title>开 CS2 箱子能回本吗</title>
     <meta
       name="description"
       content="按官方公示掉落概率与市场实时价格，计算开 CS2 武器箱的期望回报。"
@@ -18,9 +18,9 @@
       <header>
         <h1>开一个 CS2 武器箱，平均能拿回多少</h1>
         <p class="sub">
-          官方公示的掉落概率乘以市场价格，减去开箱成本。所有数字都由
+          拿官方公示的掉落概率，乘上市场实时价格，再扣掉开箱花的钱。页面上每个数字都由
           <a href="https://github.com/wrtzkevin-collab/csmarket-research">这份代码</a>
-          从带时间戳的市场快照算出。算的是<strong>开箱</strong>，不是囤箱子。
+          从带时间戳的市场快照算出来。注意算的是<strong>开箱划不划算</strong>，不是囤箱子涨不涨。
         </p>
         <p class="meta" id="meta"></p>
         <p class="meta"><a href="index.html">English version →</a></p>
@@ -31,17 +31,18 @@
           <thead>
             <tr>
               <th class="l">武器箱</th>
-              <th class="l">价格口径</th>
-              <th>开箱成本</th>
-              <th>期望回收</th>
-              <th>收益率</th>
-              <th>亏损概率</th>
+              <th class="l">按什么价算</th>
+              <th>开一次花</th>
+              <th>平均拿回</th>
+              <th>回本率</th>
+              <th>盈亏</th>
+              <th>亏本概率</th>
               <th>已定价</th>
             </tr>
           </thead>
           <tbody id="rows">
             <tr>
-              <td colspan="7" class="note">加载中…</td>
+              <td colspan="8" class="note">加载中…</td>
             </tr>
           </tbody>
         </table>
@@ -51,28 +52,31 @@
       <section>
         <h2>怎么算出来的</h2>
         <dl class="defs">
-          <dt>开箱成本</dt>
-          <dd>箱子价格 + 钥匙价格</dd>
+          <dt>开一次花</dt>
+          <dd>箱子的价格，加一把钥匙</dd>
 
-          <dt>期望回收</dt>
-          <dd>Σ（每种结果的概率 × 它的市场价），再扣掉出售手续费</dd>
+          <dt>平均拿回</dt>
+          <dd>把所有可能开出的东西按概率和市价加权平均，再扣掉卖的时候的手续费</dd>
 
-          <dt>收益率</dt>
-          <dd>期望回收 ÷ 开箱成本 − 1</dd>
+          <dt>回本率</dt>
+          <dd>平均拿回 ÷ 开一次花。100% 是不赚不亏，25% 就是花一百块平均只剩二十五</dd>
 
-          <dt>亏损概率</dt>
-          <dd>所有价值低于开箱成本的结果，概率加总</dd>
+          <dt>盈亏</dt>
+          <dd>回本率减 100%。负数就是平均要亏掉这么多</dd>
+
+          <dt>亏本概率</dt>
+          <dd>开出来的东西卖掉之后，回不了本的概率有多大</dd>
 
           <dt>已定价</dt>
           <dd>
-            有可用价格的那部分概率。查不到价格的结果会被<strong>剔除</strong>，既不按
-            0 计算也不把它的概率摊给其他结果。所以只要低于 100%，收益率就是上界、亏损概率就是下界。
+            有多少概率是真查到价的。查不到价的东西直接<strong>剔除</strong>，既不按 0 算，
+            也不把它那份概率分摊给别人。所以这个数不到 100% 的时候，回本率是偏高的，亏本概率是偏低的。
           </dd>
         </dl>
         <p class="note">
-          掉落概率 = 稀有度档位概率 × 若可 StatTrak 则再乘 10% × 该磨损档的占比。
-          同档位内各物品等概率。磨损占比取自各档实际在售数量；在售太少无法测量时，
-          才退回「在可能的磨损档之间均分」这一假设。
+          掉落概率是这么拆的：先按稀有度分档（官方公示的数），同一档里每把皮肤概率一样；
+          能出 StatTrak 的再乘 10%；最后拆到磨损档——拆分比例用的是各磨损档实际挂了多少件，
+          只有挂得太少、统计不出来的时候，才退回「几个磨损档平均分」这个假设。
         </p>
       </section>
 
@@ -85,7 +89,7 @@
 
       <footer>
         <p>
-          教育与研究用途。不构成投资建议，不是预测，也不代表未开封箱子未来的价格。
+          本页只做研究和参考，不是投资建议，也不预测没开的箱子以后值多少钱。
         </p>
         <p id="version"></p>
       </footer>

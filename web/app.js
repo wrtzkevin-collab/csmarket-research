@@ -51,30 +51,29 @@ const STRINGS = {
     dateLocale: "zh-CN",
     unknown: "未知",
     basis: {
-      listing_min: "最低在售价",
-      lowest_listing: "最低在售价",
+      listing_min: "最低挂单价",
+      lowest_listing: "最低挂单价",
       sales_median_30_days: "近 30 天成交中位数",
       sales_median_7_days: "近 7 天成交中位数",
       sales_median_24_hours: "近 24 小时成交中位数",
     },
     partial:
-      "* 该市场上有部分结果查不到价格，所以真实亏损概率不低于此值。",
+      "* 这个市场上有些东西查不到价，所以实际亏本概率只会比这更高。",
     assumed: (share) =>
-      `最多有 ${share} 的概率因在售数量太少无法测量磨损分布，改用了均分假设。`,
+      `有 ${share} 的概率因为挂单太少、统计不出磨损分布，用了平均分的假设。`,
     meta: (venues, when, currency, count) =>
-      `价格来自 ${venues}，观测于 ${when}（UTC），币种 ${currency}，共 ${count} 个武器箱。`,
-    version: (schema, when) => `数据格式 v${schema} · 生成于 ${when}（UTC）`,
+      `价格取自 ${venues}，${when} UTC 抓的，按 ${currency} 计价，一共 ${count} 个箱子。`,
+    version: (schema, when) => `数据格式 v${schema} · ${when} UTC 生成`,
     tagPrices: "价格",
     tagOfficial: "官方",
-    tagCommunity: "社区维护",
-    tagAssumed: "假设值",
+    tagCommunity: "社区",
+    tagAssumed: "拍的",
     keyPrice: "钥匙价格",
     keyPriceNote:
-      "没有任何市场报价。钥匙不可交易，这是一个人工配置的常量，而它占了开箱成本的大部分，采信收益率前请自行核实。",
-    pinned: (commit) => `已锁定在提交 <code>${commit}</code>。`,
-    empty: (url, error) =>
-      `尚未发布快照 —— 无法加载 <code>${url}</code>（${error}）。`,
-    noData: "无数据文件",
+      "全页唯一一个没有市场报价的数字。钥匙不能交易，所以这里填的是人工配的常量，而它占了开箱成本一大半——信这个收益率之前，建议自己核一下。",
+    pinned: (commit) => `锁在 <code>${commit}</code> 这一版。`,
+    empty: (url, error) => `还没发布快照——<code>${url}</code> 加载失败（${error}）。`,
+    noData: "没有数据文件",
   },
 };
 
@@ -144,7 +143,8 @@ function row(entry, caseName, position) {
       <td class="l venue">${venueLabel(entry)}</td>
       <td>${money(entry.opening_cost, entry.currency)}</td>
       <td>${money(entry.net_expected_value, entry.currency)}</td>
-      <td class="big${roi < 0 ? " loss" : ""}">${pct(roi, { sign: true })}</td>
+      <td class="big">${pct(entry.net_return_ratio, { digits: 0 })}</td>
+      <td class="${roi < 0 ? "loss" : ""}">${pct(roi, { sign: true })}</td>
       <td class="${partial}">${pct(entry.loss_probability)}</td>
       <td>${coveragePct(entry.coverage)}</td>
     </tr>`;
@@ -266,7 +266,7 @@ function renderMeta(data) {
 
 function renderError(error) {
   document.querySelector("#rows").innerHTML = `
-    <tr><td colspan="7" class="note">
+    <tr><td colspan="8" class="note">
       No snapshot published yet — <code>${DATA_URL}</code> could not be loaded
       (${escapeHtml(error.message)}). Generate one with
       <code>python -m csmarket analyze-case "Kilowatt Case" --export-web</code>.

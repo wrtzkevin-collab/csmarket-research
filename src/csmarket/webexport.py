@@ -36,24 +36,24 @@ SOURCE_LABELS: dict[str, str] = {
 SOURCE_NOTES_BY_LOCALE: dict[str, dict[str, str]] = {
     "zh-CN": {
         "steam_community_market": (
-            "V 社自家市场的最低在售价。它收录了每一个可交易变体，覆盖率最高，"
-            "但 Steam 余额无法提现，而且挂牌价不等于成交价。"
+            "V 社自己市场上的最低挂单价。能交易的东西它全都有，覆盖最全；"
+            "但 Steam 余额提不出来，而且挂着的价不等于卖掉的价。"
         ),
         "skinport": (
-            "第三方现金市场在所选窗口内的成交价中位数。这笔钱可以提现，"
-            "但近期没有成交的物品就没有价格，会拉低覆盖率。"
+            "第三方现金市场近一个月的成交价中位数。这笔钱能提现，"
+            "但最近没人买卖的东西就查不到价，会把覆盖率拉下来。"
         ),
         "skinport_listings": (
-            "同一个现金市场的最低在售价。它比成交价覆盖了多得多的冷门物品——"
-            "一件东西可以挂着但当天无人买——但要价不等于成交价。"
+            "同一个现金市场上当前最低的挂单价。冷门东西基本都有人挂着，"
+            "所以比成交价能覆盖多得多；代价是挂着不等于卖得掉，要价通常偏高。"
         ),
     }
 }
 
 PROBABILITY_NOTE_BY_LOCALE: dict[str, str] = {
     "zh-CN": (
-        "官方公示的稀有度档位概率，以及 StatTrak 的条件概率。该公示发布于 2017 年"
-        "国服版本；将它套用到当前全球版本是本项目未经独立核实的假设。"
+        "官方公示的各档稀有度掉落概率，以及 StatTrak 的条件概率。"
+        "这份公示是 2017 年国服发的，直接拿来套现在的版本，是本项目没能独立核实的一个假设。"
     )
 }
 
@@ -63,8 +63,8 @@ PROBABILITY_NAME_BY_LOCALE: dict[str, str] = {
 
 CATALOG_NOTE_BY_LOCALE: dict[str, str] = {
     "zh-CN": (
-        "社区维护，并非 V 社官方 API。普通皮肤由机器人从游戏本体解析；"
-        "刀和手套的对应关系由人工整理，需要逐箱核对。"
+        "社区维护的数据，不是 V 社官方接口。普通皮肤是机器人从游戏文件里扒出来的；"
+        "刀和手套属于哪个箱子则是人工整理的，得逐箱核对。"
     )
 }
 
@@ -133,6 +133,13 @@ def valuation_to_web_entry(valuation: CaseValuation) -> dict[str, Any]:
         "gross_expected_value": result.gross_ev,
         "net_expected_value": result.net_ev,
         "gross_return_ratio": result.gross_return_ratio,
+        # The same fact as expected_net_roi, stated as a share rather than a
+        # change: "you get 26% of your money back" instead of "you lose 74%".
+        # Neither is softer than the other; a table of nothing but minus signs
+        # is just harder to read than one that also says what comes back.
+        "net_return_ratio": (
+            result.net_ev / result.total_cost if result.total_cost else None
+        ),
         "expected_net_roi": result.expected_net_roi,
         "loss_probability": result.loss_probability,
         "loss_probability_is_lower_bound": result.probability_coverage < 1,

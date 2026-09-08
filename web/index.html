@@ -32,6 +32,7 @@
               <th class="l">Priced on</th>
               <th>Cost to open</th>
               <th>Expected back</th>
+              <th>Money back</th>
               <th>Return</th>
               <th>Chance of losing</th>
               <th>Priced</th>
@@ -39,7 +40,7 @@
           </thead>
           <tbody id="rows">
             <tr>
-              <td colspan="7" class="note">Loading…</td>
+              <td colspan="8" class="note">Loading…</td>
             </tr>
           </tbody>
         </table>
@@ -58,8 +59,14 @@
             seller fee
           </dd>
 
+          <dt>Money back</dt>
+          <dd>
+            expected back &divide; cost to open. 100% breaks even; 26% means a
+            dollar in comes back as 26 cents
+          </dd>
+
           <dt>Return</dt>
-          <dd>expected back &divide; cost to open, minus 1</dd>
+          <dd>money back minus 100%, so a negative figure is the average loss</dd>
 
           <dt>Chance of losing</dt>
           <dd>total probability of outcomes worth less than the cost to open</dd>
