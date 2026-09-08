@@ -99,24 +99,29 @@ class SkinportClient:
         *,
         currency: str = "USD",
         app_id: int = 730,
-        tradable: bool = False,
+        tradable: bool | None = None,
     ) -> list[dict[str, Any]]:
         """Return normalized current listings from ``/v1/items``.
 
         ``price`` is the lowest current listing.  It can be ``None`` when an item
         has no active listings; callers should treat that as missing data rather
         than a zero-price item.
+
+        ``tradable`` is omitted by default rather than sent as ``0``.  The
+        parameter is a filter, not a flag for "either kind": sending zero
+        returned about 4,500 fewer items than omitting it, and the shortfall
+        landed on ordinary low-tier skins, which carry most of a case's
+        probability.  One case's coverage read 55% for this reason alone.
         """
 
         requested_currency = _normalize_currency(currency)
-        payload = self._request_json(
-            "/v1/items",
-            params={
-                "app_id": app_id,
-                "currency": requested_currency,
-                "tradable": int(tradable),
-            },
-        )
+        params: dict[str, Any] = {
+            "app_id": app_id,
+            "currency": requested_currency,
+        }
+        if tradable is not None:
+            params["tradable"] = int(tradable)
+        payload = self._request_json("/v1/items", params=params)
         observed_at = self._observed_at()
         return [
             self._normalize_item(row, requested_currency, observed_at)

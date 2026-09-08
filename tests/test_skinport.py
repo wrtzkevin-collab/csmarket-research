@@ -252,3 +252,46 @@ class RateLimitTests(unittest.TestCase):
         self.assertEqual(session.get.call_count, 3)
 if __name__ == "__main__":
     unittest.main()
+
+
+class ItemsFilterTests(unittest.TestCase):
+    """`tradable` is a filter, so sending it by default silently drops items."""
+
+    def _client(self, session):
+        from datetime import datetime, timezone
+
+        from csmarket.data_sources.skinport import SkinportClient
+
+        return SkinportClient(
+            session=session,
+            sleep=lambda _: None,
+            clock=lambda: datetime(2026, 9, 8, tzinfo=timezone.utc),
+        )
+
+    def _ok(self, session):
+        ok = Mock()
+        ok.status_code = 200
+        ok.raise_for_status.return_value = None
+        ok.json.return_value = []
+        session.get.return_value = ok
+
+    def test_tradable_is_omitted_by_default(self):
+        # Sending tradable=0 returned ~4,500 fewer items than omitting it, and
+        # the gap fell on ordinary low-tier skins, which carry most of a case's
+        # probability mass. One case's coverage read 55% because of this alone.
+        session = Mock()
+        self._ok(session)
+
+        self._client(session).fetch_items()
+
+        params = session.get.call_args.kwargs["params"]
+        self.assertNotIn("tradable", params)
+        self.assertEqual(params["app_id"], 730)
+
+    def test_tradable_is_sent_when_explicitly_requested(self):
+        session = Mock()
+        self._ok(session)
+
+        self._client(session).fetch_items(tradable=True)
+
+        self.assertEqual(session.get.call_args.kwargs["params"]["tradable"], 1)
