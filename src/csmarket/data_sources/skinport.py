@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import time
 from collections.abc import Callable, Sequence
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import requests
@@ -27,6 +27,22 @@ _SALES_STATISTICS = frozenset({"min", "max", "avg", "median"})
 
 class SkinportDataError(RuntimeError):
     """Raised when Skinport cannot provide a usable response."""
+
+
+def _retry_after_seconds(response: Any) -> float | None:
+    """Read a ``Retry-After`` delay in seconds, if the response carries one."""
+
+    try:
+        raw = (response.headers or {}).get("Retry-After")
+    except AttributeError:
+        return None
+    if raw is None:
+        return None
+    try:
+        seconds = float(raw)
+    except (TypeError, ValueError):
+        return None
+    return seconds if seconds >= 0 else None
 
 
 def _brotli_available() -> bool:
@@ -57,6 +73,7 @@ class SkinportClient:
         timeout: float = 10.0,
         max_retries: int = 2,
         backoff_factor: float = 0.25,
+        max_wait: float = 60.0,
         base_url: str = SKINPORT_BASE_URL,
         sleep: Callable[[float], None] = time.sleep,
         clock: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
@@ -72,6 +89,7 @@ class SkinportClient:
         self.timeout = timeout
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor
+        self.max_wait = max_wait
         self.base_url = base_url.rstrip("/")
         self._sleep = sleep
         self._clock = clock
@@ -171,6 +189,22 @@ class SkinportClient:
                 status_code = getattr(exc.response, "status_code", None)
                 if status_code is None:
                     status_code = getattr(response, "status_code", None)
+                retry_after = _retry_after_seconds(response)
+                if status_code == 429 and retry_after is not None:
+                    # Skinport states exactly how long the window lasts.  It can
+                    # be the better part of an hour, so sleeping through it would
+                    # look like a hang and retrying inside it only extends the
+                    # block: report when it clears and let the caller decide.
+                    if retry_after > self.max_wait:
+                        clears_at = self._clock() + timedelta(seconds=retry_after)
+                        raise SkinportDataError(
+                            "Skinport is rate limiting this address for another "
+                            f"{retry_after / 60:.0f} minutes, until about "
+                            f"{clears_at.strftime('%H:%M')} UTC"
+                        ) from exc
+                    if attempt < self.max_retries:
+                        self._sleep(retry_after)
+                        continue
                 if status_code in _RETRYABLE_STATUS_CODES and attempt < self.max_retries:
                     self._wait_before_retry(attempt)
                     continue

@@ -185,5 +185,70 @@ class SkinportClientTests(unittest.TestCase):
         session.get.assert_not_called()
 
 
+
+class RateLimitTests(unittest.TestCase):
+    """Skinport states how long its window lasts; the client must read it."""
+
+    def _client(self, session, **kwargs):
+        from datetime import datetime, timezone
+
+        from csmarket.data_sources.skinport import SkinportClient
+
+        kwargs.setdefault("max_retries", 2)
+        return SkinportClient(
+            session=session,
+            sleep=lambda _: None,
+            clock=lambda: datetime(2026, 9, 8, 10, 0, 0, tzinfo=timezone.utc),
+            **kwargs,
+        )
+
+    def _throttled(self, retry_after):
+        response = Mock()
+        response.status_code = 429
+        response.headers = {"Retry-After": retry_after}
+        response.raise_for_status.side_effect = requests.HTTPError(response=response)
+        return response
+
+    def test_a_long_window_is_reported_rather_than_slept_through(self):
+        # 2869 seconds is what the live API returned. Sleeping looks like a
+        # hang, and retrying inside the window only extends the block.
+        session = Mock()
+        session.get.return_value = self._throttled("2869")
+
+        with self.assertRaises(SkinportDataError) as caught:
+            self._client(session).fetch_items()
+
+        message = str(caught.exception)
+        self.assertIn("48 minutes", message)
+        self.assertIn("10:47", message)
+        self.assertEqual(session.get.call_count, 1)
+
+    def test_a_short_window_is_waited_out(self):
+        session = Mock()
+        ok = Mock()
+        ok.status_code = 200
+        ok.raise_for_status.return_value = None
+        ok.json.return_value = []
+        session.get.side_effect = [self._throttled("3"), ok]
+        slept = []
+
+        client = self._client(session)
+        client._sleep = slept.append
+        client.fetch_items()
+
+        self.assertEqual(slept, [3.0])
+
+    def test_a_missing_header_falls_back_to_the_normal_backoff(self):
+        session = Mock()
+        response = Mock()
+        response.status_code = 429
+        response.headers = {}
+        response.raise_for_status.side_effect = requests.HTTPError(response=response)
+        session.get.return_value = response
+
+        with self.assertRaisesRegex(SkinportDataError, "429"):
+            self._client(session).fetch_items()
+
+        self.assertEqual(session.get.call_count, 3)
 if __name__ == "__main__":
     unittest.main()
