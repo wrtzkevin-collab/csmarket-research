@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>开 CS2 武器箱能回本吗</title>
+    <meta
+      name="description"
+      content="按官方公示掉落概率与市场实时价格，计算开 CS2 武器箱的期望回报。"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      window.PAGE_CONFIG = { data: "results.zh.json", locale: "zh-CN" };
+    </script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>开一个 CS2 武器箱，平均能拿回多少</h1>
+        <p class="sub">
+          官方公示的掉落概率乘以市场价格，减去开箱成本。所有数字都由
+          <a href="https://github.com/wrtzkevin-collab/csmarket-research">这份代码</a>
+          从带时间戳的市场快照算出。算的是<strong>开箱</strong>，不是囤箱子。
+        </p>
+        <p class="meta" id="meta"></p>
+        <p class="meta"><a href="index.html">English version →</a></p>
+      </header>
+
+      <section id="results-section">
+        <table id="results">
+          <thead>
+            <tr>
+              <th class="l">武器箱</th>
+              <th class="l">价格口径</th>
+              <th>开箱成本</th>
+              <th>期望回收</th>
+              <th>收益率</th>
+              <th>亏损概率</th>
+              <th>已定价</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr>
+              <td colspan="7" class="note">加载中…</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="note" id="table-note"></p>
+      </section>
+
+      <section>
+        <h2>怎么算出来的</h2>
+        <dl class="defs">
+          <dt>开箱成本</dt>
+          <dd>箱子价格 + 钥匙价格</dd>
+
+          <dt>期望回收</dt>
+          <dd>Σ（每种结果的概率 × 它的市场价），再扣掉出售手续费</dd>
+
+          <dt>收益率</dt>
+          <dd>期望回收 ÷ 开箱成本 − 1</dd>
+
+          <dt>亏损概率</dt>
+          <dd>所有价值低于开箱成本的结果，概率加总</dd>
+
+          <dt>已定价</dt>
+          <dd>
+            有可用价格的那部分概率。查不到价格的结果会被<strong>剔除</strong>，既不按
+            0 计算也不把它的概率摊给其他结果。所以只要低于 100%，收益率就是上界、亏损概率就是下界。
+          </dd>
+        </dl>
+        <p class="note">
+          掉落概率 = 稀有度档位概率 × 若可 StatTrak 则再乘 10% × 该磨损档的占比。
+          同档位内各物品等概率。磨损占比取自各档实际在售数量；在售太少无法测量时，
+          才退回「在可能的磨损档之间均分」这一假设。
+        </p>
+      </section>
+
+      <section>
+        <h2>数据从哪来</h2>
+        <table class="sources">
+          <tbody id="sources"></tbody>
+        </table>
+      </section>
+
+      <footer>
+        <p>
+          教育与研究用途。不构成投资建议，不是预测，也不代表未开封箱子未来的价格。
+        </p>
+        <p id="version"></p>
+      </footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

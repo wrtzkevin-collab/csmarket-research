@@ -22,6 +22,24 @@ CATALOG_RAW_ROOT = (
     f"{CATALOG_COMMIT}/public/api/en"
 )
 
+# Languages the upstream catalogue publishes.  The strings come from the game's
+# own manifest, so a localized name is Valve's, not a translation of the English
+# one -- which matters, because several are not literal: "Dreams & Nightmares"
+# ships as 梦魇武器箱, not as a rendering of both English words.
+SUPPORTED_LANGUAGES: tuple[str, ...] = ("en", "zh-CN")
+
+
+def catalog_root_for(language: str) -> str:
+    if language not in SUPPORTED_LANGUAGES:
+        raise ValueError(
+            f"unsupported catalogue language {language!r}; expected one of "
+            f"{list(SUPPORTED_LANGUAGES)}"
+        )
+    return (
+        "https://raw.githubusercontent.com/ByMykel/CSGO-API/"
+        f"{CATALOG_COMMIT}/public/api/{language}"
+    )
+
 _RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
 
 
@@ -162,6 +180,37 @@ class CaseCatalogClient:
             raise CatalogDataError("case must contain normal and rare-special items")
         return CaseDefinition(id=case_id, name=wanted, items=tuple(items))
 
+    def localized_case_names(self, language: str) -> dict[str, str]:
+        """Map English case name to that language's official in-game name.
+
+        Market keys stay English -- ``market_hash_name`` is the market's own
+        identifier and is never localized -- so this is presentation only.
+        Names are joined on the catalogue's stable ids rather than by position.
+        """
+
+        self._load()
+        assert self._cases is not None
+        if language == "en":
+            return {
+                row["name"]: row["name"]
+                for row in self._cases
+                if isinstance(row.get("name"), str)
+            }
+
+        payload = self._request_json_from(catalog_root_for(language), "crates.json")
+        if not isinstance(payload, list):
+            raise CatalogDataError("localized crates.json must be a list")
+        localized = {
+            row.get("id"): row.get("name")
+            for row in payload
+            if isinstance(row, dict) and isinstance(row.get("name"), str)
+        }
+        return {
+            row["name"]: localized[row["id"]]
+            for row in self._cases
+            if isinstance(row.get("name"), str) and row.get("id") in localized
+        }
+
     def case_names(self) -> tuple[str, ...]:
         """Every case name the pinned catalogue knows, for ranking and lookup."""
 
@@ -215,7 +264,10 @@ class CaseCatalogClient:
         self._variants_by_skin_id = variants_by_skin_id
 
     def _request_json(self, filename: str) -> Any:
-        url = f"{self.raw_root}/{filename}"
+        return self._request_json_from(self.raw_root, filename)
+
+    def _request_json_from(self, root: str, filename: str) -> Any:
+        url = f"{root.rstrip('/')}/{filename}"
         for attempt in range(self.max_retries + 1):
             try:
                 response = self.session.get(url, timeout=self.timeout)

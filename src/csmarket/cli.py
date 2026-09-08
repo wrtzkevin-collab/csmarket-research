@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .cache import DEFAULT_CACHE_PATH, DEFAULT_MAX_AGE_HOURS
-from .catalog import CaseCatalogClient
+from .catalog import SUPPORTED_LANGUAGES, CaseCatalogClient
 from .model import Outcome, calculate_ev
 from .pipeline import (
     CaseValuation,
@@ -126,6 +126,25 @@ def _selected_sources(choice: str) -> list[str]:
     if choice == "all":
         return list(SOURCE_IDS)
     return [choice]
+
+
+# The key is not tradable, so no venue quotes it and the price is a configured
+# constant.  A constant with no currency attached is only safe while everything
+# else is in that same currency: valuing in CNY while charging a USD key turned
+# every case in a run from a 60% loss into an apparent profit.
+KEY_PRICE_DEFAULT_CURRENCY = "USD"
+
+
+def _check_key_price_currency(args: argparse.Namespace) -> None:
+    if args.currency.upper() == args.key_price_currency.upper():
+        return
+    raise ValueError(
+        f"the key price is configured in {args.key_price_currency.upper()} but the "
+        f"valuation is in {args.currency.upper()}. The key is untradable, so no "
+        "market quotes it and this tool will not invent an exchange rate: pass "
+        f"--key-price in {args.currency.upper()} together with "
+        f"--key-price-currency {args.currency.upper()}."
+    )
 
 
 def _collection_tags(case) -> tuple[str, ...]:
@@ -276,6 +295,7 @@ def _resolve_case_names(args: argparse.Namespace, catalog: CaseCatalogClient, ca
 
 
 def _run_analyze_case(args: argparse.Namespace) -> int:
+    _check_key_price_currency(args)
     sources = _selected_sources(args.source)
     catalog = CaseCatalogClient(timeout=args.timeout, max_retries=args.retries)
     cache = build_cache(
@@ -302,8 +322,17 @@ def _run_analyze_case(args: argparse.Namespace) -> int:
         )
 
     if args.export_web:
+        display_names = (
+            catalog.localized_case_names(args.locale) if args.locale != "en" else None
+        )
         target = write_web_document(
-            build_web_document(valuations, label=args.label), args.export_web
+            build_web_document(
+                valuations,
+                label=args.label,
+                display_names=display_names,
+                locale=args.locale,
+            ),
+            args.export_web,
         )
         print(f"wrote {target}", file=sys.stderr)
 
@@ -367,8 +396,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     analysis_parser.add_argument("--key-price", type=float, default=2.49)
     analysis_parser.add_argument(
+        "--key-price-currency",
+        default=KEY_PRICE_DEFAULT_CURRENCY,
+        help="currency the --key-price figure is stated in; must match --currency",
+    )
+    analysis_parser.add_argument(
         "--key-price-source",
-        default="configured USD in-game key price; verify before use",
+        default="configured in-game key price; not a market observation",
     )
     analysis_parser.add_argument("--sell-fee-rate", type=float, default=0.12)
     analysis_parser.add_argument(
@@ -387,6 +421,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     analysis_parser.add_argument(
         "--label", default="Live snapshot", help="dataset label shown on the page"
+    )
+    analysis_parser.add_argument(
+        "--locale",
+        choices=SUPPORTED_LANGUAGES,
+        default="en",
+        help="language for case names on the page; market keys stay English",
     )
     analysis_parser.set_defaults(handler=_run_analyze_case)
 

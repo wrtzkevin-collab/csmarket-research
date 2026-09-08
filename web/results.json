@@ -11,6 +11,7 @@
   ],
   "cases": [
     {
+      "display_name": "Kilowatt Case",
       "name": "Kilowatt Case",
       "sources": [
         {
@@ -86,6 +87,7 @@
       ]
     },
     {
+      "display_name": "Dreams & Nightmares Case",
       "name": "Dreams & Nightmares Case",
       "sources": [
         {
@@ -161,6 +163,7 @@
       ]
     },
     {
+      "display_name": "Revolution Case",
       "name": "Revolution Case",
       "sources": [
         {
@@ -236,6 +239,7 @@
       ]
     },
     {
+      "display_name": "Fever Case",
       "name": "Fever Case",
       "sources": [
         {
@@ -311,6 +315,7 @@
       ]
     },
     {
+      "display_name": "Recoil Case",
       "name": "Recoil Case",
       "sources": [
         {
@@ -396,8 +401,9 @@
   "dataset": {
     "case_count": 5,
     "currency": "USD",
-    "generated_at": "2026-09-08T04:52:25.466076Z",
+    "generated_at": "2026-09-08T07:35:32.520216Z",
     "label": "Five busiest cases",
+    "locale": "en",
     "mode": "live",
     "observed_at": "2026-09-08T04:52:24.114309Z"
   },

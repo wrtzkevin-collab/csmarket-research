@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 from .catalog import CATALOG_COMMIT, CATALOG_LICENSE, CATALOG_REPOSITORY
 from .pipeline import CaseValuation
@@ -31,6 +31,41 @@ SOURCE_LABELS: dict[str, str] = {
     "steam_community_market": "Steam Community Market",
     "skinport": "Skinport",
     "skinport_listings": "Skinport",
+}
+
+SOURCE_NOTES_BY_LOCALE: dict[str, dict[str, str]] = {
+    "zh-CN": {
+        "steam_community_market": (
+            "V 社自家市场的最低在售价。它收录了每一个可交易变体，覆盖率最高，"
+            "但 Steam 余额无法提现，而且挂牌价不等于成交价。"
+        ),
+        "skinport": (
+            "第三方现金市场在所选窗口内的成交价中位数。这笔钱可以提现，"
+            "但近期没有成交的物品就没有价格，会拉低覆盖率。"
+        ),
+        "skinport_listings": (
+            "同一个现金市场的最低在售价。它比成交价覆盖了多得多的冷门物品——"
+            "一件东西可以挂着但当天无人买——但要价不等于成交价。"
+        ),
+    }
+}
+
+PROBABILITY_NOTE_BY_LOCALE: dict[str, str] = {
+    "zh-CN": (
+        "官方公示的稀有度档位概率，以及 StatTrak 的条件概率。该公示发布于 2017 年"
+        "国服版本；将它套用到当前全球版本是本项目未经独立核实的假设。"
+    )
+}
+
+PROBABILITY_NAME_BY_LOCALE: dict[str, str] = {
+    "zh-CN": "反恐精英官方概率公示"
+}
+
+CATALOG_NOTE_BY_LOCALE: dict[str, str] = {
+    "zh-CN": (
+        "社区维护，并非 V 社官方 API。普通皮肤由机器人从游戏本体解析；"
+        "刀和手套的对应关系由人工整理，需要逐箱核对。"
+    )
 }
 
 SOURCE_NOTES: dict[str, str] = {
@@ -116,6 +151,8 @@ def build_web_document(
     *,
     label: str = "Live snapshot",
     generated_at: str | None = None,
+    display_names: Mapping[str, str] | None = None,
+    locale: str = "en",
 ) -> dict[str, Any]:
     """Group valuations by case and attach the provenance the page displays."""
 
@@ -129,9 +166,15 @@ def build_web_document(
     if not order:
         raise ValueError("at least one valuation is required")
 
+    # The market key stays English because that is what the venues index on;
+    # the localized name is presentation only, and falls back to the key rather
+    # than to a guess when the catalogue has no string for it.
+    names = display_names or {}
+    localized_notes = SOURCE_NOTES_BY_LOCALE.get(locale, {})
     cases = [
         {
             "name": case_name,
+            "display_name": names.get(case_name, case_name),
             "sources": [
                 valuation_to_web_entry(valuation) for valuation in grouped[case_name]
             ],
@@ -153,24 +196,30 @@ def build_web_document(
             "observed_at": observed[-1],
             "generated_at": generated_at or _utc_now(),
             "case_count": len(cases),
+            "locale": locale,
         },
         "sources": [
             {
                 "id": source_id,
                 "name": SOURCE_LABELS.get(source_id, source_id),
                 "url": SOURCE_URLS.get(source_id, ""),
-                "basis": SOURCE_NOTES.get(source_id, ""),
+                "basis": localized_notes.get(
+                    source_id, SOURCE_NOTES.get(source_id, "")
+                ),
             }
             for source_id in source_ids
         ],
         "probability_source": {
-            "name": "Counter-Strike official rarity disclosure",
+            "name": PROBABILITY_NAME_BY_LOCALE.get(
+                locale, "Counter-Strike official rarity disclosure"
+            ),
             "url": PROBABILITY_DISCLOSURE_URL,
-            "basis": (
+            "basis": PROBABILITY_NOTE_BY_LOCALE.get(
+                locale,
                 "Published rarity probabilities and the conditional StatTrak "
                 "probability. Issued for the Chinese release in 2017; its "
                 "applicability to the current global build is an assumption "
-                "this project has not independently verified."
+                "this project has not independently verified.",
             ),
         },
         "catalog_source": {
@@ -178,10 +227,11 @@ def build_web_document(
             "url": CATALOG_REPOSITORY,
             "commit": CATALOG_COMMIT,
             "license": CATALOG_LICENSE,
-            "basis": (
+            "basis": CATALOG_NOTE_BY_LOCALE.get(
+                locale,
                 "Community maintained, not a Valve API. Ordinary skins are "
                 "parsed from the game manifest; the rare-special pools are "
-                "curated by hand and need per-case checking."
+                "curated by hand and need per-case checking.",
             ),
         },
         "assumptions": [
@@ -226,5 +276,12 @@ def export_valuations(
     *,
     path: Path | str = DEFAULT_OUTPUT_PATH,
     label: str = "Live snapshot",
+    display_names: Mapping[str, str] | None = None,
+    locale: str = "en",
 ) -> Path:
-    return write_web_document(build_web_document(valuations, label=label), path)
+    return write_web_document(
+        build_web_document(
+            valuations, label=label, display_names=display_names, locale=locale
+        ),
+        path,
+    )

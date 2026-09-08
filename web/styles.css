@@ -37,6 +37,24 @@ body {
   font: 15px/1.55 ui-serif, Georgia, "Times New Roman", serif;
 }
 
+/* CJK needs its own stack: the Latin serif above has no Chinese glyphs, so the
+   browser would fall back per-character and the page would mix faces. */
+:root:lang(zh-CN) body,
+html[lang="zh-CN"] body {
+  font-family: ui-serif, Georgia, "Songti SC", "STSong", "Noto Serif CJK SC",
+    "Source Han Serif SC", serif;
+  line-height: 1.7;
+}
+
+html[lang="zh-CN"] .meta,
+html[lang="zh-CN"] .note,
+html[lang="zh-CN"] table,
+html[lang="zh-CN"] h2,
+html[lang="zh-CN"] .defs dt {
+  font-family: ui-sans-serif, system-ui, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+}
+
 main {
   max-width: 60rem;
   margin: 0 auto;

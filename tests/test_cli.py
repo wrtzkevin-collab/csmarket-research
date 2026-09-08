@@ -123,3 +123,41 @@ class PartialRunTests(unittest.TestCase):
                     cli._run_analyze_case(self._args())
 if __name__ == "__main__":
     unittest.main()
+
+
+class KeyPriceCurrencyTests(unittest.TestCase):
+    """The key price is a bare constant, so its currency must be checked."""
+
+    def _args(self, **overrides):
+        args = build_parser().parse_args(["analyze-case", "Kilowatt Case"])
+        for key, value in overrides.items():
+            setattr(args, key, value)
+        return args
+
+    def test_matching_currency_is_accepted(self):
+        from csmarket.cli import _check_key_price_currency
+
+        _check_key_price_currency(self._args(currency="USD"))
+        _check_key_price_currency(
+            self._args(currency="cny", key_price_currency="CNY")
+        )
+
+    def test_mismatched_currency_is_refused_rather_than_silently_wrong(self):
+        # Charging a 2.49 USD key against CNY item prices turned a 60% expected
+        # loss into an apparent profit on every case in a run.
+        from csmarket.cli import _check_key_price_currency
+
+        with self.assertRaisesRegex(ValueError, "will not invent an exchange rate"):
+            _check_key_price_currency(self._args(currency="CNY"))
+
+    def test_the_refusal_names_the_flags_that_fix_it(self):
+        from csmarket.cli import _check_key_price_currency
+
+        with self.assertRaises(ValueError) as caught:
+            _check_key_price_currency(self._args(currency="EUR"))
+
+        message = str(caught.exception)
+        self.assertIn("--key-price", message)
+        self.assertIn("--key-price-currency EUR", message)
+if __name__ == "__main__":
+    unittest.main()
