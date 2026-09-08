@@ -15,15 +15,26 @@ from typing import Any, Callable, Iterable, Sequence
 
 from .cache import PriceCache
 from .data_sources import SkinportClient, SteamMarketClient
+from .data_sources.skinport import LISTINGS_SOURCE_NAME, SALES_SOURCE_NAME
 from .data_sources.steam import SteamDataError
 from .data_sources.steam import SOURCE_NAME as STEAM_SOURCE_NAME
 from .data_sources.steam import SteamSearchClient
 
 SOURCE_STEAM = "steam"
 SOURCE_SKINPORT = "skinport"
-SOURCE_IDS: tuple[str, ...] = (SOURCE_STEAM, SOURCE_SKINPORT)
+SOURCE_SKINPORT_LISTINGS = "skinport-listings"
+SOURCE_IDS: tuple[str, ...] = (
+    SOURCE_SKINPORT_LISTINGS,
+    SOURCE_SKINPORT,
+    SOURCE_STEAM,
+)
 
-SKINPORT_SOURCE_NAME = "skinport"
+# The two venues reachable in a single request each.  Steam needs tens of
+# requests and throttles hard, so it is opt-in rather than part of the default.
+FAST_SOURCE_IDS: tuple[str, ...] = (SOURCE_SKINPORT_LISTINGS, SOURCE_SKINPORT)
+
+SKINPORT_SOURCE_NAME = SALES_SOURCE_NAME
+SKINPORT_LISTINGS_SOURCE_NAME = LISTINGS_SOURCE_NAME
 
 # Reserved cache key recording when the last whole-market pull happened.
 # It is never a real market name, so it can never reach a snapshot.
@@ -48,6 +59,8 @@ def source_provider_name(source_id: str) -> str:
         return STEAM_SOURCE_NAME
     if source_id == SOURCE_SKINPORT:
         return SKINPORT_SOURCE_NAME
+    if source_id == SOURCE_SKINPORT_LISTINGS:
+        return SKINPORT_LISTINGS_SOURCE_NAME
     raise ValueError(f"unknown source {source_id!r}; expected one of {SOURCE_IDS}")
 
 
@@ -95,7 +108,7 @@ def fetch_rows(
             search_queries=search_queries,
             offline=offline,
         )
-    if source_id == SOURCE_SKINPORT:
+    if source_id in (SOURCE_SKINPORT, SOURCE_SKINPORT_LISTINGS):
         return _fetch_skinport_rows(
             names,
             currency=currency,
@@ -107,6 +120,7 @@ def fetch_rows(
             period=period,
             statistic=statistic,
             offline=offline,
+            listings=source_id == SOURCE_SKINPORT_LISTINGS,
         )
     raise ValueError(f"unknown source {source_id!r}; expected one of {SOURCE_IDS}")
 
@@ -223,17 +237,18 @@ def _fetch_skinport_rows(
     period: str,
     statistic: str,
     offline: bool = False,
+    listings: bool = False,
 ) -> list[dict[str, Any]]:
     wanted = set(names)
+    provider = SKINPORT_LISTINGS_SOURCE_NAME if listings else SKINPORT_SOURCE_NAME
+    marker_name = f"{_BULK_MARKER_NAME}{'listings' if listings else 'sales'}"
 
     if offline:
         if cache is None:
             return []
         return [
             row
-            for row in (
-                cache.get(SKINPORT_SOURCE_NAME, currency, name) for name in names
-            )
+            for row in (cache.get(provider, currency, name) for name in names)
             if row is not None
         ]
 
@@ -244,11 +259,11 @@ def _fetch_skinport_rows(
     # A marker row records when the bulk pull happened instead, so a fresh pull
     # serves whatever it contained and absent names stay correctly absent.
     if cache is not None and not refresh:
-        marker = cache.get(SKINPORT_SOURCE_NAME, currency, _BULK_MARKER_NAME)
+        marker = cache.get(provider, currency, marker_name)
         if marker is not None:
             rows = []
             for name in names:
-                row = cache.get(SKINPORT_SOURCE_NAME, currency, name)
+                row = cache.get(provider, currency, name)
                 if row is not None:
                     rows.append(row)
             if progress is not None:
@@ -257,8 +272,12 @@ def _fetch_skinport_rows(
             return rows
 
     client = SkinportClient(timeout=timeout, max_retries=retries)
-    fetched = client.fetch_sales_history(
-        currency=currency, period=period, statistic=statistic
+    fetched = (
+        client.fetch_items(currency=currency)
+        if listings
+        else client.fetch_sales_history(
+            currency=currency, period=period, statistic=statistic
+        )
     )
     rows = [row for row in fetched if row.get("market_hash_name") in wanted]
     if cache is not None:
@@ -269,12 +288,12 @@ def _fetch_skinport_rows(
         cache.put_many(fetched)
         cache.put(
             {
-                "market_hash_name": _BULK_MARKER_NAME,
+                "market_hash_name": marker_name,
                 "price": None,
-                "source": SKINPORT_SOURCE_NAME,
+                "source": provider,
                 "currency": currency.upper(),
                 "price_type": "bulk-pull marker",
-                "observed_at": _bulk_marker_time(rows),
+                "observed_at": _bulk_marker_time(fetched),
             }
         )
         cache.save()

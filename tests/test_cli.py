@@ -15,7 +15,7 @@ class CliTests(unittest.TestCase):
     def test_live_analysis_defaults_to_a_cross_venue_comparison(self):
         args = build_parser().parse_args(["analyze-case", "Kilowatt Case"])
 
-        self.assertEqual(args.source, "both")
+        self.assertEqual(args.source, "fast")
         self.assertEqual(args.case_names, ["Kilowatt Case"])
         self.assertEqual(args.currency, "USD")
         self.assertIsNone(args.export_web)
@@ -62,6 +62,17 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(args.source, "steam")
         self.assertEqual(args.names, ["Kilowatt Case"])
+
+    def test_source_choices_expand_to_venues(self):
+        from csmarket.cli import _selected_sources
+
+        # The default avoids Steam: both fast venues answer in one request each,
+        # while Steam needs tens and throttles hard.
+        self.assertEqual(
+            _selected_sources("fast"), ["skinport-listings", "skinport"]
+        )
+        self.assertIn("steam", _selected_sources("all"))
+        self.assertEqual(_selected_sources("steam"), ["steam"])
 
     def test_unknown_source_is_rejected(self):
         with self.assertRaises(SystemExit):

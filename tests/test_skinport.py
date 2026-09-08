@@ -64,7 +64,10 @@ class SkinportClientTests(unittest.TestCase):
             headers={"Accept-Encoding": "br"},
             timeout=3.5,
         )
-        self.assertEqual(rows[0]["source"], "skinport")
+        # Listings and completed sales must not share a source name: rows are
+        # cached and grouped by source, so sharing one would let a listing
+        # overwrite a sale for the same item.
+        self.assertEqual(rows[0]["source"], "skinport_listings")
         self.assertEqual(rows[0]["currency"], "USD")
         self.assertEqual(rows[0]["price"], 10.5)
         self.assertEqual(rows[0]["price_type"], "listing_min")

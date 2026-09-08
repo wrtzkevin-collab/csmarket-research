@@ -14,38 +14,373 @@
       "name": "Kilowatt Case",
       "sources": [
         {
-          "case_price": 0.2,
-          "coverage": 0.9999989781691422,
+          "case_price": 0.15,
+          "coverage": 0.9982185616296562,
           "coverage_by_rarity": {
-            "Classified": 1.0,
+            "Classified": 0.9990099009900989,
             "Covert": 1.0,
-            "Mil-Spec": 1.0,
-            "Rare Special Item": 0.9996008473211453,
+            "Mil-Spec": 0.9989894034536893,
+            "Rare Special Item": 0.8154379886888248,
+            "Restricted": 0.9970622015743965
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.7396809936232123,
+          "gross_expected_value": 0.7809570191303633,
+          "gross_return_ratio": 0.2958170527008952,
+          "key_price": 2.49,
+          "loss_probability": 0.9641189777559369,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 55,
+          "net_expected_value": 0.6872421768347197,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 2.64,
+          "price_type": "listing_min",
+          "priced_outcomes": 219,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 274,
+          "wear_basis": {
+            "observed_listings": 0.998621538461538,
+            "observed_total": 0.9988184615384611,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.0011815384615384617
+          }
+        },
+        {
+          "case_price": 0.22,
+          "coverage": 0.9983955652446512,
+          "coverage_by_rarity": {
+            "Classified": 0.9910891089108911,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9984721141096323,
+            "Rare Special Item": 0.9615541691126976,
             "Restricted": 1.0
           },
           "currency": "USD",
-          "expected_net_roi": -0.6165551008587546,
-          "gross_expected_value": 1.1721213394203978,
-          "gross_return_ratio": 0.4357328399332333,
+          "expected_net_roi": -0.6953192590371493,
+          "gross_expected_value": 0.9382781909196882,
+          "gross_return_ratio": 0.3462281147305122,
           "key_price": 2.49,
-          "loss_probability": 0.9536425849141706,
+          "loss_probability": 0.9515495136821789,
           "loss_probability_is_lower_bound": true,
-          "missing_count": 3,
-          "net_expected_value": 1.03146677868995,
-          "observation_span_seconds": 2267.064496,
-          "observed_at": "2026-09-07T16:02:33.709249Z",
-          "opening_cost": 2.6900000000000004,
-          "price_type": "lowest_listing",
-          "priced_outcomes": 279,
+          "missing_count": 34,
+          "net_expected_value": 0.8256848080093256,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 2.7100000000000004,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 240,
           "publication_ready": false,
-          "source": "steam_community_market",
-          "source_label": "Steam Community Market",
-          "total_outcomes": 282,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 274,
           "wear_basis": {
-            "observed_listings": 0.9998030769230785,
-            "observed_total": 1.0000000000000016,
+            "observed_listings": 0.998621538461538,
+            "observed_total": 0.9988184615384611,
             "observed_volume": 0.00019692307692307693,
-            "uniform_fallback": 0.0
+            "uniform_fallback": 0.0011815384615384617
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dreams & Nightmares Case",
+      "sources": [
+        {
+          "case_price": 0.81,
+          "coverage": 0.9967023278108265,
+          "coverage_by_rarity": {
+            "Classified": 0.9974667137975728,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9963419329996149,
+            "Rare Special Item": 0.8855288513421028,
+            "Restricted": 1.0
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5698526982030264,
+          "gross_expected_value": 1.613052381738651,
+          "gross_return_ratio": 0.4888037520420154,
+          "key_price": 2.49,
+          "loss_probability": 0.954726359086125,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 90,
+          "net_expected_value": 1.4194860959300128,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.3000000000000003,
+          "price_type": "listing_min",
+          "priced_outcomes": 330,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 464,
+          "wear_basis": {
+            "observed_listings": 0.9984639999999996,
+            "observed_total": 0.9984639999999996,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.0015360000000000007
+          }
+        },
+        {
+          "case_price": 1.23,
+          "coverage": 0.9975045790586597,
+          "coverage_by_rarity": {
+            "Classified": 1.0,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9970776602852074,
+            "Rare Special Item": 0.9375783706693039,
+            "Restricted": 1.0
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5609715490916996,
+          "gross_expected_value": 1.8558929970214524,
+          "gross_return_ratio": 0.4988959669412506,
+          "key_price": 2.49,
+          "loss_probability": 0.9553143744045891,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 53,
+          "net_expected_value": 1.6331858373788781,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.72,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 375,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 464,
+          "wear_basis": {
+            "observed_listings": 0.9984639999999996,
+            "observed_total": 0.9984639999999996,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.0015360000000000007
+          }
+        }
+      ]
+    },
+    {
+      "name": "Revolution Case",
+      "sources": [
+        {
+          "case_price": 0.34,
+          "coverage": 0.9971021022137688,
+          "coverage_by_rarity": {
+            "Classified": 0.9985279987701295,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9973544973544974,
+            "Rare Special Item": 0.9943693693693695,
+            "Restricted": 0.9954829001367987
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.7121913742423442,
+          "gross_expected_value": 0.9255663760160975,
+          "gross_return_ratio": 0.3270552565427906,
+          "key_price": 2.49,
+          "loss_probability": 0.9733104068677539,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 10,
+          "net_expected_value": 0.8144984108941659,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 2.83,
+          "price_type": "listing_min",
+          "priced_outcomes": 258,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 268,
+          "wear_basis": {
+            "observed_listings": 0.9997866666666665,
+            "observed_total": 0.9997866666666665,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.0002133333333333334
+          }
+        },
+        {
+          "case_price": 0.33,
+          "coverage": 0.9985051737763404,
+          "coverage_by_rarity": {
+            "Classified": 1.0,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9981481481481482,
+            "Rare Special Item": 0.9942302077718745,
+            "Restricted": 1.0
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6713854125029405,
+          "gross_expected_value": 1.0530603826610316,
+          "gross_return_ratio": 0.3734256676102949,
+          "key_price": 2.49,
+          "loss_probability": 0.9625767645220006,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 6,
+          "net_expected_value": 0.926693136741708,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 2.8200000000000003,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 262,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 268,
+          "wear_basis": {
+            "observed_listings": 0.9997866666666665,
+            "observed_total": 0.9997866666666665,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.0002133333333333334
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fever Case",
+      "sources": [
+        {
+          "case_price": 0.53,
+          "coverage": 0.9988883455575752,
+          "coverage_by_rarity": {
+            "Classified": 0.9988636363636364,
+            "Covert": 0.9912037037037036,
+            "Mil-Spec": 1.0,
+            "Rare Special Item": 0.8446787494690727,
+            "Restricted": 0.9961120165012342
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6050221001296449,
+          "gross_expected_value": 1.355492338191446,
+          "gross_return_ratio": 0.448838522579949,
+          "key_price": 2.49,
+          "loss_probability": 0.9533682533130478,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 91,
+          "net_expected_value": 1.1928332576084726,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.0200000000000005,
+          "price_type": "listing_min",
+          "priced_outcomes": 267,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 412,
+          "wear_basis": {
+            "observed_listings": 0.9976369230769233,
+            "observed_total": 0.9978338461538464,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.002166153846153846
+          }
+        },
+        {
+          "case_price": 0.62,
+          "coverage": 0.9992288765826416,
+          "coverage_by_rarity": {
+            "Classified": 1.0,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9993277310924371,
+            "Rare Special Item": 0.9450990543893778,
+            "Restricted": 0.9994164559424237
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.3696357001559697,
+          "gross_expected_value": 2.227764741494244,
+          "gross_return_ratio": 0.7163230680045799,
+          "key_price": 2.49,
+          "loss_probability": 0.9482769391847171,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 49,
+          "net_expected_value": 1.9604329725149345,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.1100000000000003,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 333,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 412,
+          "wear_basis": {
+            "observed_listings": 0.9976369230769233,
+            "observed_total": 0.9978338461538464,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.002166153846153846
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recoil Case",
+      "sources": [
+        {
+          "case_price": 0.36,
+          "coverage": 0.997286821248682,
+          "coverage_by_rarity": {
+            "Classified": 0.9948191593352882,
+            "Covert": 0.9993421052631579,
+            "Mil-Spec": 0.9978946283457562,
+            "Rare Special Item": 0.9690315315315319,
+            "Restricted": 0.9951117431254417
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6681932366982127,
+          "gross_expected_value": 1.074601449329652,
+          "gross_return_ratio": 0.3770531401156674,
+          "key_price": 2.49,
+          "loss_probability": 0.9579731181369369,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 18,
+          "net_expected_value": 0.9456492754100939,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 2.85,
+          "price_type": "listing_min",
+          "priced_outcomes": 248,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 266,
+          "wear_basis": {
+            "observed_listings": 0.9994666666666666,
+            "observed_total": 0.9994666666666666,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.0005333333333333335
+          }
+        },
+        {
+          "case_price": 0.35,
+          "coverage": 0.9653327067124188,
+          "coverage_by_rarity": {
+            "Classified": 1.0,
+            "Covert": 0.9993421052631579,
+            "Mil-Spec": 0.9578934243862695,
+            "Rare Special Item": 0.9961451836451838,
+            "Restricted": 0.9937417417417416
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6140181631448807,
+          "gross_expected_value": 1.2456686553051581,
+          "gross_return_ratio": 0.4386157236989993,
+          "key_price": 2.49,
+          "loss_probability": 0.9175024096949717,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 14,
+          "net_expected_value": 1.0961884166685392,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 2.8400000000000003,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 252,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 266,
+          "wear_basis": {
+            "observed_listings": 0.9994666666666666,
+            "observed_total": 0.9994666666666666,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.0005333333333333335
           }
         }
       ]
@@ -59,12 +394,12 @@
     "url": "https://github.com/ByMykel/CSGO-API"
   },
   "dataset": {
-    "case_count": 1,
+    "case_count": 5,
     "currency": "USD",
-    "generated_at": "2026-09-07T16:28:19.177864Z",
-    "label": "Kilowatt Case, Steam only",
+    "generated_at": "2026-09-08T04:52:25.466076Z",
+    "label": "Five busiest cases",
     "mode": "live",
-    "observed_at": "2026-09-07T16:02:33.709249Z"
+    "observed_at": "2026-09-08T04:52:24.114309Z"
   },
   "probability_source": {
     "basis": "Published rarity probabilities and the conditional StatTrak probability. Issued for the Chinese release in 2017; its applicability to the current global build is an assumption this project has not independently verified.",
@@ -74,10 +409,16 @@
   "schema_version": "2.0",
   "sources": [
     {
-      "basis": "Lowest current ask on Valve's own market. It lists every tradable variant, so coverage is high, but Steam balance cannot be withdrawn as cash and an ask is not a completed sale.",
-      "id": "steam_community_market",
-      "name": "Steam Community Market",
-      "url": "https://steamcommunity.com/market/"
+      "basis": "Cheapest current listing on the same cash market. It covers far more of the tail than completed sales do, because an item can be listed on a day nobody buys it, but an asking price is not a sale.",
+      "id": "skinport_listings",
+      "name": "Skinport",
+      "url": "https://docs.skinport.com/"
+    },
+    {
+      "basis": "Median completed sale on a cash market over the selected window. Proceeds are withdrawable, but items with no recent sale have no price and lower the coverage.",
+      "id": "skinport",
+      "name": "Skinport",
+      "url": "https://docs.skinport.com/"
     }
   ]
 }

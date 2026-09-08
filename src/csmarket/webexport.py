@@ -30,6 +30,7 @@ DEFAULT_OUTPUT_PATH = Path("web/results.json")
 SOURCE_LABELS: dict[str, str] = {
     "steam_community_market": "Steam Community Market",
     "skinport": "Skinport",
+    "skinport_listings": "Skinport",
 }
 
 SOURCE_NOTES: dict[str, str] = {
@@ -43,11 +44,17 @@ SOURCE_NOTES: dict[str, str] = {
         "Proceeds are withdrawable, but items with no recent sale have no "
         "price and lower the coverage."
     ),
+    "skinport_listings": (
+        "Cheapest current listing on the same cash market. It covers far more "
+        "of the tail than completed sales do, because an item can be listed on "
+        "a day nobody buys it, but an asking price is not a sale."
+    ),
 }
 
 SOURCE_URLS: dict[str, str] = {
     "steam_community_market": "https://steamcommunity.com/market/",
     "skinport": "https://docs.skinport.com/",
+    "skinport_listings": "https://docs.skinport.com/",
 }
 
 

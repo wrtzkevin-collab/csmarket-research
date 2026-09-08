@@ -58,6 +58,7 @@ function when(iso) {
 }
 
 const PRICE_BASIS = {
+  listing_min: "cheapest listing",
   lowest_listing: "cheapest listing",
   sales_median_30_days: "median sale, 30d",
   sales_median_7_days: "median sale, 7d",
@@ -186,7 +187,11 @@ function renderSources(data) {
 }
 
 function renderMeta(data) {
-  const venues = data.sources.map((source) => source.name).join(" and ");
+  // Two endpoints of one venue share its name; listing them both reads as
+  // "Skinport and Skinport".
+  const venues = [...new Set(data.sources.map((source) => source.name))].join(
+    " and ",
+  );
   document.querySelector("#meta").textContent =
     `Prices from ${venues}, observed ${when(data.dataset.observed_at)} UTC, ` +
     `in ${data.dataset.currency}. ${data.dataset.case_count} case` +

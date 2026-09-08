@@ -21,7 +21,15 @@ from .pipeline import (
     wear_weights_for_case,
 )
 from .ranking import rank_cases, top_case_names
-from .sources import SOURCE_IDS, SOURCE_SKINPORT, SOURCE_STEAM, build_cache, fetch_rows
+from .sources import (
+    FAST_SOURCE_IDS,
+    SOURCE_IDS,
+    SOURCE_SKINPORT,
+    SOURCE_SKINPORT_LISTINGS,
+    SOURCE_STEAM,
+    build_cache,
+    fetch_rows,
+)
 from .wear import DEFAULT_MIN_TOTAL_VOLUME
 from .webexport import DEFAULT_OUTPUT_PATH, build_web_document, write_web_document
 
@@ -105,6 +113,21 @@ def _progress_reporter(source_id: str, enabled: bool):
     return report
 
 
+def _selected_sources(choice: str) -> list[str]:
+    """Expand a --source choice into the venues to value against.
+
+    "fast" is the default because both of its venues answer in a single request
+    each. Steam needs tens of requests and throttles hard, so paying that cost
+    is an explicit decision.
+    """
+
+    if choice == "fast":
+        return list(FAST_SOURCE_IDS)
+    if choice == "all":
+        return list(SOURCE_IDS)
+    return [choice]
+
+
 def _collection_tags(case) -> tuple[str, ...]:
     """Translate catalogue collection ids into Steam market item-set facets.
 
@@ -181,7 +204,16 @@ def _value_one_case(
     # book, and reused for every valuation.  Deriving them per venue would make
     # the cross-venue comparison confound price differences with weighting
     # differences instead of isolating price.
-    reference_id = SOURCE_STEAM if SOURCE_STEAM in snapshots else sources[0]
+    # Whichever venue reported resting listings carries the wear weighting;
+    # both listing sources do, so the preference order is simply cost.
+    reference_id = next(
+        (
+            candidate
+            for candidate in (SOURCE_SKINPORT_LISTINGS, SOURCE_STEAM)
+            if candidate in snapshots
+        ),
+        sources[0],
+    )
     weights = wear_weights_for_case(
         case, snapshots[reference_id], min_total_volume=args.min_wear_volume
     )
@@ -244,7 +276,7 @@ def _resolve_case_names(args: argparse.Namespace, catalog: CaseCatalogClient, ca
 
 
 def _run_analyze_case(args: argparse.Namespace) -> int:
-    sources = list(SOURCE_IDS) if args.source == "both" else [args.source]
+    sources = _selected_sources(args.source)
     catalog = CaseCatalogClient(timeout=args.timeout, max_retries=args.retries)
     cache = build_cache(
         None if args.no_cache else args.cache, max_age_hours=args.max_age_hours
@@ -326,9 +358,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     analysis_parser.add_argument(
         "--source",
-        choices=(*SOURCE_IDS, "both"),
-        default="both",
-        help="venue to value against; 'both' reports each separately",
+        choices=(*SOURCE_IDS, "fast", "all"),
+        default="fast",
+        help=(
+            "venues to value against, reported separately; 'fast' uses the two "
+            "single-request Skinport endpoints, 'all' adds the slow Steam crawl"
+        ),
     )
     analysis_parser.add_argument("--key-price", type=float, default=2.49)
     analysis_parser.add_argument(

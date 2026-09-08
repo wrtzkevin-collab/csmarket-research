@@ -16,6 +16,8 @@ import requests
 
 
 SKINPORT_BASE_URL = "https://api.skinport.com"
+SALES_SOURCE_NAME = "skinport"
+LISTINGS_SOURCE_NAME = "skinport_listings"
 _RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
 _SALES_PERIODS = frozenset(
     {"last_24_hours", "last_7_days", "last_30_days", "last_90_days"}
@@ -215,14 +217,19 @@ class SkinportClient:
     def _normalize_item(
         row: dict[str, Any], requested_currency: str, observed_at: str
     ) -> dict[str, Any]:
+        # A distinct source name, not merely a distinct price type: rows are
+        # cached and grouped by source, so sharing "skinport" with the
+        # completed-sale endpoint would let a listing overwrite a sale for the
+        # same item and let one snapshot mix the two.
         return {
             "market_hash_name": row.get("market_hash_name"),
-            "source": "skinport",
+            "source": LISTINGS_SOURCE_NAME,
             "currency": str(row.get("currency") or requested_currency).upper(),
             "price": row.get("min_price"),
             "price_type": "listing_min",
             "observed_at": observed_at,
             "quantity": row.get("quantity"),
+            "listings": row.get("quantity"),
             "min_price": row.get("min_price"),
             "max_price": row.get("max_price"),
             "mean_price": row.get("mean_price"),
