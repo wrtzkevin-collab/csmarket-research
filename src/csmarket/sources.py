@@ -262,7 +262,11 @@ def _fetch_skinport_rows(
     )
     rows = [row for row in fetched if row.get("market_hash_name") in wanted]
     if cache is not None:
-        cache.put_many(rows)
+        # The whole market arrives in one response and the marker below claims
+        # exactly that, so all of it is stored.  Caching only the names this
+        # call happened to want would leave the marker lying to the next case,
+        # which would then find a "fresh" cache holding nothing it needs.
+        cache.put_many(fetched)
         cache.put(
             {
                 "market_hash_name": _BULK_MARKER_NAME,

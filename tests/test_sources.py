@@ -321,3 +321,36 @@ class BlockedBulkPageTests(unittest.TestCase):
         self.assertEqual([row["market_hash_name"] for row in rows], ["A"])
 if __name__ == "__main__":
     unittest.main()
+
+
+class SkinportBulkScopeTests(unittest.TestCase):
+    """The bulk marker claims the whole market, so the whole market is stored."""
+
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._dir.cleanup)
+        self.path = Path(self._dir.name) / "cache.json"
+
+    def cache(self):
+        return PriceCache(self.path, max_age=timedelta(hours=6), clock=lambda: NOW)
+
+    def test_a_later_case_is_served_from_the_same_bulk_pull(self):
+        # One response covers every case. Caching only the first caller's names
+        # left the marker asserting freshness over rows that were never stored,
+        # so the second case found an empty "fresh" cache and had no prices.
+        cache = self.cache()
+        client = Mock()
+        client.fetch_sales_history.return_value = [
+            skinport_row("Case One Item"),
+            skinport_row("Case Two Item"),
+        ]
+
+        with patch("csmarket.sources.SkinportClient", return_value=client):
+            first = fetch_rows(SOURCE_SKINPORT, ["Case One Item"], cache=cache)
+            second = fetch_rows(SOURCE_SKINPORT, ["Case Two Item"], cache=cache)
+
+        client.fetch_sales_history.assert_called_once()
+        self.assertEqual([r["market_hash_name"] for r in first], ["Case One Item"])
+        self.assertEqual([r["market_hash_name"] for r in second], ["Case Two Item"])
+if __name__ == "__main__":
+    unittest.main()
