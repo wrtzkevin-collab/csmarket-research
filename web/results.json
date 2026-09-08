@@ -399,6 +399,2814 @@
           }
         }
       ]
+    },
+    {
+      "display_name": "Fracture Case",
+      "name": "Fracture Case",
+      "sources": [
+        {
+          "case_price": 0.38,
+          "coverage": 0.9920976558090375,
+          "coverage_by_rarity": {
+            "Classified": 0.9989247311827958,
+            "Covert": 0.9984042553191489,
+            "Mil-Spec": 0.9917114381024155,
+            "Rare Special Item": 0.6436810621810622,
+            "Restricted": 0.9979910714285716
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.7305196246530078,
+          "gross_expected_value": 0.8788734968703044,
+          "gross_return_ratio": 0.30622769925794574,
+          "key_price": 2.49,
+          "loss_probability": 0.9564641418707743,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 302,
+          "net_expected_value": 0.7734086772458678,
+          "net_return_ratio": 0.26948037534699226,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 2.87,
+          "price_type": "listing_min",
+          "priced_outcomes": 312,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 614,
+          "wear_basis": {
+            "observed_listings": 0.9974892307692307,
+            "observed_total": 0.9976861538461538,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.002313846153846151
+          }
+        },
+        {
+          "case_price": 0.48,
+          "coverage": 0.9901378467941164,
+          "coverage_by_rarity": {
+            "Classified": 0.9975308641975308,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9902601199969622,
+            "Rare Special Item": 0.885256260631261,
+            "Restricted": 0.9893333333333335
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6859098594851061,
+          "gross_expected_value": 1.0600542242377666,
+          "gross_return_ratio": 0.3569206142214702,
+          "key_price": 2.49,
+          "loss_probability": 0.9427942379076252,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 202,
+          "net_expected_value": 0.9328477173292348,
+          "net_return_ratio": 0.31409014051489387,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 2.97,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 412,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 614,
+          "wear_basis": {
+            "observed_listings": 0.9974892307692307,
+            "observed_total": 0.9976861538461538,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.002313846153846151
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Snakebite Case",
+      "name": "Snakebite Case",
+      "sources": [
+        {
+          "case_price": 0.35,
+          "coverage": 0.969060312830533,
+          "coverage_by_rarity": {
+            "Classified": 0.9939774557165862,
+            "Covert": 0.9987179487179487,
+            "Mil-Spec": 0.9628143836245143,
+            "Rare Special Item": 0.9690315315315319,
+            "Restricted": 0.9941206464436955
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5175308397503151,
+          "gross_expected_value": 1.5570595626239834,
+          "gross_return_ratio": 0.5482604093746419,
+          "key_price": 2.49,
+          "loss_probability": 0.8823130684497006,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 28,
+          "net_expected_value": 1.3702124151091053,
+          "net_return_ratio": 0.4824691602496849,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 2.8400000000000003,
+          "price_type": "listing_min",
+          "priced_outcomes": 234,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 262,
+          "wear_basis": {
+            "observed_listings": 0.8852909523809518,
+            "observed_total": 0.8852909523809518,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.11470904761904764
+          }
+        },
+        {
+          "case_price": 0.49,
+          "coverage": 0.9763863712007933,
+          "coverage_by_rarity": {
+            "Classified": 1.0,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9813827117053718,
+            "Rare Special Item": 0.9961451836451838,
+            "Restricted": 0.9454221761299804
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5100435071798264,
+          "gross_expected_value": 1.6591708506864973,
+          "gross_return_ratio": 0.5567687418411064,
+          "key_price": 2.49,
+          "loss_probability": 0.8866996704684725,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 18,
+          "net_expected_value": 1.4600703486041176,
+          "net_return_ratio": 0.4899564928201736,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 2.9800000000000004,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 244,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 262,
+          "wear_basis": {
+            "observed_listings": 0.8852909523809518,
+            "observed_total": 0.8852909523809518,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.11470904761904764
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Danger Zone Case",
+      "name": "Danger Zone Case",
+      "sources": [
+        {
+          "case_price": 1.0,
+          "coverage": 0.968264003249044,
+          "coverage_by_rarity": {
+            "Classified": 0.98124507890863,
+            "Covert": 0.9989690721649482,
+            "Mil-Spec": 0.982381669400303,
+            "Rare Special Item": 0.596198544698545,
+            "Restricted": 0.8998124228712467
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5372074502565384,
+          "gross_expected_value": 1.835393180232592,
+          "gross_return_ratio": 0.5259006247084791,
+          "key_price": 2.49,
+          "loss_probability": 0.8775231887558059,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 345,
+          "net_expected_value": 1.615145998604681,
+          "net_return_ratio": 0.46279254974346157,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.49,
+          "price_type": "listing_min",
+          "priced_outcomes": 255,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 600,
+          "wear_basis": {
+            "observed_listings": 0.8512942857142856,
+            "observed_total": 0.8514912087912087,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.14850879120879054
+          }
+        },
+        {
+          "case_price": 1.12,
+          "coverage": 0.9666771042012325,
+          "coverage_by_rarity": {
+            "Classified": 0.9936507936507937,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9628289998476335,
+            "Rare Special Item": 0.7675036382536385,
+            "Restricted": 0.9823800904977379
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.544869968735686,
+          "gross_expected_value": 1.867067514618379,
+          "gross_return_ratio": 0.5171932173458114,
+          "key_price": 2.49,
+          "loss_probability": 0.8586673603470467,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 269,
+          "net_expected_value": 1.6430194128641735,
+          "net_return_ratio": 0.45513003126431395,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.6100000000000003,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 331,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 600,
+          "wear_basis": {
+            "observed_listings": 0.8512942857142856,
+            "observed_total": 0.8514912087912087,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.14850879120879054
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Gallery Case",
+      "name": "Gallery Case",
+      "sources": [
+        {
+          "case_price": 0.75,
+          "coverage": 0.9660283577371863,
+          "coverage_by_rarity": {
+            "Classified": 0.9039393939393939,
+            "Covert": 0.9918681318681318,
+            "Mil-Spec": 0.984317342645333,
+            "Rare Special Item": 0.8154379886888248,
+            "Restricted": 0.8883822767396539
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4977533498996646,
+          "gross_expected_value": 1.8491808480966896,
+          "gross_return_ratio": 0.5707348296594721,
+          "key_price": 2.49,
+          "loss_probability": 0.871032221940401,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 77,
+          "net_expected_value": 1.6272791463250869,
+          "net_return_ratio": 0.5022466501003354,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.24,
+          "price_type": "listing_min",
+          "priced_outcomes": 191,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 268,
+          "wear_basis": {
+            "observed_listings": 0.9559948717948717,
+            "observed_total": 0.9561917948717948,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.04380820512820508
+          }
+        },
+        {
+          "case_price": 0.79,
+          "coverage": 0.9830897325319516,
+          "coverage_by_rarity": {
+            "Classified": 0.9824999999999999,
+            "Covert": 1.0,
+            "Mil-Spec": 0.984563547719228,
+            "Rare Special Item": 0.9615541691126976,
+            "Restricted": 0.9755076923076924
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4751763330512033,
+          "gross_expected_value": 1.9561609404455151,
+          "gross_return_ratio": 0.5963905306236326,
+          "key_price": 2.49,
+          "loss_probability": 0.8669488146654564,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 41,
+          "net_expected_value": 1.7214216275920533,
+          "net_return_ratio": 0.5248236669487967,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.2800000000000002,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 227,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 268,
+          "wear_basis": {
+            "observed_listings": 0.9559948717948717,
+            "observed_total": 0.9561917948717948,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.04380820512820508
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Clutch Case",
+      "name": "Clutch Case",
+      "sources": [
+        {
+          "case_price": 0.41,
+          "coverage": 0.86330606592102,
+          "coverage_by_rarity": {
+            "Classified": 0.8991594668809859,
+            "Covert": 0.9990384615384615,
+            "Mil-Spec": 0.8557397959183674,
+            "Rare Special Item": 0.9943693693693695,
+            "Restricted": 0.8864409090909092
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6398668156292445,
+          "gross_expected_value": 1.1868025394036261,
+          "gross_return_ratio": 0.4092422549667676,
+          "key_price": 2.49,
+          "loss_probability": 0.8141350938902534,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 39,
+          "net_expected_value": 1.0443862346751909,
+          "net_return_ratio": 0.3601331843707554,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 2.9000000000000004,
+          "price_type": "listing_min",
+          "priced_outcomes": 221,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 260,
+          "wear_basis": {
+            "observed_listings": 0.3862814285714288,
+            "observed_total": 0.3862814285714288,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.6137185714285714
+          }
+        },
+        {
+          "case_price": 0.53,
+          "coverage": 0.8556325709405711,
+          "coverage_by_rarity": {
+            "Classified": 0.9985185185185186,
+            "Covert": 1.0,
+            "Mil-Spec": 0.8227764976958525,
+            "Rare Special Item": 0.9942302077718745,
+            "Restricted": 0.9833409090909089
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.617723240699767,
+          "gross_expected_value": 1.3119043330530726,
+          "gross_return_ratio": 0.43440540829571933,
+          "key_price": 2.49,
+          "loss_probability": 0.7852731026303615,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 18,
+          "net_expected_value": 1.1544758130867039,
+          "net_return_ratio": 0.382276759300233,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.0200000000000005,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 242,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 260,
+          "wear_basis": {
+            "observed_listings": 0.3862814285714288,
+            "observed_total": 0.3862814285714288,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.6137185714285714
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Prisma 2 Case",
+      "name": "Prisma 2 Case",
+      "sources": [
+        {
+          "case_price": 1.11,
+          "coverage": 0.9695566146249632,
+          "coverage_by_rarity": {
+            "Classified": 0.989501363100501,
+            "Covert": 0.9951800232288037,
+            "Mil-Spec": 0.9664309548898589,
+            "Rare Special Item": 0.8613154027773601,
+            "Restricted": 0.9819047619047621
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.21714373459521033,
+          "gross_expected_value": 3.2025938130195946,
+          "gross_return_ratio": 0.8896093925054428,
+          "key_price": 2.49,
+          "loss_probability": 0.8792368677742538,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 106,
+          "net_expected_value": 2.8182825554572433,
+          "net_return_ratio": 0.7828562654047897,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.6000000000000005,
+          "price_type": "listing_min",
+          "priced_outcomes": 254,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 408,
+          "wear_basis": {
+            "observed_listings": 0.8834612087912088,
+            "observed_total": 0.8836581318681319,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.11634186813186827
+          }
+        },
+        {
+          "case_price": 1.15,
+          "coverage": 0.9170600095555552,
+          "coverage_by_rarity": {
+            "Classified": 1.0,
+            "Covert": 0.998780487804878,
+            "Mil-Spec": 0.8976140083008967,
+            "Rare Special Item": 0.9084852285395771,
+            "Restricted": 0.9945701357466065
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.19435012035199653,
+          "gross_expected_value": 3.3324608658167416,
+          "gross_return_ratio": 0.9155112268727312,
+          "key_price": 2.49,
+          "loss_probability": 0.8270851147649895,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 75,
+          "net_expected_value": 2.9325655619187327,
+          "net_return_ratio": 0.8056498796480035,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.64,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 291,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 408,
+          "wear_basis": {
+            "observed_listings": 0.8834612087912088,
+            "observed_total": 0.8836581318681319,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.11634186813186827
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Prisma Case",
+      "name": "Prisma Case",
+      "sources": [
+        {
+          "case_price": 1.02,
+          "coverage": 0.9688650182977847,
+          "coverage_by_rarity": {
+            "Classified": 0.9701368523949169,
+            "Covert": 0.7618131868131867,
+            "Mil-Spec": 0.9694623634894572,
+            "Rare Special Item": 0.8613154027773601,
+            "Restricted": 0.9756233009708739
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.1179742576028607,
+          "gross_expected_value": 3.5180799497885897,
+          "gross_return_ratio": 1.0023019799967492,
+          "key_price": 2.49,
+          "loss_probability": 0.8717202226882289,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 104,
+          "net_expected_value": 3.095910355813959,
+          "net_return_ratio": 0.8820257423971393,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.5100000000000002,
+          "price_type": "listing_min",
+          "priced_outcomes": 236,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 388,
+          "wear_basis": {
+            "observed_listings": 0.9518152564102561,
+            "observed_total": 0.9520121794871792,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.04798782051282038
+          }
+        },
+        {
+          "case_price": 1.21,
+          "coverage": 0.9767102353874605,
+          "coverage_by_rarity": {
+            "Classified": 0.9972580645161289,
+            "Covert": 0.9771428571428571,
+            "Mil-Spec": 0.974565381708239,
+            "Rare Special Item": 0.9084852285395771,
+            "Restricted": 0.9844000000000002
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.08376823065061131,
+          "gross_expected_value": 3.8523381211281116,
+          "gross_return_ratio": 1.0411724651697598,
+          "key_price": 2.49,
+          "loss_probability": 0.8523524104218888,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 73,
+          "net_expected_value": 3.3900575465927383,
+          "net_return_ratio": 0.9162317693493887,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.7,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 273,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 388,
+          "wear_basis": {
+            "observed_listings": 0.9518152564102561,
+            "observed_total": 0.9520121794871792,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.04798782051282038
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "CS20 Case",
+      "name": "CS20 Case",
+      "sources": [
+        {
+          "case_price": 0.91,
+          "coverage": 0.8837774416317421,
+          "coverage_by_rarity": {
+            "Classified": 0.7605776829461041,
+            "Covert": 0.9817129629629631,
+            "Mil-Spec": 0.9084013605442176,
+            "Rare Special Item": 0.4405987525987523,
+            "Restricted": 0.7884834224598931
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6443750292551985,
+          "gross_expected_value": 1.3740055687867334,
+          "gross_return_ratio": 0.4041192849372745,
+          "key_price": 2.49,
+          "loss_probability": 0.8049521926182099,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 152,
+          "net_expected_value": 1.2091249005323255,
+          "net_return_ratio": 0.3556249707448016,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.4000000000000004,
+          "price_type": "listing_min",
+          "priced_outcomes": 124,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 276,
+          "wear_basis": {
+            "observed_listings": 0.163192380952381,
+            "observed_total": 0.16338930402930407,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.8366106959706957
+          }
+        },
+        {
+          "case_price": 0.93,
+          "coverage": 0.8280492977976575,
+          "coverage_by_rarity": {
+            "Classified": 0.8704204204204204,
+            "Covert": 0.9833333333333334,
+            "Mil-Spec": 0.8258620254553436,
+            "Rare Special Item": 0.8049334719334714,
+            "Restricted": 0.8246738859180035
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5412319164667093,
+          "gross_expected_value": 1.7829395973680164,
+          "gross_return_ratio": 0.5213273676514667,
+          "key_price": 2.49,
+          "loss_probability": 0.726705699378238,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 99,
+          "net_expected_value": 1.5689868456838545,
+          "net_return_ratio": 0.45876808353329074,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.4200000000000004,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 177,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 276,
+          "wear_basis": {
+            "observed_listings": 0.163192380952381,
+            "observed_total": 0.16338930402930407,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.8366106959706957
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Spectrum 2 Case",
+      "name": "Spectrum 2 Case",
+      "sources": [
+        {
+          "case_price": 2.45,
+          "coverage": 0.7697368306889794,
+          "coverage_by_rarity": {
+            "Classified": 0.7813757300454249,
+            "Covert": 0.9758064516129032,
+            "Mil-Spec": 0.7464505494505492,
+            "Rare Special Item": 0.8094587511424467,
+            "Restricted": 0.8749637681159421
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5217805201578601,
+          "gross_expected_value": 2.6845502618411032,
+          "gross_return_ratio": 0.5434312270933407,
+          "key_price": 2.49,
+          "loss_probability": 0.6997875433882784,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 149,
+          "net_expected_value": 2.362404230420171,
+          "net_return_ratio": 0.47821947984213986,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 4.94,
+          "price_type": "listing_min",
+          "priced_outcomes": 223,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 456,
+          "wear_basis": {
+            "observed_listings": 0.35200742857142836,
+            "observed_total": 0.35200742857142836,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.6479925714285746
+          }
+        },
+        {
+          "case_price": 2.67,
+          "coverage": 0.8617142076856013,
+          "coverage_by_rarity": {
+            "Classified": 0.9623188405797101,
+            "Covert": 0.9983870967741936,
+            "Mil-Spec": 0.8369999999999999,
+            "Rare Special Item": 0.6896719219219217,
+            "Restricted": 0.9624529914529918
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.545514306891017,
+          "gross_expected_value": 2.6649388368663094,
+          "gross_return_ratio": 0.5164610148965716,
+          "key_price": 2.49,
+          "loss_probability": 0.7907007789255189,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 103,
+          "net_expected_value": 2.3451461764423525,
+          "net_return_ratio": 0.454485693108983,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 5.16,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 275,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 456,
+          "wear_basis": {
+            "observed_listings": 0.35200742857142836,
+            "observed_total": 0.35200742857142836,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.6479925714285746
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Horizon Case",
+      "name": "Horizon Case",
+      "sources": [
+        {
+          "case_price": 1.29,
+          "coverage": 0.8514800520955021,
+          "coverage_by_rarity": {
+            "Classified": 0.7305952380952384,
+            "Covert": 0.9938725490196078,
+            "Mil-Spec": 0.8370470006184291,
+            "Rare Special Item": 0.596198544698545,
+            "Restricted": 0.9462166666666668
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4509525114833922,
+          "gross_expected_value": 2.3584085302190654,
+          "gross_return_ratio": 0.6239176005870543,
+          "key_price": 2.49,
+          "loss_probability": 0.746432580001546,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 363,
+          "net_expected_value": 2.0753995065927775,
+          "net_return_ratio": 0.5490474885166078,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.7800000000000002,
+          "price_type": "listing_min",
+          "priced_outcomes": 249,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 612,
+          "wear_basis": {
+            "observed_listings": 0.48745380952380957,
+            "observed_total": 0.48765073260073266,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.5123492673992661
+          }
+        },
+        {
+          "case_price": 1.43,
+          "coverage": 0.9578049464660628,
+          "coverage_by_rarity": {
+            "Classified": 0.9229166666666668,
+            "Covert": 1.0,
+            "Mil-Spec": 0.9516901669758809,
+            "Rare Special Item": 0.7675036382536385,
+            "Restricted": 0.9967166666666664
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.39160706711099424,
+          "gross_expected_value": 2.710113973778298,
+          "gross_return_ratio": 0.6913556055556883,
+          "key_price": 2.49,
+          "loss_probability": 0.8476955092779839,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 267,
+          "net_expected_value": 2.3849002969249025,
+          "net_return_ratio": 0.6083929328890058,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.92,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 345,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 612,
+          "wear_basis": {
+            "observed_listings": 0.48745380952380957,
+            "observed_total": 0.48765073260073266,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.5123492673992661
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Gamma 2 Case",
+      "name": "Gamma 2 Case",
+      "sources": [
+        {
+          "case_price": 2.47,
+          "coverage": 0.9092539215325854,
+          "coverage_by_rarity": {
+            "Classified": 0.9779336138382423,
+            "Covert": 0.921,
+            "Mil-Spec": 0.943266955266955,
+            "Rare Special Item": 0.761352398190045,
+            "Restricted": 0.727356165785434
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4188526802519456,
+          "gross_expected_value": 3.2755576203981254,
+          "gross_return_ratio": 0.66039468153188,
+          "key_price": 2.49,
+          "loss_probability": 0.8569440841415495,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 206,
+          "net_expected_value": 2.8824907059503504,
+          "net_return_ratio": 0.5811473197480544,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 4.960000000000001,
+          "price_type": "listing_min",
+          "priced_outcomes": 248,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 506,
+          "wear_basis": {
+            "observed_listings": 0.32745642857142865,
+            "observed_total": 0.32745642857142865,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.6725435714285706
+          }
+        },
+        {
+          "case_price": 2.73,
+          "coverage": 0.9497421303645556,
+          "coverage_by_rarity": {
+            "Classified": 0.9978494623655916,
+            "Covert": 0.9690000000000001,
+            "Mil-Spec": 0.9489956709956707,
+            "Rare Special Item": 0.7869027752639517,
+            "Restricted": 0.9456909090909091
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.34141409116024585,
+          "gross_expected_value": 3.9066118683449056,
+          "gross_return_ratio": 0.7483930782269933,
+          "key_price": 2.49,
+          "loss_probability": 0.9013684875015229,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 131,
+          "net_expected_value": 3.437818444143517,
+          "net_return_ratio": 0.6585859088397542,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 5.220000000000001,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 327,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 506,
+          "wear_basis": {
+            "observed_listings": 0.32745642857142865,
+            "observed_total": 0.32745642857142865,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.6725435714285706
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Chroma 3 Case",
+      "name": "Chroma 3 Case",
+      "sources": [
+        {
+          "case_price": 2.77,
+          "coverage": 0.8627928357816818,
+          "coverage_by_rarity": {
+            "Classified": 0.7246031746031745,
+            "Covert": 0.747,
+            "Mil-Spec": 0.8456800298466964,
+            "Rare Special Item": 0.8116207207207202,
+            "Restricted": 0.9814409946211945
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5200915076124497,
+          "gross_expected_value": 2.868543943134676,
+          "gross_return_ratio": 0.5453505595313073,
+          "key_price": 2.49,
+          "loss_probability": 0.8030671533861866,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 168,
+          "net_expected_value": 2.5243186699585145,
+          "net_return_ratio": 0.4799084923875503,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 5.26,
+          "price_type": "listing_min",
+          "priced_outcomes": 226,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 448,
+          "wear_basis": {
+            "observed_listings": 0.5269281428571427,
+            "observed_total": 0.5269281428571427,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.47307185714285793
+          }
+        },
+        {
+          "case_price": 3.05,
+          "coverage": 0.9126629488731038,
+          "coverage_by_rarity": {
+            "Classified": 0.9913174603174602,
+            "Covert": 0.87,
+            "Mil-Spec": 0.8928486636819971,
+            "Rare Special Item": 0.7694500750750746,
+            "Restricted": 1.0
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.3459026862428749,
+          "gross_expected_value": 4.117839907061901,
+          "gross_return_ratio": 0.7432924019967331,
+          "key_price": 2.49,
+          "loss_probability": 0.8265526335728892,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 113,
+          "net_expected_value": 3.623699118214473,
+          "net_return_ratio": 0.6540973137571251,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 5.54,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 269,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 448,
+          "wear_basis": {
+            "observed_listings": 0.5269281428571427,
+            "observed_total": 0.5269281428571427,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.47307185714285793
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Operation Breakout Weapon Case",
+      "name": "Operation Breakout Weapon Case",
+      "sources": [
+        {
+          "case_price": 7.06,
+          "coverage": 0.8699882461719428,
+          "coverage_by_rarity": {
+            "Classified": 0.9973333333333333,
+            "Covert": 0.9941176470588236,
+            "Mil-Spec": 0.8415000000000001,
+            "Rare Special Item": 0.8272941787941783,
+            "Restricted": 0.9826785714285713
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5455229094581507,
+          "gross_expected_value": 4.932109334857569,
+          "gross_return_ratio": 0.5164512392521015,
+          "key_price": 2.49,
+          "loss_probability": 0.8154643012582418,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 73,
+          "net_expected_value": 4.34025621467466,
+          "net_return_ratio": 0.4544770905418492,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 9.55,
+          "price_type": "listing_min",
+          "priced_outcomes": 155,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 228,
+          "wear_basis": {
+            "observed_listings": 0.7869748333333327,
+            "observed_total": 0.7871717564102558,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.21282824358974356
+          }
+        },
+        {
+          "case_price": 7.49,
+          "coverage": 0.9389906500822133,
+          "coverage_by_rarity": {
+            "Classified": 0.9766666666666666,
+            "Covert": 0.9903743315508022,
+            "Mil-Spec": 0.9297333333333333,
+            "Rare Special Item": 0.9038243243243241,
+            "Restricted": 0.97625
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5358087484612628,
+          "gross_expected_value": 5.264350784496133,
+          "gross_return_ratio": 0.5274900585667468,
+          "key_price": 2.49,
+          "loss_probability": 0.8849554211153846,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 63,
+          "net_expected_value": 4.632628690356597,
+          "net_return_ratio": 0.4641912515387372,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 9.98,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 165,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 228,
+          "wear_basis": {
+            "observed_listings": 0.7869748333333327,
+            "observed_total": 0.7871717564102558,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.21282824358974356
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Glove Case",
+      "name": "Glove Case",
+      "sources": [
+        {
+          "case_price": 11.38,
+          "coverage": 0.8526230771138923,
+          "coverage_by_rarity": {
+            "Classified": 0.7292063492063492,
+            "Covert": 0.927142857142857,
+            "Mil-Spec": 0.868187728937729,
+            "Rare Special Item": 0.321509009009009,
+            "Restricted": 0.8050119838014284
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4346518164632518,
+          "gross_expected_value": 8.91065830188034,
+          "gross_return_ratio": 0.6424411176553957,
+          "key_price": 2.49,
+          "loss_probability": 0.7540380823513486,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 138,
+          "net_expected_value": 7.841379305654698,
+          "net_return_ratio": 0.5653481835367482,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 13.870000000000001,
+          "price_type": "listing_min",
+          "priced_outcomes": 136,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 274,
+          "wear_basis": {
+            "observed_listings": 0.4522888095238093,
+            "observed_total": 0.4522888095238093,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.5477111904761911
+          }
+        },
+        {
+          "case_price": 11.59,
+          "coverage": 0.8606528823881692,
+          "coverage_by_rarity": {
+            "Classified": 0.8301904761904764,
+            "Covert": 1.0,
+            "Mil-Spec": 0.8388095238095241,
+            "Rare Special Item": 0.7415540540540538,
+            "Restricted": 0.9722963951935916
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.39111551946623413,
+          "gross_expected_value": 9.742151688540254,
+          "gross_return_ratio": 0.6919141824247339,
+          "key_price": 2.49,
+          "loss_probability": 0.7555326045431314,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 66,
+          "net_expected_value": 8.573093485915424,
+          "net_return_ratio": 0.6088844805337659,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 14.08,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 208,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 274,
+          "wear_basis": {
+            "observed_listings": 0.4522888095238093,
+            "observed_total": 0.4522888095238093,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.5477111904761911
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Falchion Case",
+      "name": "Falchion Case",
+      "sources": [
+        {
+          "case_price": 1.39,
+          "coverage": 0.8853660729617876,
+          "coverage_by_rarity": {
+            "Classified": 0.4069166666666666,
+            "Covert": 0.9960937500000001,
+            "Mil-Spec": 0.9022792792792792,
+            "Rare Special Item": 0.3409937629937627,
+            "Restricted": 0.9007838326825892
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4603665691616687,
+          "gross_expected_value": 2.3792928541508243,
+          "gross_return_ratio": 0.613219807770831,
+          "key_price": 2.49,
+          "loss_probability": 0.7897176982200353,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 133,
+          "net_expected_value": 2.0937777116527254,
+          "net_return_ratio": 0.5396334308383313,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.88,
+          "price_type": "listing_min",
+          "priced_outcomes": 125,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 258,
+          "wear_basis": {
+            "observed_listings": 0.6670900000000001,
+            "observed_total": 0.6672869230769232,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.3327130769230768
+          }
+        },
+        {
+          "case_price": 1.49,
+          "coverage": 0.8992708198014201,
+          "coverage_by_rarity": {
+            "Classified": 0.9906666666666667,
+            "Covert": 1.0,
+            "Mil-Spec": 0.8949444444444445,
+            "Rare Special Item": 0.4992962577962574,
+            "Restricted": 0.9050019375339069
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.3666933974247682,
+          "gross_expected_value": 2.8642730434652535,
+          "gross_return_ratio": 0.7196665938354907,
+          "key_price": 2.49,
+          "loss_probability": 0.782806286394369,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 101,
+          "net_expected_value": 2.5205602782494227,
+          "net_return_ratio": 0.6333066025752317,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 3.9800000000000004,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 157,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 258,
+          "wear_basis": {
+            "observed_listings": 0.6670900000000001,
+            "observed_total": 0.6672869230769232,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.3327130769230768
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Gamma Case",
+      "name": "Gamma Case",
+      "sources": [
+        {
+          "case_price": 2.46,
+          "coverage": 0.9268117824416491,
+          "coverage_by_rarity": {
+            "Classified": 0.9163205828779599,
+            "Covert": 0.843584656084656,
+            "Mil-Spec": 0.9442695911255748,
+            "Rare Special Item": 0.761352398190045,
+            "Restricted": 0.8475999999999999
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.35448686787760547,
+          "gross_expected_value": 3.631011368188469,
+          "gross_return_ratio": 0.7335376501390847,
+          "key_price": 2.49,
+          "loss_probability": 0.8569772134831266,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 208,
+          "net_expected_value": 3.195290004005853,
+          "net_return_ratio": 0.6455131321223945,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 4.95,
+          "price_type": "listing_min",
+          "priced_outcomes": 242,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 502,
+          "wear_basis": {
+            "observed_listings": 0.5771211904761901,
+            "observed_total": 0.5771211904761901,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.42287880952380924
+          }
+        },
+        {
+          "case_price": 2.85,
+          "coverage": 0.8262944272067511,
+          "coverage_by_rarity": {
+            "Classified": 0.9948148148148148,
+            "Covert": 0.9935185185185185,
+            "Mil-Spec": 0.7862407106078508,
+            "Rare Special Item": 0.7869027752639517,
+            "Restricted": 0.9868
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.25910141477978854,
+          "gross_expected_value": 4.495907323949919,
+          "gross_return_ratio": 0.8419302104775129,
+          "key_price": 2.49,
+          "loss_probability": 0.7531597241640886,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 132,
+          "net_expected_value": 3.956398445075929,
+          "net_return_ratio": 0.7408985852202115,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 5.34,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 322,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 502,
+          "wear_basis": {
+            "observed_listings": 0.5771211904761901,
+            "observed_total": 0.5771211904761901,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.42287880952380924
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Revolver Case",
+      "name": "Revolver Case",
+      "sources": [
+        {
+          "case_price": 2.52,
+          "coverage": 0.8791128069249952,
+          "coverage_by_rarity": {
+            "Classified": 0.736384752962218,
+            "Covert": 0.6206250000000001,
+            "Mil-Spec": 0.9121626984126984,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.7589920634920638
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5957093429617037,
+          "gross_expected_value": 2.3017002179112094,
+          "gross_return_ratio": 0.4594212011798821,
+          "key_price": 2.49,
+          "loss_probability": 0.818940671584084,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 475,
+          "net_expected_value": 2.025496191761864,
+          "net_return_ratio": 0.40429065703829625,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 5.01,
+          "price_type": "listing_min",
+          "priced_outcomes": 241,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 716,
+          "wear_basis": {
+            "observed_listings": 0.3569916666666667,
+            "observed_total": 0.3571885897435898,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.6428114102564065
+          }
+        },
+        {
+          "case_price": 2.56,
+          "coverage": 0.8822882850643965,
+          "coverage_by_rarity": {
+            "Classified": 0.972891795215739,
+            "Covert": 0.9581250000000001,
+            "Mil-Spec": 0.890501984126984,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.8221666666666666
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4816050893414551,
+          "gross_expected_value": 2.9748798850291505,
+          "gross_return_ratio": 0.5890851257483466,
+          "key_price": 2.49,
+          "loss_probability": 0.8081433007309095,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 343,
+          "net_expected_value": 2.6178942988256524,
+          "net_return_ratio": 0.5183949106585449,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 5.050000000000001,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 373,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 716,
+          "wear_basis": {
+            "observed_listings": 0.3569916666666667,
+            "observed_total": 0.3571885897435898,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.6428114102564065
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Chroma 2 Case",
+      "name": "Chroma 2 Case",
+      "sources": [
+        {
+          "case_price": 3.07,
+          "coverage": 0.9645851319501919,
+          "coverage_by_rarity": {
+            "Classified": 0.9854717121958503,
+            "Covert": 0.9867740080506038,
+            "Mil-Spec": 0.9649815546772068,
+            "Rare Special Item": 0.8116207207207202,
+            "Restricted": 0.9599884792626728
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4427457171302126,
+          "gross_expected_value": 3.520833878131839,
+          "gross_return_ratio": 0.633243503261122,
+          "key_price": 2.49,
+          "loss_probability": 0.8995855977494652,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 138,
+          "net_expected_value": 3.0983338127560183,
+          "net_return_ratio": 0.5572542828697874,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 5.5600000000000005,
+          "price_type": "listing_min",
+          "priced_outcomes": 228,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 420,
+          "wear_basis": {
+            "observed_listings": 0.6911101666666668,
+            "observed_total": 0.6911101666666668,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.3088898333333343
+          }
+        },
+        {
+          "case_price": 3.42,
+          "coverage": 0.9805743341466915,
+          "coverage_by_rarity": {
+            "Classified": 0.9984848484848485,
+            "Covert": 0.9989361702127659,
+            "Mil-Spec": 0.9787878787878788,
+            "Rare Special Item": 0.7694500750750746,
+            "Restricted": 0.9885714285714287
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.29779518614232375,
+          "gross_expected_value": 4.715943693066894,
+          "gross_return_ratio": 0.7979600157473593,
+          "key_price": 2.49,
+          "loss_probability": 0.9154597243251196,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 96,
+          "net_expected_value": 4.150030449898867,
+          "net_return_ratio": 0.7022048138576762,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 5.91,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 258,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 420,
+          "wear_basis": {
+            "observed_listings": 0.6911101666666668,
+            "observed_total": 0.6911101666666668,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.3088898333333343
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Spectrum Case",
+      "name": "Spectrum Case",
+      "sources": [
+        {
+          "case_price": 2.94,
+          "coverage": 0.7043774146389145,
+          "coverage_by_rarity": {
+            "Classified": 0.8665989910175957,
+            "Covert": 0.9988372093023256,
+            "Mil-Spec": 0.7102986036519868,
+            "Rare Special Item": 0.8094587511424467,
+            "Restricted": 0.6288739926739929
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5202245233338745,
+          "gross_expected_value": 2.960432770792115,
+          "gross_return_ratio": 0.5451994053024153,
+          "key_price": 2.49,
+          "loss_probability": 0.6579459564400011,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 166,
+          "net_expected_value": 2.6051808382970614,
+          "net_return_ratio": 0.4797754766661255,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 5.43,
+          "price_type": "listing_min",
+          "priced_outcomes": 204,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 454,
+          "wear_basis": {
+            "observed_listings": 0.17389171428571443,
+            "observed_total": 0.17389171428571443,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.8261082857142886
+          }
+        },
+        {
+          "case_price": 3.43,
+          "coverage": 0.8722133823275006,
+          "coverage_by_rarity": {
+            "Classified": 0.9371693121693122,
+            "Covert": 0.9944444444444445,
+            "Mil-Spec": 0.8693992123165053,
+            "Rare Special Item": 0.6896719219219217,
+            "Restricted": 0.8713299145299148
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5533245105485564,
+          "gross_expected_value": 3.004907838127893,
+          "gross_return_ratio": 0.5075857834675496,
+          "key_price": 2.49,
+          "loss_probability": 0.8224401335830418,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 123,
+          "net_expected_value": 2.6443188975525462,
+          "net_return_ratio": 0.44667548945144364,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 5.92,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 253,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 454,
+          "wear_basis": {
+            "observed_listings": 0.17389171428571443,
+            "observed_total": 0.17389171428571443,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.8261082857142886
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Operation Phoenix Weapon Case",
+      "name": "Operation Phoenix Weapon Case",
+      "sources": [
+        {
+          "case_price": 3.42,
+          "coverage": 0.830262477025186,
+          "coverage_by_rarity": {
+            "Classified": 0.9614427860696517,
+            "Covert": 0.88,
+            "Mil-Spec": 0.7934523809523811,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.9915476190476189
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.57538161951325,
+          "gross_expected_value": 2.8516984416780597,
+          "gross_return_ratio": 0.48252088691676137,
+          "key_price": 2.49,
+          "loss_probability": 0.7822993488260458,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 446,
+          "net_expected_value": 2.5094946286766926,
+          "net_return_ratio": 0.42461838048675,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 5.91,
+          "price_type": "listing_min",
+          "priced_outcomes": 214,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 660,
+          "wear_basis": {
+            "observed_listings": 0.5733166666666669,
+            "observed_total": 0.57351358974359,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.4264864102564082
+          }
+        },
+        {
+          "case_price": 3.53,
+          "coverage": 0.9115883756790963,
+          "coverage_by_rarity": {
+            "Classified": 0.7835820895522387,
+            "Covert": 0.988,
+            "Mil-Spec": 0.8998809523809523,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.9952380952380951
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5089493124918866,
+          "gross_expected_value": 3.3592331122714123,
+          "gross_return_ratio": 0.5580121448955835,
+          "key_price": 2.49,
+          "loss_probability": 0.842783318468903,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 333,
+          "net_expected_value": 2.9561251387988428,
+          "net_return_ratio": 0.4910506875081134,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 6.02,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 327,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 660,
+          "wear_basis": {
+            "observed_listings": 0.5733166666666669,
+            "observed_total": 0.57351358974359,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.4264864102564082
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Operation Wildfire Case",
+      "name": "Operation Wildfire Case",
+      "sources": [
+        {
+          "case_price": 2.62,
+          "coverage": 0.9162202738409873,
+          "coverage_by_rarity": {
+            "Classified": 0.8528982597054885,
+            "Covert": 0.697175480769231,
+            "Mil-Spec": 0.9421666666666666,
+            "Rare Special Item": 0.31530665280665265,
+            "Restricted": 0.8175359094457453
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.41385656838991375,
+          "gross_expected_value": 3.403628335826751,
+          "gross_return_ratio": 0.666072081375098,
+          "key_price": 2.49,
+          "loss_probability": 0.7921109074368982,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 146,
+          "net_expected_value": 2.995192935527541,
+          "net_return_ratio": 0.5861434316100863,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 5.11,
+          "price_type": "listing_min",
+          "priced_outcomes": 116,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 262,
+          "wear_basis": {
+            "observed_listings": 0.4880633333333334,
+            "observed_total": 0.4882602564102565,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.5117397435897428
+          }
+        },
+        {
+          "case_price": 3.08,
+          "coverage": 0.8739108070805505,
+          "coverage_by_rarity": {
+            "Classified": 0.9511713520749665,
+            "Covert": 0.8406250000000002,
+            "Mil-Spec": 0.8661666666666665,
+            "Rare Special Item": 0.6916268191268187,
+            "Restricted": 0.9014283112151962
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.3923246607179705,
+          "gross_expected_value": 3.8463086815919367,
+          "gross_return_ratio": 0.6905401582750335,
+          "key_price": 2.49,
+          "loss_probability": 0.7867398127374446,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 98,
+          "net_expected_value": 3.3847516398009043,
+          "net_return_ratio": 0.6076753392820294,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 5.57,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 164,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 262,
+          "wear_basis": {
+            "observed_listings": 0.4880633333333334,
+            "observed_total": 0.4882602564102565,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.5117397435897428
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Shadow Case",
+      "name": "Shadow Case",
+      "sources": [
+        {
+          "case_price": 1.44,
+          "coverage": 0.766272753980569,
+          "coverage_by_rarity": {
+            "Classified": 0.8925347222222223,
+            "Covert": 0.9871937984496124,
+            "Mil-Spec": 0.7342567567567568,
+            "Rare Special Item": 0.30091476091476066,
+            "Restricted": 0.8997177419354838
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4212054835008746,
+          "gross_expected_value": 2.584843693001776,
+          "gross_return_ratio": 0.6577210414762789,
+          "key_price": 2.49,
+          "loss_probability": 0.5980359472471174,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 156,
+          "net_expected_value": 2.274662449841563,
+          "net_return_ratio": 0.5787945164991254,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 3.93,
+          "price_type": "listing_min",
+          "priced_outcomes": 114,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 270,
+          "wear_basis": {
+            "observed_listings": 0.4394988095238096,
+            "observed_total": 0.4396957326007327,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.5603042673992668
+          }
+        },
+        {
+          "case_price": 1.57,
+          "coverage": 0.8966747462642607,
+          "coverage_by_rarity": {
+            "Classified": 0.9755076058201059,
+            "Covert": 1.0,
+            "Mil-Spec": 0.8835357142857142,
+            "Rare Special Item": 0.5720987525987522,
+            "Restricted": 0.9476693548387097
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.35650728830973333,
+          "gross_expected_value": 2.968841374389185,
+          "gross_return_ratio": 0.7312417178298484,
+          "key_price": 2.49,
+          "loss_probability": 0.7204339109087124,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 103,
+          "net_expected_value": 2.612580409462483,
+          "net_return_ratio": 0.6434927116902667,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 4.0600000000000005,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 167,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 270,
+          "wear_basis": {
+            "observed_listings": 0.4394988095238096,
+            "observed_total": 0.4396957326007327,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.5603042673992668
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Chroma Case",
+      "name": "Chroma Case",
+      "sources": [
+        {
+          "case_price": 4.24,
+          "coverage": 0.6375926231152302,
+          "coverage_by_rarity": {
+            "Classified": 0.998148645573351,
+            "Covert": 0.9450000000000001,
+            "Mil-Spec": 0.5922413043478262,
+            "Rare Special Item": 0.8116207207207202,
+            "Restricted": 0.7771566731141198
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5128024454176436,
+          "gross_expected_value": 3.725954025385521,
+          "gross_return_ratio": 0.5536335847526777,
+          "key_price": 2.49,
+          "loss_probability": 0.5876257482348415,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 163,
+          "net_expected_value": 3.2788395423392585,
+          "net_return_ratio": 0.48719755458235636,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 6.73,
+          "price_type": "listing_min",
+          "priced_outcomes": 205,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 422,
+          "wear_basis": {
+            "observed_listings": 0.3916671666666665,
+            "observed_total": 0.3916671666666665,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.6083328333333363
+          }
+        },
+        {
+          "case_price": 4.31,
+          "coverage": 0.9588838087256277,
+          "coverage_by_rarity": {
+            "Classified": 0.998570586501621,
+            "Covert": 0.997,
+            "Mil-Spec": 0.9754499999999999,
+            "Rare Special Item": 0.7694500750750746,
+            "Restricted": 0.8696276595744682
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.3184227350323336,
+          "gross_expected_value": 5.266733411113785,
+          "gross_return_ratio": 0.774519619281439,
+          "key_price": 2.49,
+          "loss_probability": 0.9003513072717602,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 106,
+          "net_expected_value": 4.634725401780131,
+          "net_return_ratio": 0.6815772649676664,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 6.8,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 250,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 422,
+          "wear_basis": {
+            "observed_listings": 0.3916671666666665,
+            "observed_total": 0.3916671666666665,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.6083328333333363
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Operation Broken Fang Case",
+      "name": "Operation Broken Fang Case",
+      "sources": [
+        {
+          "case_price": 5.18,
+          "coverage": 0.5389494505875143,
+          "coverage_by_rarity": {
+            "Classified": 0.7735003092145948,
+            "Covert": 0.9951754385964913,
+            "Mil-Spec": 0.4879880952380952,
+            "Rare Special Item": 0.9690315315315319,
+            "Restricted": 0.7217142857142854
+          },
+          "currency": "USD",
+          "expected_net_roi": 0.005638096671368609,
+          "gross_expected_value": 8.765050228942497,
+          "gross_return_ratio": 1.1427705643992825,
+          "key_price": 2.49,
+          "loss_probability": 0.4701271582142857,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 72,
+          "net_expected_value": 7.713244201469397,
+          "net_return_ratio": 1.0056380966713685,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 7.67,
+          "price_type": "listing_min",
+          "priced_outcomes": 192,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 264,
+          "wear_basis": {
+            "observed_listings": 0.09366999999999988,
+            "observed_total": 0.09366999999999988,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.90633
+          }
+        },
+        {
+          "case_price": 5.67,
+          "coverage": 0.5991834758922129,
+          "coverage_by_rarity": {
+            "Classified": 0.966821273964131,
+            "Covert": 0.9951754385964913,
+            "Mil-Spec": 0.5410986394557822,
+            "Rare Special Item": 0.9961451836451838,
+            "Restricted": 0.7938857142857142
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5567984751396661,
+          "gross_expected_value": 4.109686866886733,
+          "gross_return_ratio": 0.5036380964321977,
+          "key_price": 2.49,
+          "loss_probability": 0.5179410913265307,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 51,
+          "net_expected_value": 3.616524442860325,
+          "net_return_ratio": 0.44320152486033393,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 8.16,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 213,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 264,
+          "wear_basis": {
+            "observed_listings": 0.09366999999999988,
+            "observed_total": 0.09366999999999988,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.90633
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Shattered Web Case",
+      "name": "Shattered Web Case",
+      "sources": [
+        {
+          "case_price": 4.46,
+          "coverage": 0.41496954299948924,
+          "coverage_by_rarity": {
+            "Classified": 0.6234340198321892,
+            "Covert": 0.6559999999999999,
+            "Mil-Spec": 0.3885441176470587,
+            "Rare Special Item": 0.6436810621810622,
+            "Restricted": 0.49210246305418714
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6765672107445745,
+          "gross_expected_value": 2.554383960596827,
+          "gross_return_ratio": 0.36753726051752905,
+          "key_price": 2.49,
+          "loss_probability": 0.3681806718342509,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 378,
+          "net_expected_value": 2.247857885325208,
+          "net_return_ratio": 0.3234327892554256,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 6.95,
+          "price_type": "listing_min",
+          "priced_outcomes": 232,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 610,
+          "wear_basis": {
+            "observed_listings": 0.04587089743589743,
+            "observed_total": 0.046067820512820504,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.9539321794871775
+          }
+        },
+        {
+          "case_price": 4.5,
+          "coverage": 0.650248899898278,
+          "coverage_by_rarity": {
+            "Classified": 0.8067818459191457,
+            "Covert": 0.9914999999999999,
+            "Mil-Spec": 0.6038375350140055,
+            "Rare Special Item": 0.885256260631261,
+            "Restricted": 0.8335881773399012
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.63419915896174,
+          "gross_expected_value": 2.9056225896107253,
+          "gross_return_ratio": 0.4156827739071138,
+          "key_price": 2.49,
+          "loss_probability": 0.5953324069392929,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 243,
+          "net_expected_value": 2.556947878857438,
+          "net_return_ratio": 0.36580084103826005,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 6.99,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 367,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 610,
+          "wear_basis": {
+            "observed_listings": 0.04587089743589743,
+            "observed_total": 0.046067820512820504,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.9539321794871775
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Operation Vanguard Weapon Case",
+      "name": "Operation Vanguard Weapon Case",
+      "sources": [
+        {
+          "case_price": 4.86,
+          "coverage": 0.6299894665471633,
+          "coverage_by_rarity": {
+            "Classified": 0.6304444444444443,
+            "Covert": 0.6970512820512821,
+            "Mil-Spec": 0.601746046682901,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.7706874523264683
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.528097867707683,
+          "gross_expected_value": 3.9414553094869667,
+          "gross_return_ratio": 0.5362524230594512,
+          "key_price": 2.49,
+          "loss_probability": 0.5487985633409113,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 486,
+          "net_expected_value": 3.4684806723485306,
+          "net_return_ratio": 0.47190213229231703,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 7.3500000000000005,
+          "price_type": "listing_min",
+          "priced_outcomes": 196,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 682,
+          "wear_basis": {
+            "observed_listings": 0.239771,
+            "observed_total": 0.23996792307692308,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.7600320769230731
+          }
+        },
+        {
+          "case_price": 4.85,
+          "coverage": 0.8506736855927405,
+          "coverage_by_rarity": {
+            "Classified": 0.764222222222222,
+            "Covert": 0.7474358974358974,
+            "Mil-Spec": 0.8564603744639308,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.8447499999999998
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.40604480104161605,
+          "gross_expected_value": 4.954126318584702,
+          "gross_return_ratio": 0.6749490897254363,
+          "key_price": 2.49,
+          "loss_probability": 0.7629252206728427,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 355,
+          "net_expected_value": 4.359631160354538,
+          "net_return_ratio": 0.5939551989583839,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 7.34,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 327,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 682,
+          "wear_basis": {
+            "observed_listings": 0.239771,
+            "observed_total": 0.23996792307692308,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.7600320769230731
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Operation Riptide Case",
+      "name": "Operation Riptide Case",
+      "sources": [
+        {
+          "case_price": 8.24,
+          "coverage": 0.5910250331780601,
+          "coverage_by_rarity": {
+            "Classified": 0.8225686274509805,
+            "Covert": 0.7378846153846155,
+            "Mil-Spec": 0.518989063568011,
+            "Rare Special Item": 0.8855288513421028,
+            "Restricted": 0.8942999582811851
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6304488590401183,
+          "gross_expected_value": 4.506004252840376,
+          "gross_return_ratio": 0.41994447836350196,
+          "key_price": 2.49,
+          "loss_probability": 0.5257021946068392,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 150,
+          "net_expected_value": 3.965283742499531,
+          "net_return_ratio": 0.36955114095988173,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 10.73,
+          "price_type": "listing_min",
+          "priced_outcomes": 262,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 456,
+          "wear_basis": {
+            "observed_listings": 0.2643930476190474,
+            "observed_total": 0.2643930476190474,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.7356069523809509
+          }
+        },
+        {
+          "case_price": 8.32,
+          "coverage": 0.695288673078787,
+          "coverage_by_rarity": {
+            "Classified": 0.8040392156862746,
+            "Covert": 0.9636153846153847,
+            "Mil-Spec": 0.6327401620935454,
+            "Rare Special Item": 0.9375783706693039,
+            "Restricted": 0.9716666666666669
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5873198232376958,
+          "gross_expected_value": 5.069400807727851,
+          "gross_return_ratio": 0.46895474632080025,
+          "key_price": 2.49,
+          "loss_probability": 0.6109162096571713,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 87,
+          "net_expected_value": 4.461072710800509,
+          "net_return_ratio": 0.41268017676230423,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 10.81,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 333,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 456,
+          "wear_basis": {
+            "observed_listings": 0.2643930476190474,
+            "observed_total": 0.2643930476190474,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.7356069523809509
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Huntsman Weapon Case",
+      "name": "Huntsman Weapon Case",
+      "sources": [
+        {
+          "case_price": 8.18,
+          "coverage": 0.5100986201068398,
+          "coverage_by_rarity": {
+            "Classified": 0.7033730158730159,
+            "Covert": 0.8482857142857142,
+            "Mil-Spec": 0.5317817024245598,
+            "Rare Special Item": 0.36935966735966713,
+            "Restricted": 0.3517659574468085
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6876575340493709,
+          "gross_expected_value": 3.7871523996513776,
+          "gross_return_ratio": 0.35493462039844215,
+          "key_price": 2.49,
+          "loss_probability": 0.471119082147756,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 164,
+          "net_expected_value": 3.332694111693212,
+          "net_return_ratio": 0.31234246595062903,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 10.67,
+          "price_type": "listing_min",
+          "priced_outcomes": 86,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 250,
+          "wear_basis": {
+            "observed_listings": 0.14705666666666664,
+            "observed_total": 0.1472535897435897,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.852746410256409
+          }
+        },
+        {
+          "case_price": 7.8,
+          "coverage": 0.6644977780993069,
+          "coverage_by_rarity": {
+            "Classified": 0.7864126984126986,
+            "Covert": 0.9335714285714285,
+            "Mil-Spec": 0.6817307692307694,
+            "Rare Special Item": 0.7431496881496877,
+            "Restricted": 0.5419361702127661
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5867834914176571,
+          "gross_expected_value": 4.831815765127624,
+          "gross_return_ratio": 0.46956421429811707,
+          "key_price": 2.49,
+          "loss_probability": 0.6065832131200106,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 116,
+          "net_expected_value": 4.251997873312309,
+          "net_return_ratio": 0.413216508582343,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 10.29,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 134,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 250,
+          "wear_basis": {
+            "observed_listings": 0.14705666666666664,
+            "observed_total": 0.1472535897435897,
+            "observed_volume": 0.00019692307692307693,
+            "uniform_fallback": 0.852746410256409
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "eSports 2014 Summer Case",
+      "name": "eSports 2014 Summer Case",
+      "sources": [
+        {
+          "case_price": 12.11,
+          "coverage": 0.5984031815886584,
+          "coverage_by_rarity": {
+            "Classified": 0.2842623873873873,
+            "Covert": 0.8306818181818182,
+            "Mil-Spec": 0.5845054697554697,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.7231831831831833
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6307696064021248,
+          "gross_expected_value": 6.125867893782931,
+          "gross_return_ratio": 0.4195799927248583,
+          "key_price": 2.49,
+          "loss_probability": 0.46870172412644784,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 499,
+          "net_expected_value": 5.390763746528979,
+          "net_return_ratio": 0.3692303935978753,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 14.6,
+          "price_type": "listing_min",
+          "priced_outcomes": 197,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 696,
+          "wear_basis": {
+            "observed_listings": 0.035165,
+            "observed_total": 0.035361923076923076,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9646380769230745
+          }
+        },
+        {
+          "case_price": 11.63,
+          "coverage": 0.8278278608353621,
+          "coverage_by_rarity": {
+            "Classified": 0.6598817567567566,
+            "Covert": 0.9088636363636363,
+            "Mil-Spec": 0.8456669884169886,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.7702102102102103
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5321486915645579,
+          "gross_expected_value": 7.506886903532322,
+          "gross_return_ratio": 0.5316492141311842,
+          "key_price": 2.49,
+          "loss_probability": 0.6800450654971042,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 374,
+          "net_expected_value": 6.606060475108443,
+          "net_return_ratio": 0.4678513084354421,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 14.120000000000001,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 322,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 696,
+          "wear_basis": {
+            "observed_listings": 0.035165,
+            "observed_total": 0.035361923076923076,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9646380769230745
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "eSports 2013 Winter Case",
+      "name": "eSports 2013 Winter Case",
+      "sources": [
+        {
+          "case_price": 14.7,
+          "coverage": 0.42071204376418825,
+          "coverage_by_rarity": {
+            "Classified": 0.6758771929824562,
+            "Covert": 0.7399999999999999,
+            "Mil-Spec": 0.37808333333333327,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.5689583333333331
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5780610004758518,
+          "gross_expected_value": 8.242194774795575,
+          "gross_return_ratio": 0.4794761358228956,
+          "key_price": 2.49,
+          "loss_probability": 0.23064608749999999,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 473,
+          "net_expected_value": 7.253131401820106,
+          "net_return_ratio": 0.42193899952414815,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 17.189999999999998,
+          "price_type": "listing_min",
+          "priced_outcomes": 175,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 648,
+          "wear_basis": {
+            "observed_listings": 0.07992500000000001,
+            "observed_total": 0.08012192307692309,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9198780769230737
+          }
+        },
+        {
+          "case_price": 13.37,
+          "coverage": 0.750770662811199,
+          "coverage_by_rarity": {
+            "Classified": 0.9456140350877195,
+            "Covert": 0.95,
+            "Mil-Spec": 0.7155357142857142,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.8799999999999998
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.3974208370040983,
+          "gross_expected_value": 10.860119914903409,
+          "gross_return_ratio": 0.6847490488589791,
+          "key_price": 2.49,
+          "loss_probability": 0.5423862328759398,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 348,
+          "net_expected_value": 9.556905525115,
+          "net_return_ratio": 0.6025791629959018,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 15.86,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 300,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 648,
+          "wear_basis": {
+            "observed_listings": 0.07992500000000001,
+            "observed_total": 0.08012192307692309,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9198780769230737
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "CS:GO Weapon Case 3",
+      "name": "CS:GO Weapon Case 3",
+      "sources": [
+        {
+          "case_price": 11.77,
+          "coverage": 0.5907736217159999,
+          "coverage_by_rarity": {
+            "Classified": 0.6749999999999999,
+            "Covert": 0.45600000000000007,
+            "Mil-Spec": 0.5873998545722685,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.5978125
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.5036195784545343,
+          "gross_expected_value": 8.043619103679932,
+          "gross_return_ratio": 0.56406866084712,
+          "key_price": 2.49,
+          "loss_probability": 0.48844544655276106,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 477,
+          "net_expected_value": 7.07838481123834,
+          "net_return_ratio": 0.4963804215454657,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 14.26,
+          "price_type": "listing_min",
+          "priced_outcomes": 183,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 660,
+          "wear_basis": {
+            "observed_listings": 0.15984600000000002,
+            "observed_total": 0.16004292307692308,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.8399570769230735
+          }
+        },
+        {
+          "case_price": 12.78,
+          "coverage": 0.9715982934242278,
+          "coverage_by_rarity": {
+            "Classified": 0.95375,
+            "Covert": 0.8573333333333336,
+            "Mil-Spec": 0.9766887436887436,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.9578125000000001
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.4242634261117566,
+          "gross_expected_value": 9.990338049174404,
+          "gross_return_ratio": 0.6542461066911857,
+          "key_price": 2.49,
+          "loss_probability": 0.8594207286256311,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 340,
+          "net_expected_value": 8.791497483273476,
+          "net_return_ratio": 0.5757365738882434,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 15.27,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 320,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 660,
+          "wear_basis": {
+            "observed_listings": 0.15984600000000002,
+            "observed_total": 0.16004292307692308,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.8399570769230735
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Winter Offensive Weapon Case",
+      "name": "Winter Offensive Weapon Case",
+      "sources": [
+        {
+          "case_price": 10.24,
+          "coverage": 0.6022884320473963,
+          "coverage_by_rarity": {
+            "Classified": 0.7806666666666668,
+            "Covert": 0.8112499999999999,
+            "Mil-Spec": 0.6308035714285714,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.41750000000000004
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.41959810125006564,
+          "gross_expected_value": 8.396041103507574,
+          "gross_return_ratio": 0.6595476122158346,
+          "key_price": 2.49,
+          "loss_probability": 0.5646150725595238,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 478,
+          "net_expected_value": 7.388516171086665,
+          "net_return_ratio": 0.5804018987499344,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 12.73,
+          "price_type": "listing_min",
+          "priced_outcomes": 184,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 662,
+          "wear_basis": {
+            "observed_listings": 0.02450833333333334,
+            "observed_total": 0.024705256410256417,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9752947435897403
+          }
+        },
+        {
+          "case_price": 9.52,
+          "coverage": 0.7479821806411907,
+          "coverage_by_rarity": {
+            "Classified": 0.8143333333333336,
+            "Covert": 0.9362499999999999,
+            "Mil-Spec": 0.7447142857142857,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.7434722222222223
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6037728516988657,
+          "gross_expected_value": 5.407600058064344,
+          "gross_return_ratio": 0.4502581230694708,
+          "key_price": 2.49,
+          "loss_probability": 0.6954381574603176,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 353,
+          "net_expected_value": 4.758688051096622,
+          "net_return_ratio": 0.39622714830113426,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 12.01,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 309,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 662,
+          "wear_basis": {
+            "observed_listings": 0.02450833333333334,
+            "observed_total": 0.024705256410256417,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9752947435897403
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Operation Hydra Case",
+      "name": "Operation Hydra Case",
+      "sources": [
+        {
+          "case_price": 30.68,
+          "coverage": 0.41619060576355604,
+          "coverage_by_rarity": {
+            "Classified": 0.6094848484848482,
+            "Covert": 0.7635000000000001,
+            "Mil-Spec": 0.4207069160997731,
+            "Rare Special Item": 0.321509009009009,
+            "Restricted": 0.3425834128245894
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.7045744230666736,
+          "gross_expected_value": 11.135529985089132,
+          "gross_return_ratio": 0.33571088287878,
+          "key_price": 2.49,
+          "loss_probability": 0.36562475215510526,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 198,
+          "net_expected_value": 9.799266386878436,
+          "net_return_ratio": 0.2954255769333264,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 33.17,
+          "price_type": "listing_min",
+          "priced_outcomes": 88,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 286,
+          "wear_basis": {
+            "observed_listings": 0.14614571428571435,
+            "observed_total": 0.14614571428571435,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.8538542857142863
+          }
+        },
+        {
+          "case_price": 32.63,
+          "coverage": 0.597363936944665,
+          "coverage_by_rarity": {
+            "Classified": 0.5654242424242422,
+            "Covert": 0.8059999999999999,
+            "Mil-Spec": 0.5949557387057387,
+            "Rare Special Item": 0.7415540540540538,
+            "Restricted": 0.605143137254902
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.6709220105826952,
+          "gross_expected_value": 13.133203395836075,
+          "gross_return_ratio": 0.37395226070148274,
+          "key_price": 2.49,
+          "loss_probability": 0.5437075236964911,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 117,
+          "net_expected_value": 11.557218988335746,
+          "net_return_ratio": 0.3290779894173048,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 35.120000000000005,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 169,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 286,
+          "wear_basis": {
+            "observed_listings": 0.14614571428571435,
+            "observed_total": 0.14614571428571435,
+            "observed_volume": 0.0,
+            "uniform_fallback": 0.8538542857142863
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "CS:GO Weapon Case 2",
+      "name": "CS:GO Weapon Case 2",
+      "sources": [
+        {
+          "case_price": 23.52,
+          "coverage": 0.6986911045884926,
+          "coverage_by_rarity": {
+            "Classified": 0.7275,
+            "Covert": 0.6357142857142857,
+            "Mil-Spec": 0.6668857493857493,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.8578260869565218
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.541907544456199,
+          "gross_expected_value": 13.539755418970751,
+          "gross_return_ratio": 0.520559608572501,
+          "key_price": 2.49,
+          "loss_probability": 0.5196641326167076,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 456,
+          "net_expected_value": 11.91498476869426,
+          "net_return_ratio": 0.4580924555438009,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 26.009999999999998,
+          "price_type": "listing_min",
+          "priced_outcomes": 176,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 632,
+          "wear_basis": {
+            "observed_listings": 0.19980850000000003,
+            "observed_total": 0.2000054230769231,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.7999945769230737
+          }
+        },
+        {
+          "case_price": 23.03,
+          "coverage": 0.713383619250693,
+          "coverage_by_rarity": {
+            "Classified": 1.0,
+            "Covert": 1.0,
+            "Mil-Spec": 0.6727162162162161,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.8473278985507248
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.3247117742325307,
+          "gross_expected_value": 19.58335854725661,
+          "gross_return_ratio": 0.7673729838266695,
+          "key_price": 2.49,
+          "loss_probability": 0.4876998948198198,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 341,
+          "net_expected_value": 17.233355521585818,
+          "net_return_ratio": 0.6752882257674693,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 25.520000000000003,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 291,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 632,
+          "wear_basis": {
+            "observed_listings": 0.19980850000000003,
+            "observed_total": 0.2000054230769231,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.7999945769230737
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "CS:GO Weapon Case",
+      "name": "CS:GO Weapon Case",
+      "sources": [
+        {
+          "case_price": 111.24,
+          "coverage": 0.5852554329488334,
+          "coverage_by_rarity": {
+            "Classified": 0.9277777777777778,
+            "Covert": 1.0,
+            "Mil-Spec": 0.5510135135135136,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.6729166666666667
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.7863917910655408,
+          "gross_expected_value": 27.606433638768237,
+          "gross_return_ratio": 0.24273660106188552,
+          "key_price": 2.49,
+          "loss_probability": 0.5342398767134442,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 441,
+          "net_expected_value": 24.29366160211605,
+          "net_return_ratio": 0.21360820893445925,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 113.72999999999999,
+          "price_type": "listing_min",
+          "priced_outcomes": 165,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 606,
+          "wear_basis": {
+            "observed_listings": 0.022375000000000003,
+            "observed_total": 0.02257192307692308,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9774280769230733
+          }
+        },
+        {
+          "case_price": 109.75,
+          "coverage": 0.8189326016343266,
+          "coverage_by_rarity": {
+            "Classified": 0.9493055555555555,
+            "Covert": 1.0,
+            "Mil-Spec": 0.7891891891891895,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.9354166666666667
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.716137417455312,
+          "gross_expected_value": 36.205382119108855,
+          "gross_return_ratio": 0.32257111652805465,
+          "key_price": 2.49,
+          "loss_probability": 0.7724449758548163,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 334,
+          "net_expected_value": 31.860736264815788,
+          "net_return_ratio": 0.2838625825446881,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 112.24,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 272,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 606,
+          "wear_basis": {
+            "observed_listings": 0.022375000000000003,
+            "observed_total": 0.02257192307692308,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9774280769230733
+          }
+        }
+      ]
+    },
+    {
+      "display_name": "Operation Bravo Case",
+      "name": "Operation Bravo Case",
+      "sources": [
+        {
+          "case_price": 58.83,
+          "coverage": 0.4682689870243375,
+          "coverage_by_rarity": {
+            "Classified": 0.7198067632850241,
+            "Covert": 0.4955952380952381,
+            "Mil-Spec": 0.4678410553410553,
+            "Rare Special Item": 0.4891085239085235,
+            "Restricted": 0.4186749249249249
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.8274845362127453,
+          "gross_expected_value": 12.021191181175523,
+          "gross_return_ratio": 0.196040299758244,
+          "key_price": 2.49,
+          "loss_probability": 0.44095132648224594,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 494,
+          "net_expected_value": 10.57864823943446,
+          "net_return_ratio": 0.1725154637872547,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:17.584919Z",
+          "opening_cost": 61.32,
+          "price_type": "listing_min",
+          "priced_outcomes": 182,
+          "publication_ready": false,
+          "source": "skinport_listings",
+          "source_label": "Skinport",
+          "total_outcomes": 676,
+          "wear_basis": {
+            "observed_listings": 0.0,
+            "observed_total": 0.00019692307692307696,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9998030769230735
+          }
+        },
+        {
+          "case_price": 61.61,
+          "coverage": 0.7356185851258539,
+          "coverage_by_rarity": {
+            "Classified": 0.7200483091787441,
+            "Covert": 0.9063095238095239,
+            "Mil-Spec": 0.7273930180180179,
+            "Rare Special Item": 0.7512785862785855,
+            "Restricted": 0.7727852852852853
+          },
+          "currency": "USD",
+          "expected_net_roi": -0.805821676712907,
+          "gross_expected_value": 14.144125593980286,
+          "gross_return_ratio": 0.22065718555351463,
+          "key_price": 2.49,
+          "loss_probability": 0.7030507274760337,
+          "loss_probability_is_lower_bound": true,
+          "missing_count": 367,
+          "net_expected_value": 12.446830522702651,
+          "net_return_ratio": 0.19417832328709286,
+          "observation_span_seconds": 0.0,
+          "observed_at": "2026-09-08T04:52:24.114309Z",
+          "opening_cost": 64.1,
+          "price_type": "sales_median_30_days",
+          "priced_outcomes": 309,
+          "publication_ready": false,
+          "source": "skinport",
+          "source_label": "Skinport",
+          "total_outcomes": 676,
+          "wear_basis": {
+            "observed_listings": 0.0,
+            "observed_total": 0.00019692307692307696,
+            "observed_volume": 0.00019692307692307696,
+            "uniform_fallback": 0.9998030769230735
+          }
+        }
+      ]
     }
   ],
   "catalog_source": {
@@ -409,10 +3217,10 @@
     "url": "https://github.com/ByMykel/CSGO-API"
   },
   "dataset": {
-    "case_count": 5,
+    "case_count": 41,
     "currency": "USD",
-    "generated_at": "2026-09-08T07:43:16.755493Z",
-    "label": "Five busiest cases",
+    "generated_at": "2026-09-08T10:17:20.183638Z",
+    "label": "All cases",
     "locale": "en",
     "mode": "live",
     "observed_at": "2026-09-08T04:52:24.114309Z"

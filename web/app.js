@@ -28,6 +28,8 @@ const STRINGS = {
     },
     partial:
       "* Some outcomes had no price on that venue, so the real chance of losing is at least this high.",
+    thinHeading: (count) =>
+      `${count} cases below ${Math.round(COVERAGE_BAR * 100)}% priced — too much of each is unlisted for its return to be compared with the ones above`,
     assumed: (share) =>
       `Up to ${share} of probability had too few listings to measure a wear split, and used an even spread instead.`,
     meta: (venues, when, currency, count) =>
@@ -59,6 +61,8 @@ const STRINGS = {
     },
     partial:
       "* 这个市场上有些东西查不到价，所以实际亏本概率只会比这更高。",
+    thinHeading: (count) =>
+      `以下 ${count} 个箱子已定价不足 ${Math.round(COVERAGE_BAR * 100)}%——查不到价的东西太多，回本率没法跟上面的比`,
     assumed: (share) =>
       `有 ${share} 的概率因为挂单太少、统计不出磨损分布，用了平均分的假设。`,
     meta: (venues, when, currency, count) =>
@@ -78,6 +82,14 @@ const STRINGS = {
 };
 
 const T = STRINGS[LOCALE] || STRINGS.en;
+
+/**
+ * Below this share of priced probability a case's return is not comparable to
+ * a fully measured one: it is an upper bound on whatever part we could see.
+ * Sorting the table by return without this split puts the least-measured cases
+ * at the top, which reads as "best case to open" and is the opposite of true.
+ */
+const COVERAGE_BAR = 0.95;
 
 const escapeHtml = (value) =>
   String(value ?? "").replace(
@@ -150,8 +162,21 @@ function row(entry, caseName, position) {
     </tr>`;
 }
 
-function renderRows(data) {
-  const html = data.cases
+function bestCoverage(item) {
+  return Math.max(...item.sources.map((entry) => entry.coverage));
+}
+
+/** Rank and summarise a case by whichever venue could price the most of it. */
+function primaryEntry(item) {
+  return [...item.sources].sort((a, b) => b.coverage - a.coverage)[0];
+}
+
+function leadReturn(item) {
+  return primaryEntry(item).net_return_ratio ?? -Infinity;
+}
+
+function renderCaseRows(cases) {
+  return cases
     .map((item) =>
       item.sources
         .map((entry, index) =>
@@ -169,6 +194,18 @@ function renderRows(data) {
         .join(""),
     )
     .join("");
+}
+
+function renderRows(data) {
+  const sorted = [...data.cases].sort((a, b) => leadReturn(b) - leadReturn(a));
+  const measured = sorted.filter((item) => bestCoverage(item) >= COVERAGE_BAR);
+  const thin = sorted.filter((item) => bestCoverage(item) < COVERAGE_BAR);
+
+  let html = renderCaseRows(measured);
+  if (thin.length) {
+    html += `<tr class="divider"><td colspan="8">${T.thinHeading(thin.length)}</td></tr>`;
+    html += renderCaseRows(thin);
+  }
   document.querySelector("#rows").innerHTML = html;
 
   const notes = [];

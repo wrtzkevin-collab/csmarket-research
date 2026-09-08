@@ -282,3 +282,27 @@ footer p {
     width: auto;
   }
 }
+
+/* Under-measured cases are kept visible but must not read as ranked
+   alongside the ones we could actually price. */
+#results tr.divider td {
+  padding: 1.6rem 0 0.5rem;
+  border-bottom: 1px solid var(--rule-strong);
+  text-align: left;
+  white-space: normal;
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+}
+
+#results tr.divider ~ tr td {
+  color: var(--ink-faint);
+}
+
+#results tr.divider ~ tr .case-name,
+#results tr.divider ~ tr .big {
+  font-weight: 500;
+}
+
+#results tr.divider ~ tr .loss {
+  color: var(--ink-faint);
+}
