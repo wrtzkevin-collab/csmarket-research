@@ -36,6 +36,13 @@ _PROBABILITY_TOLERANCE = 1e-10
 # guarantees that some later run assembles one too wide and is rejected.
 DEFAULT_MAX_OBSERVATION_DRIFT_SECONDS = 6 * 60 * 60
 
+# A price standing on this few offers is one person's asking price, not a market
+# level.  It matters most where it hurts most: a Doppler knife trades under one
+# market name whatever its phase, so a lone Sapphire listing becomes "the" price
+# of every Doppler, and two such listings once supplied 55% of a case's entire
+# expected value.
+DEFAULT_THIN_DEPTH = 5
+
 
 @dataclass(frozen=True, slots=True)
 class PriceObservation:
@@ -118,6 +125,8 @@ class CaseValuation:
     priced_outcomes: int
     total_outcomes: int
     missing_market_names: tuple[str, ...]
+    thin_ev_share: float | None
+    thin_depth: int
     wear_basis_coverage: dict[str, float]
     wear_volume_source: str
     publication_ready: bool
@@ -172,6 +181,10 @@ class CaseValuation:
                 "commit": self.catalog_commit,
                 "repository": self.catalog_repository,
                 "classification": "community maintained; not a Valve API",
+            },
+            "liquidity": {
+                "thin_depth": self.thin_depth,
+                "thin_ev_share": self.thin_ev_share,
             },
             "coverage": {
                 "overall": self.result.probability_coverage,
@@ -397,10 +410,64 @@ def expand_case_variants(
                         )
                     )
 
-    total = fsum(variant.probability for variant in variants)
+    merged = _merge_shared_market_names(variants)
+    total = fsum(variant.probability for variant in merged)
     if not isclose(total, 1.0, rel_tol=0, abs_tol=_PROBABILITY_TOLERANCE):
         raise AssertionError(f"expanded probabilities sum to {total}, expected 1")
-    return tuple(variants)
+    return merged
+
+
+def _merge_shared_market_names(
+    variants: Iterable[MarketVariant],
+) -> tuple[MarketVariant, ...]:
+    """Collapse outcomes that the market cannot tell apart into one outcome.
+
+    Several catalogue items can share a single ``market_hash_name``: a Doppler
+    knife's phases, for instance, are distinct items in the game but trade under
+    one name, because the phase is only visible by inspecting the item.  Prices
+    are per market name, so leaving them separate charges every phase the full
+    price of that one name.
+
+    On a Chroma 3 Case this counted a single ten-thousand-dollar Doppler listing
+    seven times and produced a 136% return -- an opened case that turned a
+    profit, which is exactly the claim this project must not make by accident.
+
+    Summing the probabilities and pricing the name once is what the market
+    actually offers: whichever phase drops, the holder ends up with one item
+    that trades under that name at that price.
+    """
+
+    grouped: dict[str, list[MarketVariant]] = defaultdict(list)
+    for variant in variants:
+        grouped[variant.market_hash_name].append(variant)
+
+    merged: list[MarketVariant] = []
+    for market_name, group in grouped.items():
+        if len(group) == 1:
+            merged.append(group[0])
+            continue
+        rarities = {variant.rarity for variant in group}
+        if len(rarities) > 1:
+            raise ValueError(
+                f"{market_name} is shared across rarities {sorted(rarities)}; "
+                "merging would hide a catalogue error"
+            )
+        # The basis of the heaviest member: a split that measured most of the
+        # mass should not be reported as assumed because a sliver was not.
+        dominant = max(group, key=lambda variant: variant.probability)
+        merged.append(
+            MarketVariant(
+                outcome_id=f"{dominant.outcome_id}+{len(group) - 1}",
+                market_hash_name=market_name,
+                probability=fsum(variant.probability for variant in group),
+                rarity=dominant.rarity,
+                is_special=dominant.is_special,
+                stattrak=dominant.stattrak,
+                wear=dominant.wear,
+                wear_basis=dominant.wear_basis,
+            )
+        )
+    return tuple(merged)
 
 
 def value_case(
@@ -411,8 +478,15 @@ def value_case(
     key_price: float,
     key_price_source: str,
     sell_fee_rate: float,
+    thin_depth: int = DEFAULT_THIN_DEPTH,
 ) -> CaseValuation:
-    """Join exact market observations and calculate a transparent partial EV."""
+    """Join exact market observations and calculate a transparent partial EV.
+
+    Alongside coverage -- how much of the distribution had a price -- this
+    records how much of the expected value rests on prices with almost nothing
+    behind them.  Coverage can read 100% while most of the answer comes from two
+    lone listings, and those two numbers fail in different ways.
+    """
 
     variant_list = tuple(variants)
     if not variant_list:
@@ -426,6 +500,9 @@ def value_case(
         raise ValueError("key_price_source must be stated")
 
     outcomes: list[Outcome] = []
+    gross_total = 0.0
+    gross_thin = 0.0
+    depth_seen = False
     priced_probability: dict[str, float] = defaultdict(float)
     rarity_probability: dict[str, float] = defaultdict(float)
     basis_probability: dict[str, float] = defaultdict(float)
@@ -441,6 +518,15 @@ def value_case(
         else:
             priced_probability[variant.rarity] += variant.probability
             priced_count += 1
+            contribution = variant.probability * price
+            gross_total += contribution
+            # Listings where the venue reports them, completed sales otherwise:
+            # both say how many hands the price passed through.
+            depth = quote.listings if quote.listings is not None else quote.volume
+            if depth is not None:
+                depth_seen = True
+                if depth < thin_depth:
+                    gross_thin += contribution
         outcomes.append(
             Outcome(
                 name=variant.outcome_id,
@@ -471,6 +557,10 @@ def value_case(
         priced_outcomes=priced_count,
         total_outcomes=len(variant_list),
         missing_market_names=tuple(sorted(missing_names)),
+        thin_ev_share=(
+            (gross_thin / gross_total) if depth_seen and gross_total > 0 else None
+        ),
+        thin_depth=thin_depth,
         wear_basis_coverage=dict(basis_probability),
         wear_volume_source=snapshot.source,
         publication_ready=publication_ready,

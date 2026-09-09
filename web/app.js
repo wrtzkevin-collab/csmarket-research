@@ -29,7 +29,9 @@ const STRINGS = {
     partial:
       "* Some outcomes had no price on that venue, so the real chance of losing is at least this high.",
     thinHeading: (count) =>
-      `${count} cases below ${Math.round(COVERAGE_BAR * 100)}% priced — too much of each is unlisted for its return to be compared with the ones above`,
+      `${count} cases held back — either under ${Math.round(COVERAGE_BAR * 100)}% priced, or most of the value rests on almost-empty listings, so the return is not comparable with the ones above`,
+    thinFootnote: (count) =>
+      `† ${count} figures rest mostly on items with fewer than a handful of offers, where one seller's asking price sets the whole result.`,
     assumed: (share) =>
       `Up to ${share} of probability had too few listings to measure a wear split, and used an even spread instead.`,
     meta: (venues, when, currency, count) =>
@@ -62,7 +64,9 @@ const STRINGS = {
     partial:
       "* 这个市场上有些东西查不到价，所以实际亏本概率只会比这更高。",
     thinHeading: (count) =>
-      `以下 ${count} 个箱子已定价不足 ${Math.round(COVERAGE_BAR * 100)}%——查不到价的东西太多，回本率没法跟上面的比`,
+      `以下 ${count} 个箱子先放一边——要么已定价不足 ${Math.round(COVERAGE_BAR * 100)}%，要么大部分价值压在几乎没人挂的东西上，回本率没法跟上面的比`,
+    thinFootnote: (count) =>
+      `† 有 ${count} 个数字主要立在挂单数只有个位数的物品上，等于一个卖家的报价决定了整个结果。`,
     assumed: (share) =>
       `有 ${share} 的概率因为挂单太少、统计不出磨损分布，用了平均分的假设。`,
     meta: (venues, when, currency, count) =>
@@ -90,6 +94,14 @@ const T = STRINGS[LOCALE] || STRINGS.en;
  * at the top, which reads as "best case to open" and is the opposite of true.
  */
 const COVERAGE_BAR = 0.95;
+
+/**
+ * Above this share of expected value resting on near-empty listings, the return
+ * is one seller's asking price rather than a market level. Coverage cannot
+ * catch it: a case can be 100% priced and still get most of its value from two
+ * lone listings.
+ */
+const THIN_BAR = 1 / 3;
 
 const escapeHtml = (value) =>
   String(value ?? "").replace(
@@ -155,7 +167,7 @@ function row(entry, caseName, position) {
       <td class="l venue">${venueLabel(entry)}</td>
       <td>${money(entry.opening_cost, entry.currency)}</td>
       <td>${money(entry.net_expected_value, entry.currency)}</td>
-      <td class="big">${pct(entry.net_return_ratio, { digits: 0 })}</td>
+      <td class="big${entry.thin_ev_share > THIN_BAR ? " thin" : ""}">${pct(entry.net_return_ratio, { digits: 0 })}</td>
       <td class="${roi < 0 ? "loss" : ""}">${pct(roi, { sign: true })}</td>
       <td class="${partial}">${pct(entry.loss_probability)}</td>
       <td>${coveragePct(entry.coverage)}</td>
@@ -169,6 +181,15 @@ function bestCoverage(item) {
 /** Rank and summarise a case by whichever venue could price the most of it. */
 function primaryEntry(item) {
   return [...item.sources].sort((a, b) => b.coverage - a.coverage)[0];
+}
+
+function thinShare(item) {
+  const share = primaryEntry(item).thin_ev_share;
+  return typeof share === "number" ? share : 0;
+}
+
+function isComparable(item) {
+  return bestCoverage(item) >= COVERAGE_BAR && thinShare(item) <= THIN_BAR;
 }
 
 function leadReturn(item) {
@@ -198,13 +219,13 @@ function renderCaseRows(cases) {
 
 function renderRows(data) {
   const sorted = [...data.cases].sort((a, b) => leadReturn(b) - leadReturn(a));
-  const measured = sorted.filter((item) => bestCoverage(item) >= COVERAGE_BAR);
-  const thin = sorted.filter((item) => bestCoverage(item) < COVERAGE_BAR);
+  const measured = sorted.filter(isComparable);
+  const held = sorted.filter((item) => !isComparable(item));
 
   let html = renderCaseRows(measured);
-  if (thin.length) {
-    html += `<tr class="divider"><td colspan="8">${T.thinHeading(thin.length)}</td></tr>`;
-    html += renderCaseRows(thin);
+  if (held.length) {
+    html += `<tr class="divider"><td colspan="8">${T.thinHeading(held.length)}</td></tr>`;
+    html += renderCaseRows(held);
   }
   document.querySelector("#rows").innerHTML = html;
 
@@ -223,6 +244,15 @@ function renderRows(data) {
   );
   if (assumed > 0.01) {
     notes.push(T.assumed(pct(assumed)));
+  }
+
+  const thinCount = data.cases.reduce(
+    (count, item) =>
+      count + item.sources.filter((e) => e.thin_ev_share > THIN_BAR).length,
+    0,
+  );
+  if (thinCount) {
+    notes.push(T.thinFootnote(thinCount));
   }
   document.querySelector("#table-note").textContent = notes.join(" ");
 }

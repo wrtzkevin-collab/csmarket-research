@@ -42,7 +42,7 @@ def skinport_row(name):
         "price": 2.0,
         "source": "skinport",
         "currency": "USD",
-        "price_type": "sales_median_30_days",
+        "price_type": "sales_median_90_days",
         "observed_at": OBSERVED,
         "volume": 5,
     }
@@ -220,7 +220,7 @@ class ThrottledLookupTests(unittest.TestCase):
         # "A" is absent from the result entirely; it is not a row saying the
         # market has no price, because we never got to ask the market.
         self.assertEqual([row["market_hash_name"] for row in rows], ["B"])
-        self.assertIsNone(cache.get("steam_community_market", "USD", "A"))
+        self.assertIsNone(cache.get("steam_community_market", "lowest_listing", "USD", "A"))
 
     def test_a_blocked_lookup_is_retried_by_the_next_run(self):
         from csmarket.data_sources.steam import SteamDataError

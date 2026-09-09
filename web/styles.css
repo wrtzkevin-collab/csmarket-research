@@ -306,3 +306,12 @@ footer p {
 #results tr.divider ~ tr .loss {
   color: var(--ink-faint);
 }
+
+/* A return standing mostly on near-empty listings is marked where it is read,
+   not only in a footnote below the table. */
+#results td.thin::after {
+  content: "\2020";
+  margin-left: 2px;
+  font-weight: 400;
+  color: var(--ink-faint);
+}

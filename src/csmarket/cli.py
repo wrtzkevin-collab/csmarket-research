@@ -13,6 +13,7 @@ from .cache import DEFAULT_CACHE_PATH, DEFAULT_MAX_AGE_HOURS
 from .catalog import SUPPORTED_LANGUAGES, CaseCatalogClient
 from .model import Outcome, calculate_ev
 from .pipeline import (
+    DEFAULT_THIN_DEPTH,
     CaseValuation,
     candidate_market_names,
     expand_case_variants,
@@ -248,6 +249,7 @@ def _value_one_case(
                 key_price=args.key_price,
                 key_price_source=args.key_price_source,
                 sell_fee_rate=args.sell_fee_rate,
+                thin_depth=args.thin_depth,
             )
         )
     return valuations
@@ -406,6 +408,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     analysis_parser.add_argument("--sell-fee-rate", type=float, default=0.12)
     analysis_parser.add_argument(
+        "--thin-depth",
+        type=int,
+        default=DEFAULT_THIN_DEPTH,
+        help="offers below which a price counts as resting on a thin market",
+    )
+    analysis_parser.add_argument(
         "--min-wear-volume",
         type=int,
         default=DEFAULT_MIN_TOTAL_VOLUME,
@@ -483,8 +491,16 @@ def build_parser() -> argparse.ArgumentParser:
         network_parser.add_argument(
             "--period",
             choices=("last_24_hours", "last_7_days", "last_30_days", "last_90_days"),
-            default="last_30_days",
-            help="Skinport sales window",
+            default="last_90_days",
+            help=(
+                "Skinport sales window. Ninety days is the default because a "
+                "sale price only exists for what traded inside the window, and "
+                "the rare tail that drives a case's value trades rarely: "
+                "widening it took average coverage from 95.5% to 99.1% and the "
+                "worst case from 66% to 91%. A narrower window is fresher but "
+                "silently drops the outcomes that matter most. The two cannot "
+                "be combined -- one snapshot carries one price type"
+            ),
         )
         network_parser.add_argument(
             "--statistic",

@@ -59,7 +59,7 @@ class PriceCacheTests(unittest.TestCase):
         first.save()
 
         second = self.cache()
-        stored = second.get("steam_community_market", "USD", "Kilowatt Case")
+        stored = second.get("steam_community_market", "lowest_listing", "USD", "Kilowatt Case")
 
         self.assertIsNotNone(stored)
         self.assertAlmostEqual(stored["price"], 0.22)
@@ -69,36 +69,36 @@ class PriceCacheTests(unittest.TestCase):
         cache = self.cache()
         cache.put(row())
 
-        self.assertIsNone(cache.get("skinport", "USD", "Kilowatt Case"))
-        self.assertIsNone(cache.get("steam_community_market", "EUR", "Kilowatt Case"))
-        self.assertIsNotNone(cache.get("steam_community_market", "USD", "Kilowatt Case"))
+        self.assertIsNone(cache.get("skinport", "lowest_listing", "USD", "Kilowatt Case"))
+        self.assertIsNone(cache.get("steam_community_market", "lowest_listing", "EUR", "Kilowatt Case"))
+        self.assertIsNotNone(cache.get("steam_community_market", "lowest_listing", "USD", "Kilowatt Case"))
 
     def test_stale_entries_are_reported_as_missing(self):
         cache = self.cache()
         cache.put(row(observed_at="2026-09-05T11:00:00Z"))
 
-        self.assertIsNone(cache.get("steam_community_market", "USD", "Kilowatt Case"))
+        self.assertIsNone(cache.get("steam_community_market", "lowest_listing", "USD", "Kilowatt Case"))
 
     def test_max_age_none_keeps_everything(self):
         cache = self.cache(max_age=None)
         cache.put(row(observed_at="2020-01-01T00:00:00Z"))
 
-        self.assertIsNotNone(cache.get("steam_community_market", "USD", "Kilowatt Case"))
+        self.assertIsNotNone(cache.get("steam_community_market", "lowest_listing", "USD", "Kilowatt Case"))
 
     def test_cached_rows_keep_their_original_observation_time(self):
         cache = self.cache()
         cache.put(row(observed_at="2026-09-07T11:00:00Z"))
-        stored = cache.get("steam_community_market", "USD", "Kilowatt Case")
+        stored = cache.get("steam_community_market", "lowest_listing", "USD", "Kilowatt Case")
 
         self.assertEqual(stored["observed_at"], "2026-09-07T11:00:00Z")
 
     def test_mutating_a_returned_row_does_not_change_the_cache(self):
         cache = self.cache()
         cache.put(row())
-        stored = cache.get("steam_community_market", "USD", "Kilowatt Case")
+        stored = cache.get("steam_community_market", "lowest_listing", "USD", "Kilowatt Case")
         stored["price"] = 999.0
 
-        again = cache.get("steam_community_market", "USD", "Kilowatt Case")
+        again = cache.get("steam_community_market", "lowest_listing", "USD", "Kilowatt Case")
         self.assertAlmostEqual(again["price"], 0.22)
 
     def test_corrupt_cache_file_is_ignored_rather_than_fatal(self):
@@ -141,5 +141,46 @@ class RetentionMatchesSnapshotSpanTests(unittest.TestCase):
         )
 
 
+
+class PriceTypeScopingTests(unittest.TestCase):
+    """Two windows of the same item are two observations, not one."""
+
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._dir.cleanup)
+        self.path = Path(self._dir.name) / "cache.json"
+
+    def cache(self):
+        return PriceCache(self.path, max_age=timedelta(hours=24), clock=lambda: NOW)
+
+    def test_windows_do_not_overwrite_each_other(self):
+        # Asking for a ninety-day median once silently returned the thirty-day
+        # figure cached earlier, and the two exports stopped agreeing.
+        cache = self.cache()
+        thirty = row(price=1.0)
+        thirty["price_type"] = "sales_median_30_days"
+        ninety = row(price=2.0)
+        ninety["price_type"] = "sales_median_90_days"
+        cache.put(thirty)
+        cache.put(ninety)
+
+        self.assertEqual(len(cache), 2)
+        self.assertAlmostEqual(
+            cache.get("steam_community_market", "sales_median_30_days", "USD",
+                      "Kilowatt Case")["price"],
+            1.0,
+        )
+        self.assertAlmostEqual(
+            cache.get("steam_community_market", "sales_median_90_days", "USD",
+                      "Kilowatt Case")["price"],
+            2.0,
+        )
+
+    def test_a_row_without_a_price_type_is_rejected(self):
+        cache = self.cache()
+        broken = row()
+        del broken["price_type"]
+        with self.assertRaises(ValueError):
+            cache.put(broken)
 if __name__ == "__main__":
     unittest.main()

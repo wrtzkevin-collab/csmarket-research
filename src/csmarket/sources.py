@@ -17,6 +17,7 @@ from .cache import PriceCache
 from .data_sources import SkinportClient, SteamMarketClient
 from .data_sources.skinport import LISTINGS_SOURCE_NAME, SALES_SOURCE_NAME
 from .data_sources.steam import SteamDataError
+from .data_sources.steam import PRICE_TYPE as STEAM_PRICE_TYPE
 from .data_sources.steam import SOURCE_NAME as STEAM_SOURCE_NAME
 from .data_sources.steam import SteamSearchClient
 
@@ -82,7 +83,7 @@ def fetch_rows(
     timeout: float = 20.0,
     retries: int = 3,
     request_interval: float = 5.0,
-    period: str = "last_30_days",
+    period: str = "last_90_days",
     statistic: str = "median",
     collection_tags: Sequence[str] = (),
     search_queries: Sequence[str] = (),
@@ -151,7 +152,7 @@ def _fetch_steam_rows(
 
     if cache is not None and not refresh:
         for name in names:
-            row = cache.get(STEAM_SOURCE_NAME, currency, name)
+            row = cache.get(STEAM_SOURCE_NAME, STEAM_PRICE_TYPE, currency, name)
             if row is not None:
                 found[name] = row
 
@@ -248,6 +249,10 @@ def _fetch_skinport_rows(
 ) -> list[dict[str, Any]]:
     wanted = set(names)
     provider = SKINPORT_LISTINGS_SOURCE_NAME if listings else SKINPORT_SOURCE_NAME
+    # The marker shares the rows' price type so that asking for a different
+    # sales window looks for -- and refreshes -- its own pull, rather than
+    # finding the previous window's marker and reading the wrong data.
+    price_type = "listing_min" if listings else f"sales_{statistic}_{period[len('last_'):]}"
     marker_name = f"{_BULK_MARKER_NAME}{'listings' if listings else 'sales'}"
 
     if offline:
@@ -255,7 +260,9 @@ def _fetch_skinport_rows(
             return []
         return [
             row
-            for row in (cache.get(provider, currency, name) for name in names)
+            for row in (
+                cache.get(provider, price_type, currency, name) for name in names
+            )
             if row is not None
         ]
 
@@ -267,11 +274,11 @@ def _fetch_skinport_rows(
     # serves whatever it contained and absent names stay correctly absent.
     already_pulled = (provider, currency.upper()) in _REFRESHED_THIS_PROCESS
     if cache is not None and (not refresh or already_pulled):
-        marker = cache.get(provider, currency, marker_name)
+        marker = cache.get(provider, price_type, currency, marker_name)
         if marker is not None:
             rows = []
             for name in names:
-                row = cache.get(provider, currency, name)
+                row = cache.get(provider, price_type, currency, name)
                 if row is not None:
                     rows.append(row)
             if progress is not None:
@@ -301,7 +308,7 @@ def _fetch_skinport_rows(
                 "price": None,
                 "source": provider,
                 "currency": currency.upper(),
-                "price_type": "bulk-pull marker",
+                "price_type": price_type,
                 "observed_at": _bulk_marker_time(fetched),
             }
         )

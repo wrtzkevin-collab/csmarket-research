@@ -59,8 +59,18 @@ class PriceCache:
         self._loaded = False
 
     @staticmethod
-    def _key(source: str, currency: str, market_hash_name: str) -> str:
-        return f"{source}\t{currency.upper()}\t{market_hash_name}"
+    def _key(
+        source: str, price_type: str, currency: str, market_hash_name: str
+    ) -> str:
+        """Key on everything that defines the observation, price type included.
+
+        A thirty-day and a ninety-day sale median are different measurements of
+        the same item from the same venue.  Keying without the price type let
+        one silently answer a request for the other, and a run that asked for a
+        wider window quietly received the narrower one it had cached earlier.
+        """
+
+        return f"{source}\t{price_type}\t{currency.upper()}\t{market_hash_name}"
 
     def load(self) -> None:
         if self._loaded:
@@ -84,12 +94,14 @@ class PriceCache:
         }
 
     def get(
-        self, source: str, currency: str, market_hash_name: str
+        self, source: str, price_type: str, currency: str, market_hash_name: str
     ) -> dict[str, Any] | None:
         """Return a cached row, or ``None`` when absent or older than ``max_age``."""
 
         self.load()
-        row = self._entries.get(self._key(source, currency, market_hash_name))
+        row = self._entries.get(
+            self._key(source, price_type, currency, market_hash_name)
+        )
         if row is None:
             return None
         if self.max_age is None:
@@ -108,13 +120,17 @@ class PriceCache:
     def put(self, row: dict[str, Any]) -> None:
         self.load()
         source = row.get("source")
+        price_type = row.get("price_type")
         currency = row.get("currency")
         name = row.get("market_hash_name")
         if not all(
-            isinstance(value, str) and value for value in (source, currency, name)
+            isinstance(value, str) and value
+            for value in (source, price_type, currency, name)
         ):
-            raise ValueError("row must carry source, currency and market_hash_name")
-        self._entries[self._key(source, currency, name)] = dict(row)
+            raise ValueError(
+                "row must carry source, price_type, currency and market_hash_name"
+            )
+        self._entries[self._key(source, price_type, currency, name)] = dict(row)
 
     def put_many(self, rows: Iterable[dict[str, Any]]) -> None:
         for row in rows:

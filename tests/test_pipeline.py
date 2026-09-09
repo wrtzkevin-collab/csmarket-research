@@ -326,5 +326,229 @@ class WearWeightingFromSnapshotTests(unittest.TestCase):
         self.assertAlmostEqual(sum(basis.values()), 1.0)
 
 
+
+class SharedMarketNameTests(unittest.TestCase):
+    """Items the market cannot tell apart must be priced once, not once each."""
+
+    def _phased_case(self, phases=3):
+        """A rare special whose phases all trade under one market name."""
+
+        shared = "exact::knife::shared"
+        rare = [
+            CatalogItem(
+                id=f"knife-phase-{index}",
+                name=f"Knife Phase {index}",
+                rarity="Rare Special Item",
+                weapon_name="Knife",
+                collection_id=None,
+                min_float=0.2,
+                max_float=0.3,
+                stattrak_eligible=False,
+                wears=("Field-Tested",),
+                is_special=True,
+                market_variants=(
+                    CatalogVariant(shared, "Field-Tested", False, False),
+                ),
+            )
+            for index in range(phases)
+        ]
+        return CaseDefinition(
+            id="case-phases",
+            name="Phase Case",
+            items=(
+                item("blue", "Mil-Spec Grade"),
+                item("purple", "Restricted"),
+                item("pink", "Classified"),
+                item("red", "Covert"),
+                *rare,
+            ),
+        )
+
+    def _weights(self, case):
+        return {
+            catalog_item.id: WearWeights(
+                weights={"Field-Tested": 1.0},
+                basis=BASIS_OBSERVED_VOLUME,
+                observed_volume=100,
+                source_url="test",
+            )
+            for catalog_item in case.items
+        }
+
+    def test_phases_become_one_outcome_carrying_their_summed_probability(self):
+        case = self._phased_case(phases=3)
+        variants = expand_case_variants(case, wear_weights=self._weights(case))
+
+        shared = [v for v in variants if v.market_hash_name == "exact::knife::shared"]
+        self.assertEqual(len(shared), 1, "one market name must be one outcome")
+        # The whole rare-special tier is those three phases.
+        self.assertAlmostEqual(shared[0].probability, 0.00256)
+        self.assertTrue(shared[0].is_special)
+
+    def test_merging_keeps_the_distribution_summing_to_one(self):
+        for phases in (1, 2, 7):
+            case = self._phased_case(phases=phases)
+            variants = expand_case_variants(case, wear_weights=self._weights(case))
+            self.assertAlmostEqual(
+                sum(v.probability for v in variants), 1.0, places=9
+            )
+
+    def test_a_shared_name_is_valued_once_not_once_per_phase(self):
+        # Seven phases of one Doppler priced at one listing each produced a
+        # 136% return on a real case: a case that pays to open.
+        case = self._phased_case(phases=7)
+        variants = expand_case_variants(case, wear_weights=self._weights(case))
+        rows = rows_for(case, variants)
+        for row in rows:
+            if row["market_hash_name"] == "exact::knife::shared":
+                row["price"] = 1000.0
+        snapshot = snapshot_from_rows(
+            rows, required_names=required_market_names(case, variants)
+        )
+        valuation = value_case(
+            case,
+            variants,
+            snapshot,
+            key_price=2.0,
+            key_price_source="explicit test fixture",
+            sell_fee_rate=0.0,
+        )
+
+        # 0.256% of a single 1000 unit item, not seven times that.
+        rare_contribution = 0.00256 * 1000.0
+        self.assertAlmostEqual(
+            valuation.result.gross_ev,
+            rare_contribution + (1 - 0.00256) * 5.0,
+            places=6,
+        )
+
+    def test_a_name_shared_across_rarities_is_refused(self):
+        case = self._phased_case(phases=2)
+        broken = list(case.items)
+        broken[-1] = CatalogItem(
+            id="knife-phase-1",
+            name="Knife Phase 1",
+            rarity="Covert",
+            weapon_name="Knife",
+            collection_id=None,
+            min_float=0.2,
+            max_float=0.3,
+            stattrak_eligible=False,
+            wears=("Field-Tested",),
+            is_special=False,
+            market_variants=(
+                CatalogVariant("exact::knife::shared", "Field-Tested", False, False),
+            ),
+        )
+        case = CaseDefinition(id=case.id, name=case.name, items=tuple(broken))
+
+        with self.assertRaisesRegex(ValueError, "shared across rarities"):
+            expand_case_variants(case, wear_weights=self._weights(case))
 if __name__ == "__main__":
     unittest.main()
+
+
+class ThinMarketTests(unittest.TestCase):
+    """Coverage says how much was priced; this says what those prices rest on."""
+
+    def _valuation(self, listings_by_name, *, price=5.0):
+        case = example_case()
+        variants = expand_case_variants(case, wear_weights=uniform_weights(case))
+        rows = rows_for(case, variants)
+        for row in rows:
+            row["listings"] = listings_by_name.get(row["market_hash_name"], 100)
+            if row["market_hash_name"] != case.name:
+                row["price"] = price
+        snapshot = snapshot_from_rows(
+            rows, required_names=required_market_names(case, variants)
+        )
+        return value_case(
+            case,
+            variants,
+            snapshot,
+            key_price=2.0,
+            key_price_source="explicit test fixture",
+            sell_fee_rate=0.0,
+        )
+
+    def test_a_deep_market_reports_no_thin_share(self):
+        valuation = self._valuation({})
+
+        self.assertEqual(valuation.thin_ev_share, 0.0)
+        self.assertEqual(valuation.thin_depth, 5)
+
+    def test_value_resting_on_a_lone_listing_is_reported(self):
+        # Two single listings once supplied 55% of a case's expected value while
+        # coverage read 100%, so coverage alone could not have caught it.
+        special = next(
+            v.market_hash_name
+            for v in expand_case_variants(
+                example_case(), wear_weights=uniform_weights(example_case())
+            )
+            if v.is_special
+        )
+        valuation = self._valuation({special: 1})
+
+        self.assertGreater(valuation.thin_ev_share, 0)
+        self.assertAlmostEqual(valuation.thin_ev_share, 0.00256, places=5)
+        self.assertAlmostEqual(valuation.result.probability_coverage, 1.0)
+
+    def test_an_expensive_lone_listing_dominates_the_share(self):
+        case = example_case()
+        variants = expand_case_variants(case, wear_weights=uniform_weights(case))
+        special = next(v.market_hash_name for v in variants if v.is_special)
+        rows = rows_for(case, variants)
+        for row in rows:
+            row["listings"] = 200
+            if row["market_hash_name"] == special:
+                row["price"] = 10_000.0
+                row["listings"] = 1
+        snapshot = snapshot_from_rows(
+            rows, required_names=required_market_names(case, variants)
+        )
+        valuation = value_case(
+            case,
+            variants,
+            snapshot,
+            key_price=2.0,
+            key_price_source="explicit test fixture",
+            sell_fee_rate=0.0,
+        )
+
+        self.assertGreater(valuation.thin_ev_share, 0.8)
+
+    def test_depth_is_unmeasurable_without_listings_or_volume(self):
+        case = example_case()
+        variants = expand_case_variants(case, wear_weights=uniform_weights(case))
+        rows = rows_for(case, variants, volume=None)
+        snapshot = snapshot_from_rows(
+            rows, required_names=required_market_names(case, variants)
+        )
+        valuation = value_case(
+            case,
+            variants,
+            snapshot,
+            key_price=2.0,
+            key_price_source="explicit test fixture",
+            sell_fee_rate=0.0,
+        )
+
+        self.assertIsNone(valuation.thin_ev_share)
+
+    def test_sales_volume_stands_in_for_listings(self):
+        case = example_case()
+        variants = expand_case_variants(case, wear_weights=uniform_weights(case))
+        rows = rows_for(case, variants, volume=2)
+        snapshot = snapshot_from_rows(
+            rows, required_names=required_market_names(case, variants)
+        )
+        valuation = value_case(
+            case,
+            variants,
+            snapshot,
+            key_price=2.0,
+            key_price_source="explicit test fixture",
+            sell_fee_rate=0.0,
+        )
+
+        self.assertAlmostEqual(valuation.thin_ev_share, 1.0)

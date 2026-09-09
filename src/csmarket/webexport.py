@@ -148,6 +148,8 @@ def valuation_to_web_entry(valuation: CaseValuation) -> dict[str, Any]:
         "priced_outcomes": valuation.priced_outcomes,
         "total_outcomes": valuation.total_outcomes,
         "missing_count": len(valuation.missing_market_names),
+        "thin_ev_share": valuation.thin_ev_share,
+        "thin_depth": valuation.thin_depth,
         "publication_ready": valuation.publication_ready,
         "wear_basis": _basis_percentages(valuation),
     }

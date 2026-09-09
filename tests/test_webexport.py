@@ -45,6 +45,8 @@ def valuation(
         priced_outcomes=282,
         total_outcomes=282,
         missing_market_names=(),
+        thin_ev_share=0.04,
+        thin_depth=5,
         wear_basis_coverage={
             BASIS_OBSERVED_VOLUME: 0.997,
             BASIS_UNIFORM_FALLBACK: 0.003,
